@@ -25,9 +25,18 @@ const convertToCanvasPoint = (resolution: Size, targetPoint: Point, canvas: HTML
   } satisfies Point
 };
 
+const secondsToReadableText = (value:number) => {
+  const secondsTotal = Math.floor(value);
+  const milliseconds = Math.floor((value - secondsTotal) * 100);
+  const minutes = Math.floor(secondsTotal / 60);
+  const seconds = secondsTotal - (minutes * 60);
+  return `00:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+};
+
 export const MathUtils = {
   clamp,
   isNearPoint,
   isInsideRect,
-  convertToCanvasPoint
+  convertToCanvasPoint,
+  secondsToReadableText
 };

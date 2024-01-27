@@ -6,8 +6,10 @@ export type Point = { x: number, y: number };
 export interface Rect extends Point, Size {}
 
 export interface Layer {
-  outlineColor: string,
-  src: Source,
+  id: number,
+  zIndex: number,
+  borderColor: string,
+  input?: Source | undefined,
   output: Source
 }
 
