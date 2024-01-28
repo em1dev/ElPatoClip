@@ -12,5 +12,11 @@ export const VideoContainer = styled.div`
   margin: auto;
   flex-direction: row;
   display: flex;
-  gap:0.5em;
+  gap: 1em;
 `
+
+export const TimelineContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

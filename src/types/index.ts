@@ -16,3 +16,15 @@ export interface Layer {
 export interface Source {
   rect: Rect
 }
+
+export interface TimeSlice {
+  /**
+   * In seconds
+   */
+  startTime: number,
+
+  /**
+   * In seconds
+   */
+  endTime: number
+}

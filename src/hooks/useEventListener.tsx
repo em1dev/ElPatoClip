@@ -1,6 +1,6 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 
-export const useEventListener = <T extends HTMLElement, E extends Event>(
+export const useEventListener = <T extends EventTarget, E extends Event>(
   elRef: MutableRefObject<T | null> | T,
   event: keyof HTMLElementEventMap, handler: (e:E) => void) => {
   const hanlderRef = useRef(handler);
@@ -10,7 +10,12 @@ export const useEventListener = <T extends HTMLElement, E extends Event>(
   }, [handler]);
 
   useEffect(() => {
-    const el = elRef instanceof HTMLElement ? elRef : elRef.current;
+    const isEl = (
+      elRef instanceof HTMLElement ||
+      elRef instanceof Window
+    );
+
+    const el = isEl ? elRef as T : (elRef as MutableRefObject<T | null>).current;
     const handlerProxy = (e:Event) => hanlderRef.current(e as E);
     el?.addEventListener(event, handlerProxy);
 

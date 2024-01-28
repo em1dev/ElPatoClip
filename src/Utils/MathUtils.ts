@@ -1,4 +1,4 @@
-import { Point, Rect, Size } from "../../types";
+import { Point, Rect, Size } from "../types";
 
 const isInsideRect = (point: Point, rect: Rect) => (
   point.x >= rect.x &&
@@ -25,12 +25,16 @@ const convertToCanvasPoint = (resolution: Size, targetPoint: Point, canvas: HTML
   } satisfies Point
 };
 
-const secondsToReadableText = (value:number) => {
+const secondsToReadableText = (value:number, includeMilliseconds: boolean = false) => {
   const secondsTotal = Math.floor(value);
   const milliseconds = Math.floor((value - secondsTotal) * 100);
   const minutes = Math.floor(secondsTotal / 60);
   const seconds = secondsTotal - (minutes * 60);
-  return `00:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
+  let text = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  if (includeMilliseconds){
+    text += `:${milliseconds.toString().padStart(2, '0')}`
+  }
+  return text;
 };
 
 export const MathUtils = {

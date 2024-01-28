@@ -1,8 +1,9 @@
-import { useRef, MutableRefObject, useEffect, useState } from 'react';
+import { useRef, MutableRefObject, useEffect, useState, useCallback } from 'react';
 import * as S from './styles';
-import { Layer, Point, Rect, Source } from '../../types';
-import { useEventListener } from '../../hooks';
-import { MathUtils } from '../Utils/MathUtils';
+import { Layer, Point, Rect, Source } from '../../../types';
+import { MathUtils } from '../../../Utils/MathUtils';
+import { useRenderLoop } from '../../../hooks/useRenderLoop';
+import { useEventListener } from '../../../hooks/useEventListener';
 
 export interface VideoCanvasProp {
   videoRef: MutableRefObject<HTMLVideoElement | null>,
@@ -60,13 +61,10 @@ export const VideoCanvas = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const onDrawFnRef = useRef<() => void>(() => {});
 
-  useEffect(() => {
-    const onFrame = () => {
-      onDrawFnRef.current();
-      requestAnimationFrame(onFrame);
-    }
-    onFrame();
-  }, []);
+  // TODO - refactor
+  useRenderLoop(useCallback(() => {
+    onDrawFnRef.current();
+  }, []));
 
   useEventListener<HTMLCanvasElement, MouseEvent>(canvasRef, 'mousedown', (e) => {
     setHasMoved(false);
@@ -75,12 +73,16 @@ export const VideoCanvas = ({
     if (!canvas) return;
     const offsetClick = { x: e.offsetX, y: e.offsetY };
     const clicked = MathUtils.convertToCanvasPoint(videoResolution, offsetClick, canvas);
-    const { output, id } = layers
+    const layer = layers
       .reduce((prevLayer, layer) => {
         const clickedOnLayer = MathUtils.isInsideRect(clicked, layer.output.rect);
-        if (!clickedOnLayer || layer.zIndex < prevLayer.zIndex) return prevLayer;
+        if (!clickedOnLayer) return prevLayer;
+        if (prevLayer === null) return layer;
+        if (layer.zIndex < prevLayer.zIndex) return prevLayer;
         return layer;
-      });
+      }, null as Layer | null);
+
+    if (!layer) return;
 
     const canvasRect = canvas.getBoundingClientRect();
     const relativePoint = MathUtils.convertToCanvasPoint(videoResolution, 
@@ -88,20 +90,21 @@ export const VideoCanvas = ({
     canvas);
 
     const offsetClicked = {
-      x: relativePoint.x - output.rect.x,
-      y: relativePoint.y - output.rect.y
+      x: relativePoint.x - layer.output.rect.x,
+      y: relativePoint.y - layer.output.rect.y
     };
 
     setInteracted({
       clickedOffsetToOrigin: offsetClicked,
-      layerId: id
+      layerId: layer.id
     });
   });
 
-  useEventListener<HTMLElement, MouseEvent>(document.body, 'mousemove', (e) => {
+  useEventListener<Window, MouseEvent>(window, 'mousemove', (e) => {
     setHasMoved(true);
     if (!canvasRef.current) return;
     if (!interacted) return;
+    e.preventDefault();
 
     const canvasRect = canvasRef.current.getBoundingClientRect();
 
@@ -131,7 +134,7 @@ export const VideoCanvas = ({
     onOutputChange(layer.id, { rect: currentPosition });
   })
 
-  useEventListener(document.body, 'mouseup', () => {
+  useEventListener(window, 'mouseup', () => {
     setHasMoved(false);
     setInteracted(null);
     if (hasMoved) return;
@@ -157,7 +160,7 @@ export const VideoCanvas = ({
         ctx.fillStyle = 'rgba(0,0,0,0.7)';
         ctx.fillRect(0,0, videoResolution.width, videoResolution.height);
 
-        for (const { output } of layers) {
+        for (const { output, borderColor } of layers) {
           ctx.drawImage(videoEl,
             output.rect.x,
             output.rect.y,
@@ -168,10 +171,12 @@ export const VideoCanvas = ({
             output.rect.width,
             output.rect.height
           );
+
+          renderCropArea(ctx, output.rect, borderColor);
         }
 
       } else {
-        for (const { output, input } of layers) {
+        for (const { output, input, borderColor } of layers) {
           if (!input) return;
           ctx.drawImage(
             videoEl,
@@ -184,12 +189,10 @@ export const VideoCanvas = ({
             output.rect.width,
             output.rect.height,
           );
+          renderCropArea(ctx, output.rect, borderColor);
         }
       }
 
-      for (const layer of layers) {
-        renderCropArea(ctx, layer.output.rect, layer.borderColor);
-      }
     };
 
     return () => {

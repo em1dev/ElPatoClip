@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as S from './styles';
-import { Layer, Source } from '../../types';
-import { VideoCanvas } from '../VideoCanvas';
+import { Layer, Source, TimeSlice } from '../../types';
+import { VideoCanvas } from '../Organisms/VideoCanvas';
 import { useFfmpeg } from '../../ffmpeg';
-import { VideoHeader } from '../Molecules/VideoHeader';
+import { VideoHeader } from '../Organisms/VideoHeader';
+import { Timeline } from '../Molecules/Timeline';
+import { VideoFooter } from '../Organisms/VideoFooter';
+import { useRenderLoop } from '../../hooks/useRenderLoop';
 
 const VideoEditor = () => {
+  const [cropTime, setCropTime] = useState<TimeSlice>({
+    startTime: 10,
+    endTime: 20
+  })
   const [videoMetadata, setVideoMetadata] = useState<{
     currentTime: number,
     totalTime: number
@@ -18,14 +25,16 @@ const VideoEditor = () => {
     borderColor: '#FF0099',
     zIndex: 0,
     input: { rect: { x: 0, y: 0, width: 1080 / 2, height: 1920 / 2 } },
-    output: { rect: { x: 0, y: 0, width: 1080 / 2, height: 1920 / 2 } },
-  },{
+    output: { rect: { x: 0, y: 0, width: 1080, height: 1920 } },
+  },
+  {
     id: 1,
     borderColor: '#0066FF',
     zIndex: 1,
-    input: { rect: { x: 0, y: 0, width: 1080 / 2, height: 1920 / 2 } },
-    output: { rect: { x: 0, y: 0, width: 1080 / 2, height: 1920 / 2 } },
-  }]);
+    input: { rect: { x: 0, y: 0, width: 1920 / 2, height: 1080 / 2 } },
+    output: { rect: { x: 20, y: 20, width: 1920 / 2, height: 1080 / 2 } },
+  },
+]);
 
   useEffect(() => {
     if (!videoRef.current) return;
@@ -33,25 +42,23 @@ const VideoEditor = () => {
     const onPlay = () => { setIsPlaying(true); };
     const onStop = () => { setIsPlaying(false); };
 
-    const onSeek = () => {
-      if (!videoRef.current) return;
-      setVideoMetadata({
-        currentTime: videoRef.current.currentTime,
-        totalTime: videoRef.current.duration
-      })
-    }
-
     video.addEventListener('play', onPlay);
     video.addEventListener('ended', onStop);
     video.addEventListener('pause', onStop);
-    video.addEventListener('timeupdate', onSeek);
     return () => {
       video.removeEventListener('play', onPlay);
       video.removeEventListener('ended', onStop);
       video.removeEventListener('pause', onStop);
-      video.removeEventListener('timeupdate', onSeek);
     }
   }, []);
+
+  useRenderLoop(useCallback(() => {
+    if (!videoRef.current) return;
+    setVideoMetadata({
+      currentTime: videoRef.current.currentTime,
+      totalTime: videoRef.current.duration
+    })
+  }, []));
 
   const toggleVideoPlayback = useCallback(() => {
     if (!videoRef.current) return;
@@ -104,8 +111,8 @@ const VideoEditor = () => {
   const onRender = async () => {
     const layer1 = layers[0]!;
     const urlBlob = await editVideo('./video/libre.mp4', {
-      startTime: 0,
-      endTime: 0,
+      startTime: cropTime.startTime,
+      endTime: cropTime.endTime,
       layer: layer1
     });
 
@@ -117,7 +124,7 @@ const VideoEditor = () => {
     document.body.removeChild(a);
   }
 
-  const onHeaderPlayClicked = useCallback((value: boolean) => {
+  const onPlayButtonClicked = useCallback((value: boolean) => {
     value ? videoRef.current?.play() : videoRef.current?.pause()
   }, []);
 
@@ -133,13 +140,16 @@ const VideoEditor = () => {
     input: item.input
   }));
 
+  const seekTo = useCallback((value: number) => {
+    if (!videoRef.current) return;
+    videoRef.current.currentTime = value;
+  }, []);
+
   return (
     <S.Container>
       <VideoHeader
         currentTime={videoMetadata.currentTime}
         videoLength={videoMetadata.totalTime}
-        isPlaying={isPlaying}
-        setIsPlaying={onHeaderPlayClicked}
       />
       <S.VideoContainer>
         <VideoCanvas
@@ -158,8 +168,25 @@ const VideoEditor = () => {
           videoResolution={{ height: 1920, width: 1080 }}
         />
       </S.VideoContainer>
+      <VideoFooter 
+        isPlaying={isPlaying}
+        setIsPlaying={onPlayButtonClicked}
+        onBackwardClicked={() => {}}
+        onForwardClicked={() => {}}
+        onToEndClicked={() => {}}
+        onToStartClicked={() => {}}
+      />
+      <S.TimelineContainer>
+        <Timeline 
+          setCropTime={setCropTime}
+          cropTime={cropTime}
+          currentTime={videoMetadata.currentTime}
+          totalDuration={videoMetadata.totalTime}
+          seekTo={seekTo}
+        />
+      </S.TimelineContainer>
       <video hidden ref={videoRef} width={960} height={540} src={'./video/libre.mp4'}></video>
-      <button onClick={onRender}>Render</button>
+      <button hidden onClick={onRender}>Render</button>
     </S.Container>
   )
 }

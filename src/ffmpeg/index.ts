@@ -1,17 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { FFmpeg, createFFmpeg } from '@ffmpeg/ffmpeg';
 import { Layer } from "../types";
+import { MathUtils } from "../Utils/MathUtils";
 
 const INPUT_VIDEO_SIZE = { h: 1080, w: 1920 };
 const OUTPUT_VIDEO_SIZE = { w: 1080, h: 1920 };
-
-interface VideoLayer {
-  scale: number,
-  position: {
-    x: number,
-    y: number
-  }
-}
 
 // TODO - expand this to an infinite amount of sections
 interface VideoSettings {
@@ -52,8 +45,11 @@ export const useFfmpeg = () => {
 
     ffmpegRef.current.FS('writeFile', 'test.mp4', videoData);
   
+    const startTimeAsText = MathUtils.secondsToReadableText(options.startTime);
+    const endTimeAsText = MathUtils.secondsToReadableText(options.endTime);
+
     await ffmpegRef.current.run(
-      '-to', '00:10', '-ss', '00:00',
+      '-to', endTimeAsText, '-ss', startTimeAsText,
       '-i', 'test.mp4',
       '-vcodec', 'h264', '-acodec', 'aac',
       '-filter_complex',
@@ -69,8 +65,8 @@ export const useFfmpeg = () => {
     if (!ffmpegRef.current) throw new Error('ffmpeg loaded');
 
     const filter = `
-      [0:v]crop=${options.layer.src.rect.width}:${options.layer.src.rect.height}:${options.layer.src.rect.x}:${Math.floor(options.layer.src.rect.y)},scale=h=${options.layer.output.rect.height}:${options.layer.output.rect.width}[video]; \
-      [0:v]crop=${options.layer.src.rect.width}:${options.layer.src.rect.height}:${options.layer.src.rect.x}:${options.layer.src.rect.y},avgblur=10[bg]; \
+      [0:v]crop=${options.layer.input!.rect.width}:${options.layer.input!.rect.height}:${options.layer.input!.rect.x}:${Math.floor(options.layer.input!.rect.y)},scale=h=${options.layer.output.rect.height}:${options.layer.output.rect.width}[video]; \
+      [0:v]crop=${options.layer.input!.rect.width}:${options.layer.input!.rect.height}:${options.layer.input!.rect.x}:${options.layer.input!.rect.y},avgblur=10[bg]; \
       [bg][video]overlay=${(options.layer.output.rect.x)}:${options.layer.output.rect.y}
       `
     ;
