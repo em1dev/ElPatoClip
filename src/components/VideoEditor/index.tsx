@@ -25,7 +25,7 @@ const VideoEditor = () => {
     borderColor: '#FF0099',
     zIndex: 0,
     input: { rect: { x: 0, y: 0, width: 1080 / 2, height: 1920 / 2 } },
-    output: { rect: { x: 0, y: 0, width: 1080, height: 1920 } },
+    output: { rect: { x: 0, y: 0, width: 1080 / 2, height: 1920 / 2 } },
   },
   {
     id: 1,
@@ -109,11 +109,10 @@ const VideoEditor = () => {
   }
 
   const onRender = async () => {
-    const layer1 = layers[0]!;
     const urlBlob = await editVideo('./video/libre.mp4', {
       startTime: cropTime.startTime,
       endTime: cropTime.endTime,
-      layer: layer1
+      layer: layers
     });
 
     const a = document.createElement('a');
@@ -186,7 +185,7 @@ const VideoEditor = () => {
         />
       </S.TimelineContainer>
       <video hidden ref={videoRef} width={960} height={540} src={'./video/libre.mp4'}></video>
-      <button hidden onClick={onRender}>Render</button>
+      <button onClick={onRender}>Render</button>
     </S.Container>
   )
 }

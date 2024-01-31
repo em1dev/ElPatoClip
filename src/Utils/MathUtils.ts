@@ -37,10 +37,28 @@ const secondsToReadableText = (value:number, includeMilliseconds: boolean = fals
   return text;
 };
 
+const getNearestCorner = (point: Point, rect: Rect, threshold: number) => {
+  if (isNearPoint(point, { x: rect.x, y: rect.y }, threshold)) {
+    return '00';
+  }
+
+  if (isNearPoint(point, { x: rect.x + rect.width, y: rect.y }, threshold)) {
+    return '10';
+  }
+  if (isNearPoint(point, { x: rect.x + rect.width, y: rect.y + rect.height }, threshold)) {
+    return '11';
+  }
+  if (isNearPoint(point, { x: rect.x, y: rect.y + rect.height }, threshold)){
+    return '01';
+  }
+  return null;
+};
+
 export const MathUtils = {
   clamp,
   isNearPoint,
   isInsideRect,
   convertToCanvasPoint,
-  secondsToReadableText
+  secondsToReadableText,
+  getNearestCorner
 };
