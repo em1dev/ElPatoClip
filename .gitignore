@@ -1,3 +1,6 @@
+exp/*
+*.mp4
+.env
 public/video/*
 # Logs
 logs
