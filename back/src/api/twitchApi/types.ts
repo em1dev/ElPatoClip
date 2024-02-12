@@ -42,3 +42,25 @@ export interface TwitchClipFilters {
   after?: string,
   is_featured?: boolean
 }
+
+export interface ChannelDetails {
+  display_name: string,
+  id: string,
+  thumbnail_url: string
+}
+
+export interface UserDetails {
+  id: string,
+  login: string,
+  display_name: string,
+  type: 'admin' | 'global_mod' | 'staff' | '',
+  broadcaster_type: 'affiliate' | 'partener' | '',
+  description: string,
+  profile_image_url: string,
+  offline_image_url: string,
+  created_at: string
+}
+
+export interface UserDetailsResponse {
+  data: Array<UserDetails>,
+}

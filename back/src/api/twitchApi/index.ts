@@ -1,6 +1,7 @@
 import { URL } from 'url';
 import { env } from '../../env';
-import { AuthenticationResponse, TwitchClip, TwitchClipFilters } from './types';
+import { AuthenticationResponse, ChannelDetails, TwitchClip, TwitchClipFilters, TwitchPaginatedResult, UserDetails } from './types';
+import { BadRequestError } from '../../errors';
 
 export class TwitchApi {
   private getAppToken = async () => {
@@ -32,8 +33,24 @@ export class TwitchApi {
       if (value === undefined) return;
       params.set(key, String(value))
     });
-    console.log(params);
     url.search = params.toString();
+
+    const resp = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Client-Id': `${env.clientId}`
+      }
+    });
+
+    if (!resp.ok) throw new BadRequestError(`twitch api error: ${resp.status}`);
+
+    return await resp.json() as TwitchPaginatedResult<TwitchClip>
+  }
+
+  public searchChannel = async (searchString: string, first: number = 5) => {
+    const url = `https://api.twitch.tv/helix/search/channels?query=${searchString}&first=${first}`;
+    const token = await this.getAppToken();
 
     const resp = await fetch(url, {
       method: 'GET',
@@ -45,7 +62,33 @@ export class TwitchApi {
 
     if (!resp.ok) throw new Error(`twitch api error: ${resp.status}`);
 
-    const { data } = await resp.json() as { data: Array<TwitchClip> }
+    const data = await resp.json() as TwitchPaginatedResult<ChannelDetails>;
+    return data;
+  }
+
+  public getUsers = async (userIds: Array<string>) => {
+    if (userIds.length === 0) return [];
+
+    let url = `https://api.twitch.tv/helix/users?`;
+    const params = userIds.map(s => `id=${s}`).join('&');
+    url += params;
+
+    const token = await this.getAppToken();
+
+    const resp = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Client-Id': `${env.clientId}`
+      }
+    });
+
+    if (!resp.ok) {
+      console.log(await resp.json());
+      throw new Error(`Twitch api error ${resp.status}`)
+    };
+
+    const { data } = await resp.json() as { data: Array<UserDetails> };
     return data;
   }
 }

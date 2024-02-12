@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 export const Footer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: -1.5em;
+  gap: 0.8em;
   >:first-child {
     align-items: flex-start;
   }

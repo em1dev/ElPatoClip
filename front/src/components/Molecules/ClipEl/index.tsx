@@ -12,7 +12,7 @@ const ClipEl = ({ clip, onClick }: ClipProps) => (
   <S.Container onClick={onClick}>
     <S.EmbedContainer>
       <Badge>01:20</Badge>
-        <img crossOrigin='use-credentials' alt={`clip ${clip.title}`} src={clip.thumbnail_url}></img>
+        <img alt={`clip ${clip.title}`} src={clip.thumbnail_url}></img>
       <Badge>5 views</Badge>
     </S.EmbedContainer>
 

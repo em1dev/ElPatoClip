@@ -9,3 +9,7 @@ html {
   -moz-box-sizing: inherit;
   box-sizing: inherit;
 }
+
+html, body, #root {
+  min-height: 100vh;
+}

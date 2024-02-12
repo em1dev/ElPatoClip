@@ -16,7 +16,7 @@ export const ButtonContainer = styled.div`
 `
 
 export const CurrentTime = styled.span`
-  width: 9ch;
+  width: 6ch;
 `;
 
 export const TotalDuration = styled.span`

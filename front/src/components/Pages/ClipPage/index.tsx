@@ -1,30 +1,79 @@
 import * as S from './styles';
-import { useEffect, useRef, useState } from 'react';
-import { Clip } from '../../../api/elPatoClipApi/types';
-import { ClipApi } from '../../../api/elPatoClipApi';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ClipsResponse, UserDetails } from '../../../api/elPatoClipApi/types';
+import { ElPatoApi } from '../../../api/elPatoClipApi';
 import ClipEl from '../../Molecules/ClipEl';
 import ClipModal from './ClipModal';
+import { useParams } from 'react-router-dom';
+import { Loading } from '../../Atoms/Loading';
+import { useOnIntersection } from '../../../hooks/useOnIntersection';
+import { Button } from '../../Atoms/Button';
 
-const CHANNEL_NAME = '63509391';
+type ClipFilter = 'all time' | '24 hours' | 'last 7 days';
 
-export interface ClipPageProps {
-  onEditClip: (clip: Clip) => void;
-}
+const generateFilter = (selectedFilter: ClipFilter) => {
 
-const ClipPage = ({ onEditClip }: ClipPageProps) => {
+  const filter: { startDate?: string, endDate?: string } = {};
+  if (selectedFilter === '24 hours') {
+    const yesterday =  new Date();
+    yesterday.setDate(new Date().getDate() - 1);
+    filter.startDate = yesterday.toISOString();
+    return filter;
+  }
+
+  if (selectedFilter === 'last 7 days') {
+    const yesterday =  new Date();
+    yesterday.setDate(new Date().getDate() - 7);
+    filter.startDate = yesterday.toISOString();
+    return filter;
+  }
+
+  return filter;
+};
+
+const ClipPage = () => {
+  const [selectedFilter, setSelectedFilter] = useState<ClipFilter>('all time');
+  const { channelId } = useParams<{ channelId:string }>();
+  const [channelDetails, setChannelDetails] = useState<UserDetails | null>(null);
+
+  const loaderTriggerRef = useRef<HTMLDivElement>(null);
   const modalContainerRef = useRef<HTMLDivElement>(null);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedClipId, setSelectedClipId] = useState<string | null>(null);
-  const [clips, setClips] = useState<Array<Clip>>([]);
-  const selectedClip = clips.find(clip => clip.id === selectedClipId);
+  const [clips, setClips] = useState<ClipsResponse | null>(null);
+
+  const selectedClip = clips?.data.find(clip => clip.id === selectedClipId);
+
+  const loadData = useCallback(async (cursor?: string, startDate?: string) => {
+    if (!channelId) return;
+    setIsLoading(true);
+    const userDetailsResponse = await ElPatoApi.getChannelDetails(channelId);
+    setChannelDetails(userDetailsResponse);
+
+    const resp = await ElPatoApi.getClips(channelId, {
+      amount: 30,
+      afterCursor: cursor,
+      startedAt: startDate
+    });
+    setClips((prev) => ({
+      data: [...prev?.data ?? [], ...resp.data],
+      pagination: resp.pagination,
+    }));
+    setIsLoading(false);
+  }, [channelId]);
 
   useEffect(() => {
-    (async () => {
-      const resp = await ClipApi.getClips(CHANNEL_NAME, {
-        amount: 10,
-      });
-      setClips(resp);
-    })();
-  }, []);
+    setClips(null);
+  }, [selectedFilter]);
+
+  useOnIntersection(loaderTriggerRef, useCallback(() => {
+    if (!clips || clips.pagination.cursor) {
+      const startDate = generateFilter(selectedFilter).startDate;
+      loadData(clips?.pagination.cursor, startDate);
+    }
+    // no more to load
+  }, [clips, loadData, selectedFilter]));
 
   useEffect(() => {
     const el = modalContainerRef.current;
@@ -40,19 +89,53 @@ const ClipPage = ({ onEditClip }: ClipPageProps) => {
     }
   }, [selectedClip]);
 
-
   return (
-    <S.Container>
-      {selectedClip && (
-        <S.ModalOverlay ref={modalContainerRef}>
-          <ClipModal clip={selectedClip} onEdit={() => onEditClip(selectedClip)} />
-        </S.ModalOverlay>
-      )}
+    <S.Page>
+    { channelDetails && (
+      <S.Header>
+          <S.ProfileDetails>
+            <img alt={`${channelDetails.display_name}`} src={channelDetails.profile_image_url} />
+            <div>{channelDetails.display_name}</div>
+          </S.ProfileDetails>
 
-      {clips.map((clip) => (
-        <ClipEl key={clip.id} clip={clip} onClick={() => setSelectedClipId(clip.id)} />
+          <S.FilterContainer>
+            <span>Best of</span>
+            <Button 
+              onClick={() => setSelectedFilter('all time')} 
+              theme={selectedFilter === 'all time' ? 'light' : 'dark'}
+            >All time</Button>
+            <Button 
+              onClick={() => setSelectedFilter('24 hours')} 
+              theme={selectedFilter === '24 hours' ? 'light' : 'dark'}
+            >Last 24 hours</Button>
+            <Button 
+              onClick={() => setSelectedFilter('last 7 days')} 
+              theme={selectedFilter === 'last 7 days' ? 'light' : 'dark'}
+            >Last 7 Days</Button>
+          </S.FilterContainer>
+      </S.Header>
+    )}
+
+    {selectedClip && (
+      <S.ModalOverlay ref={modalContainerRef}>
+        <ClipModal clip={selectedClip} />
+      </S.ModalOverlay>
+    )}
+
+    <S.Container>
+      {clips?.data.map((clip) => (
+          <ClipEl key={clip.id} clip={clip} onClick={() => setSelectedClipId(clip.id)} />
       ))}
+
+      <div ref={loaderTriggerRef}></div>
+
+      {isLoading && (
+        <S.LoadingContainer>
+          <Loading />
+        </S.LoadingContainer>
+      )}
     </S.Container>
+  </S.Page>
   )
 }
 

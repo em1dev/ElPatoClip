@@ -4,10 +4,9 @@ import ClipFooterMetadata from '../../../Molecules/ClipFooterMetadata';
 
 export interface ClipModalProps {
   clip: Clip,
-  onEdit: () => void,
 }
 
-const ClipModal = ({ clip, onEdit }: ClipModalProps) => (
+const ClipModal = ({ clip }: ClipModalProps) => (
   <S.Container>
     <iframe allowFullScreen height={1080} width={1080} 
       src={`https://clips.twitch.tv/embed?clip=${clip.id}&parent=${location.hostname}&autoplay=true&muted=false`}
@@ -16,7 +15,7 @@ const ClipModal = ({ clip, onEdit }: ClipModalProps) => (
       title={clip.title}
       rightTitle={'02/20/2024'}
       subTitle={`Created by: ${clip.created_at}`}
-      subTitleRight={<S.Button onClick={onEdit}>Edit</S.Button>}
+      subTitleRight={<S.Button reloadDocument to={`${location.origin}/editor/${clip.id}`}>Edit</S.Button>}
     />
   </S.Container>
 );

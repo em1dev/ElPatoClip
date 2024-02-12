@@ -1,3 +1,10 @@
+export interface ClipsResponse {
+  data: Array<Clip>,
+  pagination: {
+    cursor?: string,
+  }
+}
+
 export interface Clip {
   id: string
   url: string
@@ -25,5 +32,25 @@ export interface ClipListRequestFilters {
   amount: number,
   beforeCursor?: string,
   afterCursor?: string,
-  isFeatured?: boolean
+  isFeatured?: boolean,
+  startedAt?: string,
+  endedAt?: string,
+}
+
+export interface ChannelSearchResponse {
+  id: string,
+  displayName: string,
+  profileImg: string
+}
+
+export interface UserDetails {
+  id: string,
+  login: string,
+  display_name: string,
+  type: 'admin' | 'global_mod' | 'staff' | '',
+  broadcaster_type: 'affiliate' | 'partener' | '',
+  description: string,
+  profile_image_url: string,
+  offline_image_url: string,
+  created_at: string
 }
