@@ -13,6 +13,7 @@ export interface VideoEditorProps {
 }
 
 const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
+  const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [cropTime, setCropTime] = useState<TimeSlice>({
     startTime: 0,
@@ -55,6 +56,14 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
       video.removeEventListener('pause', onStop);
     }
   }, []);
+
+  useRenderLoop(useCallback(() => {
+    if (!videoRef.current) return;
+    if (!videoCanvasRef.current) return;
+    const ctx = videoCanvasRef.current.getContext('2d');
+    if (!ctx) return;
+    ctx.drawImage(videoRef.current, 0, 0);
+  }, []));
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -161,7 +170,7 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
           toggleVideoPlayback={toggleVideoPlayback}
           layers={inputLayers}
           onOutputChange={onInputChange}
-          videoRef={videoRef}
+          videoRef={videoCanvasRef}
           renderVideo
         />
 
@@ -169,7 +178,7 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
           toggleVideoPlayback={toggleVideoPlayback}
           onOutputChange={onOutputChange}
           layers={outputLayers}
-          videoRef={videoRef}
+          videoRef={videoCanvasRef}
           videoResolution={{ height: 1920, width: 1080 }}
         />
       </S.VideoContainer>
@@ -190,6 +199,7 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
           seekTo={seekTo}
         />
       </S.TimelineContainer>
+      <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />
       <video hidden ref={videoRef} width={960} height={540} src={videoUrl}></video>
     </S.Container>
   )

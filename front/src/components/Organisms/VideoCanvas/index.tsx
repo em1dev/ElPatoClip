@@ -32,7 +32,7 @@ const checkIfIsResize = (layers: Array<Layer>, clicked: Point) => {
 }
 
 export interface VideoCanvasProp {
-  videoRef: MutableRefObject<HTMLVideoElement | null>,
+  videoRef: MutableRefObject<CanvasImageSource | null>,
   videoResolution?: { width: number, height: number },
   layers: Array<Layer>,
   onOutputChange: (layerId: number, output: Source) => void,
