@@ -32,7 +32,7 @@ const secondsToReadableText = (value:number, includeMilliseconds: boolean = fals
   const seconds = secondsTotal - (minutes * 60);
   let text = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   if (includeMilliseconds){
-    text += `:${milliseconds.toString().padStart(2, '0')}`
+    text += `.${milliseconds.toString().padStart(2, '0')}`
   }
   return text;
 };

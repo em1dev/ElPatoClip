@@ -80,12 +80,11 @@ export const useFfmpeg = (
     // TODO - get from src instead
     const videoData = await downloadVideo(sourceUrl);
     const filter = generateFilter(options);
-    console.log(filter);
 
     ffmpegRef.current.FS('writeFile', 'test.mp4', videoData);
   
-    const startTimeAsText = MathUtils.secondsToReadableText(options.startTime);
-    const endTimeAsText = MathUtils.secondsToReadableText(options.endTime);
+    const startTimeAsText = MathUtils.secondsToReadableText(options.startTime, true);
+    const endTimeAsText = MathUtils.secondsToReadableText(options.endTime, true);
 
     await ffmpegRef.current.run(
       '-to', endTimeAsText, '-ss', startTimeAsText,
