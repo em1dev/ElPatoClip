@@ -13,8 +13,8 @@ const ClipModal = ({ clip }: ClipModalProps) => (
     ></iframe>
     <ClipFooterMetadata 
       title={clip.title}
-      rightTitle={'02/20/2024'}
-      subTitle={`Created by: ${clip.created_at}`}
+      rightTitle={new Date(clip.created_at).toLocaleDateString()}
+      subTitle={`Created by: ${clip.creator_name}`}
       subTitleRight={<S.Button reloadDocument to={`${location.origin}/editor/${clip.id}`}>Edit</S.Button>}
     />
   </S.Container>
