@@ -25,6 +25,10 @@ export const downloadClipHandler = async (id: string, twitchGqlApi: TwitchGqlApi
       },
     })
 
+    const contentLength = resp.headers.get('content-length')
+    if (contentLength) {
+      res.set('Content-Length', contentLength);
+    }
     res.set("Content-Type", "video/mp4")
     res.set("Accept-Ranges", "bytes")
     res.set("Connection", "keep-alive")
