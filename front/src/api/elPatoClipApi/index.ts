@@ -1,6 +1,7 @@
+import { readBlob } from "./responseReaders";
 import { ChannelSearchResponse, ClipListRequestFilters, ClipsResponse, UserDetails  } from "./types";
 
-const baseApi = 'http://localhost:3000/';
+const baseApi = import.meta.env.MODE === 'production' ?  'https://api.niv3kelpato.com/clipApi/' : 'http://localhost:3000/';
 
 const getClips = async (channelName: string, filters: ClipListRequestFilters) => {
   const resp = await fetch(`${baseApi}channel/${channelName}/clips`, {
@@ -18,9 +19,9 @@ const getChannelDetails = async (channelId: string) => {
   return await resp.json() as UserDetails;
 }
 
-const getClip = async (clipId: string) => {
+const getClip = async (clipId: string, onProgress: (progress: number, total:number) => void) => {
   const resp = await fetch(`${baseApi}clip/${clipId}`);
-  return resp.blob();
+  return await readBlob(resp, onProgress);
 }
 
 const searchUser = async (searchString: string) => {

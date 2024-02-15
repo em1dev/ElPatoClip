@@ -8,16 +8,16 @@ export const Loading = () => (
 
 const Spin = keyframes`
   0% {
-    transform: rotate(0deg) scale(1) translate(0,0);
+    transform: rotate(0deg) scale(1);
   }
   25% {
-    transform: rotate(180deg) scale(1.2) translate(20px, 0);
+    transform: rotate(180deg) scale(1.2);
   }
   75% {
-    transform: rotate(-180deg) scale(1) translate(-20px, 0);
+    transform: rotate(-180deg) scale(1);
   }
   100% {
-    transform: rotate(0deg) scale(1) translate(0,0);
+    transform: rotate(0deg) scale(1);
   }
 `;
 
