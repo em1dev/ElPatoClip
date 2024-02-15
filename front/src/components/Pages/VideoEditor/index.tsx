@@ -146,12 +146,17 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
     setIsExporting(true);
   }
 
+  const onCloseModalIsClicked = () => {
+    setIsExporting(false);
+  }
+
   return (
     <S.Container>
 
       {isExporting && (
         <S.ModalOverlay>
           <ExportModal 
+            closeModal={onCloseModalIsClicked}
             videoUrl={videoUrl}
             layers={layers}
             endTime={cropTime.endTime}

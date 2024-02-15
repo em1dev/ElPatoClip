@@ -33,3 +33,9 @@ export const LogContainer = styled.div`
   white-space: pre-line;
   overflow: auto;
 `;
+
+export const LogButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

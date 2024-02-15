@@ -5,6 +5,7 @@ export const Container = styled.div`
   flex-direction: column;
   max-width: 1500px;
   margin: 5em auto;
+  padding: 1.5em;
 `;
 
 export const VideoContainer = styled.div`

@@ -1,24 +1,27 @@
 import * as S from './styles';
 import { useFfmpeg } from '../../../../ffmpeg';
 import { Layer } from '../../../../types';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '../../../Atoms/Button';
 
 export interface ExportModalProps {
   videoUrl: string,
   startTime: number,
   endTime: number,
-  layers: Array<Layer>
+  layers: Array<Layer>,
+  closeModal: () => void,
 }
 
 export const ExportModal = ({
   endTime,
   layers,
   startTime,
-  videoUrl
+  videoUrl,
+  closeModal
 }: ExportModalProps) => {
-  const [logs, setLogs] = useState<string>('');
-  const { editVideo, wasmLoaded } = useFfmpeg((logs) => setLogs((prev) => prev + logs + '\n'));
+  const logContainerRef = useRef<HTMLDivElement>(null);
+  const [logs, setLogs] = useState<Array<string>>([]);
+  const { editVideo, wasmLoaded, cancel } = useFfmpeg((log) => setLogs((prev) => [...prev, log]));
   const [generatedUrl, setGeneratedUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,22 +46,44 @@ export const ExportModal = ({
     document.body.removeChild(a);
   }
 
+  const onCancel = () => {
+    cancel();
+    // delay closing of modal to avoid memory unallocated access
+    setTimeout(() => {
+      closeModal();
+    }, 100)
+  }
+
+  useEffect(() => {
+    if (!logContainerRef.current) return;
+    logContainerRef.current.scrollTo({ behavior: 'smooth', top: 1000000000 });
+  }, [logs]);
+
   return (
     <S.Container>
       {generatedUrl && (
+        <>
           <S.VideoContainer>
             <video controls src={generatedUrl} />
           </S.VideoContainer>
+          <div>
+            <Button theme='light' onClick={onDownloadClick}>Download</Button>
+            <Button theme='dark' onClick={closeModal}>Close</Button>
+          </div>
+        </>
       )}
       {!generatedUrl && (
-        <S.LogContainer>
-        {logs}
-        </S.LogContainer>
+        <>
+          <S.LogContainer ref={logContainerRef}>
+            {logs.map((log,i) => (
+              <div key={i}>{log}</div>
+            ))}
+          </S.LogContainer>
+          <S.LogButtonContainer>
+            <Button theme='light' onClick={onCancel}>Cancel</Button>
+          </S.LogButtonContainer>
+        </>
       )}
-
-      <div>
-        <Button theme='light' onClick={onDownloadClick} disabled={!generatedUrl}>Download</Button>
-      </div>
     </S.Container>
   )
 };
