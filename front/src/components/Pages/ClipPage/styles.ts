@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import { keyframes, styled } from "styled-components";
 
 export const Page = styled.div`
   max-width: 90em;
@@ -17,6 +17,15 @@ export const Container = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 `
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
 export const ModalOverlay = styled.div`
   z-index: 2;
   position: fixed;
@@ -32,6 +41,7 @@ export const ModalOverlay = styled.div`
     max-width: 80%;
     max-height: 80%;
   }
+  animation: ${fadeIn} 0.2s ease-in-out;
 `;
 
 export const LoadingContainer = styled.div`
@@ -62,6 +72,11 @@ export const ProfileDetails = styled.div`
 export const FilterContainer = styled.div`
   padding: 0.5em 0;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5em;
   align-items: center;
+`;
+
+export const InfoLabel = styled.div`
+  text-align: center;
 `;

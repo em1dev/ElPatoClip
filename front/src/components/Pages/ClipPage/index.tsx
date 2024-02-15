@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { Loading } from '../../Atoms/Loading';
 import { useOnIntersection } from '../../../hooks/useOnIntersection';
 import { Button } from '../../Atoms/Button';
+import { recentChannelsStore } from '../../../store/recentChannelsStore';
 
 type ClipFilter = 'all time' | '24 hours' | 'last 7 days';
 
@@ -31,12 +32,13 @@ const generateFilter = (selectedFilter: ClipFilter) => {
   return filter;
 };
 
+const ITEMS_PER_PAGE = 30;
+
 const ClipPage = () => {
   const [selectedFilter, setSelectedFilter] = useState<ClipFilter>('all time');
   const { channelId } = useParams<{ channelId:string }>();
   const [channelDetails, setChannelDetails] = useState<UserDetails | null>(null);
 
-  const loaderTriggerRef = useRef<HTMLDivElement>(null);
   const modalContainerRef = useRef<HTMLDivElement>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -45,17 +47,30 @@ const ClipPage = () => {
 
   const selectedClip = clips?.data.find(clip => clip.id === selectedClipId);
 
-  const loadData = useCallback(async (cursor?: string, startDate?: string) => {
+  useEffect(() => {
+    (async () => {
+      if (!channelId) return;
+      const userDetailsResponse = await ElPatoApi.getChannelDetails(channelId);
+      setChannelDetails(userDetailsResponse);
+
+      recentChannelsStore.store({
+        id: userDetailsResponse.id,
+        displayName: userDetailsResponse.display_name,
+        profileImg: userDetailsResponse.profile_image_url,
+      });
+    })();
+  }, [channelId]);
+
+  const loadPage = useCallback(async (cursor?: string, startDate?: string) => {
     if (!channelId) return;
     setIsLoading(true);
-    const userDetailsResponse = await ElPatoApi.getChannelDetails(channelId);
-    setChannelDetails(userDetailsResponse);
 
     const resp = await ElPatoApi.getClips(channelId, {
-      amount: 30,
+      amount: ITEMS_PER_PAGE,
       afterCursor: cursor,
       startedAt: startDate
     });
+
     setClips((prev) => ({
       data: [...prev?.data ?? [], ...resp.data],
       pagination: resp.pagination,
@@ -64,16 +79,21 @@ const ClipPage = () => {
   }, [channelId]);
 
   useEffect(() => {
-    setClips(null);
-  }, [selectedFilter]);
+    (async () => {
+      setClips(null);
+      const startDate = generateFilter(selectedFilter).startDate;
+      await loadPage(undefined, startDate);
+    })();
+  }, [loadPage, selectedFilter]);
 
-  useOnIntersection(loaderTriggerRef, useCallback(() => {
+  const loaderTriggerRef = useOnIntersection<HTMLButtonElement>(useCallback(() => {
+    if (isLoading) return;
     if (!clips || clips.pagination.cursor) {
       const startDate = generateFilter(selectedFilter).startDate;
-      loadData(clips?.pagination.cursor, startDate);
+      loadPage(clips?.pagination.cursor, startDate);
     }
     // no more to load
-  }, [clips, loadData, selectedFilter]));
+  }, [clips, loadPage, selectedFilter, isLoading]));
 
   useEffect(() => {
     const el = modalContainerRef.current;
@@ -123,11 +143,16 @@ const ClipPage = () => {
     )}
 
     <S.Container>
-      {clips?.data.map((clip) => (
-          <ClipEl key={clip.id} clip={clip} onClick={() => setSelectedClipId(clip.id)} />
+      {clips?.data.map((clip, index) => (
+          <ClipEl 
+            ref={(index === clips.data.length - 1) ? loaderTriggerRef : undefined} 
+            key={clip.id} clip={clip} onClick={() => setSelectedClipId(clip.id)} 
+          />
       ))}
 
-      <div ref={loaderTriggerRef}></div>
+      {clips?.data.length === 0 && (
+        <S.InfoLabel>No clips where found</S.InfoLabel>
+      )}
 
       {isLoading && (
         <S.LoadingContainer>

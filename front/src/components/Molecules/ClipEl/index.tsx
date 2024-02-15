@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { MathUtils } from '../../../Utils/MathUtils';
 import { Clip } from '../../../api/elPatoClipApi/types';
 import { Badge } from '../../Atoms/Badge';
@@ -9,8 +10,8 @@ export interface ClipProps {
   onClick: () => void,
 }
 
-const ClipEl = ({ clip, onClick }: ClipProps) => (
-  <S.Container onClick={onClick}>
+const ClipEl = forwardRef<HTMLButtonElement, ClipProps>(({ clip, onClick }: ClipProps, ref) => (
+  <S.Container ref={ref} onClick={onClick}>
     <S.EmbedContainer>
       <Badge>{MathUtils.secondsToReadableText(clip.duration)}</Badge>
         <img alt={`clip ${clip.title}`} src={clip.thumbnail_url}></img>
@@ -23,6 +24,6 @@ const ClipEl = ({ clip, onClick }: ClipProps) => (
       subTitle={`Clipped by: ${clip.creator_name}`}
     />
   </S.Container>
-);
+));
 
 export default ClipEl;
