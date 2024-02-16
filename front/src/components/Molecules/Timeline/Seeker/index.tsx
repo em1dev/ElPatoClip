@@ -6,10 +6,11 @@ import { useDrag } from '../../../../hooks/useDrag';
 export interface SeekerProps {
   containerRef: React.RefObject<HTMLDivElement | null>,
   seekTo: (value: number) => void,
-  currentTime: number
+  currentTime: number,
+  shouldAnimate: boolean,
 }
 
-export const Seeker = ({ containerRef, seekTo, currentTime }: SeekerProps) => {
+export const Seeker = ({ containerRef, seekTo, currentTime, shouldAnimate }: SeekerProps) => {
   const seekerRef = useRef<HTMLDivElement>(null);
 
   const onDrag = useCallback((e: MouseEvent) => {
@@ -31,6 +32,6 @@ export const Seeker = ({ containerRef, seekTo, currentTime }: SeekerProps) => {
   }, [currentTime]);
 
   return (
-    <S.Seeker ref={seekerRef} />
+    <S.Seeker withAnimation={shouldAnimate} ref={seekerRef} />
   )
 };

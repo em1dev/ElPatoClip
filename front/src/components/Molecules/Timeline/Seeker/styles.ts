@@ -1,6 +1,10 @@
-import { styled } from "styled-components";
+import { css, styled } from "styled-components";
 
-export const Seeker = styled.div`
+export const Seeker = styled.div<{ withAnimation: boolean }>`
+  ${({ withAnimation }) => withAnimation && css`
+    transition: left 0.3s ease-in-out;
+  `}
+
   bottom: 10px;
   left: 5em;
   position: absolute;

@@ -7,12 +7,21 @@ import { Timeline } from '../../Molecules/Timeline';
 import { VideoFooter } from '../../Organisms/VideoFooter';
 import { useRenderLoop } from '../../../hooks/useRenderLoop';
 import { ExportModal } from './ExportModal';
+import { useVideo } from './useVideo';
 
 export interface VideoEditorProps {
   videoUrl: string
 }
 
 const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
+  const [seekWithAnimation, setSeekWithAnimation] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const {
+    seekBackwards, seekForward, seekTo,
+    seekToEnd, seekToStart, setPlayback,
+    toggleMute, toggleVideoPlayback,
+    isMuted, isPlaying
+  } = useVideo(videoRef, setSeekWithAnimation);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [cropTime, setCropTime] = useState<TimeSlice>({
@@ -23,8 +32,6 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
     currentTime: number,
     totalTime: number
   }>({ currentTime: 0, totalTime: 0});
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [layers, setLayers] = useState<Array<Layer>>([{ 
     id: 0,
     borderColor: '#FF0099',
@@ -41,22 +48,6 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
   },
 ]);
 
-  useEffect(() => {
-    if (!videoRef.current) return;
-    const video = videoRef.current;
-    const onPlay = () => { setIsPlaying(true); };
-    const onStop = () => { setIsPlaying(false); };
-
-    video.addEventListener('play', onPlay);
-    video.addEventListener('ended', onStop);
-    video.addEventListener('pause', onStop);
-    return () => {
-      video.removeEventListener('play', onPlay);
-      video.removeEventListener('ended', onStop);
-      video.removeEventListener('pause', onStop);
-    }
-  }, []);
-
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
     if (!videoCanvasRef.current) return;
@@ -72,16 +63,6 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
       totalTime: videoRef.current.duration
     })
   }, []));
-
-  const toggleVideoPlayback = useCallback(() => {
-    if (!videoRef.current) return;
-  
-    if (videoRef.current.paused) {
-      videoRef.current.play()
-      return;
-    }
-    videoRef.current.pause();
-  }, [videoRef]);
 
   useEffect(() => {
     const onKeyUp = (e: KeyboardEvent) => {
@@ -121,10 +102,6 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
     ));
   }
 
-  const onPlayButtonClicked = useCallback((value: boolean) => {
-    value ? videoRef.current?.play() : videoRef.current?.pause()
-  }, []);
-
   const inputLayers: Array<Layer> = layers.map((item) => ({
     ...item,
     input: undefined,
@@ -136,11 +113,6 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
     output: item.output,
     input: item.input
   }));
-
-  const seekTo = useCallback((value: number) => {
-    if (!videoRef.current) return;
-    videoRef.current.currentTime = value;
-  }, []);
 
   const onRenderClick = () => {
     setIsExporting(true);
@@ -166,6 +138,8 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
       )}
 
       <VideoHeader
+        onMuteToggle={toggleMute}
+        isMuted={isMuted}
         onRenderClick={onRenderClick}
         currentTime={videoMetadata.currentTime}
         videoLength={videoMetadata.totalTime}
@@ -189,14 +163,15 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
       </S.VideoContainer>
       <VideoFooter 
         isPlaying={isPlaying}
-        setIsPlaying={onPlayButtonClicked}
-        onBackwardClicked={() => {}}
-        onForwardClicked={() => {}}
-        onToEndClicked={() => {}}
-        onToStartClicked={() => {}}
+        setIsPlaying={setPlayback}
+        onBackwardClicked={seekBackwards}
+        onForwardClicked={seekForward}
+        onToEndClicked={seekToEnd}
+        onToStartClicked={seekToStart}
       />
       <S.TimelineContainer>
         <Timeline 
+          seekWithAnimation={seekWithAnimation}
           setCropTime={setCropTime}
           cropTime={cropTime}
           currentTime={videoMetadata.currentTime}

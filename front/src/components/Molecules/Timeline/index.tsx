@@ -24,6 +24,7 @@ export interface TimelineProps {
   totalDuration: number,
   currentTime: number,
   seekTo: (to: number) => void,
+  seekWithAnimation: boolean,
 }
 
 export const Timeline = ({
@@ -31,6 +32,7 @@ export const Timeline = ({
   seekTo,
   cropTime,
   setCropTime,
+  seekWithAnimation,
   totalDuration = 1000,
 }: TimelineProps) => {
   const layerHandleRef = useRef<HTMLDivElement>(null);
@@ -108,7 +110,12 @@ export const Timeline = ({
 
   return (
     <S.Container ref={containerRef}>
-      <Seeker containerRef={containerRef} currentTime={currentTime} seekTo={seekTo} />
+      <Seeker 
+        shouldAnimate={seekWithAnimation}
+        containerRef={containerRef}
+        currentTime={currentTime}
+        seekTo={seekTo}
+      />
       <S.DurationContainer>
         <S.TimeLabel>00:00</S.TimeLabel>
         {timeBlock}

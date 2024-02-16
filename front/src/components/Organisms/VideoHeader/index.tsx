@@ -7,12 +7,16 @@ export interface VideoHeaderProps {
   videoLength: number,
   currentTime: number,
   onRenderClick: () => void,
+  onMuteToggle: () => void,
+  isMuted: boolean
 }
 
 export const VideoHeader = ({
   currentTime,
   videoLength,
-  onRenderClick
+  onRenderClick,
+  isMuted,
+  onMuteToggle
 }: VideoHeaderProps) => (
   <S.Container>
     <span>
@@ -21,7 +25,11 @@ export const VideoHeader = ({
 
     <S.ButtonContainer>
       <Button onClick={onRenderClick} theme='light'>Render</Button>
-      <ButtonIcon alt="to end" iconName='MingcuteVolumeFill.svg' />
+      <ButtonIcon 
+        onClick={onMuteToggle} 
+        alt="toggle mute"
+        iconName={isMuted ? 'MingcuteVolumeMuteFill.svg' : 'MingcuteVolumeFill.svg'}
+      />
       <S.CurrentTime>
         {MathUtils.secondsToReadableText(currentTime, true)}
       </S.CurrentTime>
