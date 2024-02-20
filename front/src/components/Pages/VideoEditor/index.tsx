@@ -8,6 +8,7 @@ import { VideoFooter } from '../../Organisms/VideoFooter';
 import { useRenderLoop } from '../../../hooks/useRenderLoop';
 import { ExportModal } from './ExportModal';
 import { useVideo } from './useVideo';
+import { LayerEditor } from './LayerEditor';
 
 export interface VideoEditorProps {
   videoUrl: string
@@ -38,6 +39,7 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
     zIndex: 0,
     input: { rect: { x: 0, y: 0, width: 1080 / 2, height: 1920 / 2 } },
     output: { rect: { x: 0, y: 0, width: 1080, height: 1920} },
+    locked: false,
   },
   {
     id: 1,
@@ -45,6 +47,7 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
     zIndex: 1,
     input: { rect: { x: 0, y: 0, width: 1920 / 2, height: 1080 / 2 } },
     output: { rect: { x: 0, y: 0, width: 1080, height: 800 } },
+    locked: true
   },
 ]);
 
@@ -181,6 +184,7 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
       </S.TimelineContainer>
       <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />
       <video hidden ref={videoRef} width={960} height={540} src={videoUrl}></video>
+      <LayerEditor layers={layers} setLayer={setLayers} />
     </S.Container>
   )
 }

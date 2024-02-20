@@ -10,7 +10,8 @@ export interface Layer {
   zIndex: number,
   borderColor: string,
   input?: Source | undefined,
-  output: Source
+  output: Source,
+  locked: boolean
 }
 
 export interface Source {

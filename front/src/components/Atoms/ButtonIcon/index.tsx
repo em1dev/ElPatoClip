@@ -3,17 +3,17 @@ import styled from 'styled-components';
 
 export interface ButtonIconProps extends HTMLAttributes<HTMLButtonElement> {
   iconName: string,
-  alt: string
+  alt: string,
+  disabled?: boolean
 }
 
-export const ButtonIcon = ({ iconName, alt, ...props }: ButtonIconProps) => (
-  <ButtonContainer {...props}>
-    <img width={20} height={20} alt={alt} src={`/icons/${iconName}`}></img>
+export const ButtonIcon = ({ iconName, alt, disabled, ...props }: ButtonIconProps) => (
+  <ButtonContainer disabled={disabled} {...props}>
+    <img width={25} height={25} alt={alt} src={`/icons/${iconName}`}></img>
   </ButtonContainer>
 );
 
 const ButtonContainer = styled.button`
-  color: #E3E3E3;
   border: none;
   display: inline-flex;
   align-items: center;
@@ -21,9 +21,18 @@ const ButtonContainer = styled.button`
   padding: 0.5em;
   border-radius: 0.2em;
   margin: 0;
-  cursor: pointer;
   background-color: transparent;
-  &:hover {
-    background-color: #2f2f2f;
+
+  &:not(:disabled) {
+    color: #E3E3E3;
+    cursor: pointer;
+    &:hover {
+      background-color: #2f2f2f;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 `;
