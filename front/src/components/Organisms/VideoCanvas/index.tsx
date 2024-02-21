@@ -84,7 +84,7 @@ export const VideoCanvas = ({
         const clickedOnLayer = MathUtils.isInsideRect(clicked, layer.output.rect);
         if (!clickedOnLayer) return prevLayer;
         if (prevLayer === null) return layer;
-        if (layer.zIndex > prevLayer.zIndex) return prevLayer;
+        if (layer.zIndex < prevLayer.zIndex) return prevLayer;
         return layer;
       }, null as Layer | null);
 
@@ -204,22 +204,23 @@ export const VideoCanvas = ({
         ) return;
 
       ctx.reset()
+      const layersSorted = layers.sort((a, b) => a.zIndex - b.zIndex);
       if (renderVideo) {
         ctx.drawImage(videoEl, 0,0, videoResolution.width,  videoResolution.height);
         ctx.fillStyle = 'rgba(0,0,0,0.7)';
         ctx.fillRect(0,0, videoResolution.width, videoResolution.height);
 
-        for (const { output, borderColor, locked } of layers) {
-          CanvasUtils.drawImageFromSource(ctx, videoEl, output, output);
+        for (const { output, borderColor, locked, filter } of layersSorted) {
           if (locked) continue;
+          CanvasUtils.drawImageFromSource(ctx, videoEl, output, output, filter);
           CanvasUtils.renderCropArea(ctx, output.rect, borderColor);
         }
         return;
       }
 
-      for (const { output, input, borderColor, locked } of layers) {
+      for (const { output, input, borderColor, locked, filter } of layersSorted) {
         if (!input) return;
-        CanvasUtils.drawImageFromSource(ctx, videoEl, input, output);
+        CanvasUtils.drawImageFromSource(ctx, videoEl, input, output, filter);
         if (locked) continue;
         CanvasUtils.renderCropArea(ctx, output.rect, borderColor);
       }

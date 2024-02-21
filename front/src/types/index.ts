@@ -5,13 +5,19 @@ export type Point = { x: number, y: number };
 
 export interface Rect extends Point, Size {}
 
+export type LayerFilter = 'blur' | 'none';
+
+export type AspectRatio = 'potrait' | 'landscape' | 'free' | 'locked';
+
 export interface Layer {
   id: number,
   zIndex: number,
   borderColor: string,
   input?: Source | undefined,
   output: Source,
-  locked: boolean
+  locked: boolean,
+  filter: LayerFilter,
+  aspect: AspectRatio
 }
 
 export interface Source {

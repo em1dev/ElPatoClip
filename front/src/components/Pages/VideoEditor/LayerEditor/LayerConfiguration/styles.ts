@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
 
 export const Container = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   padding: 1em;
@@ -8,6 +9,16 @@ export const Container = styled.div`
   background-color: #1A1A1A;
   border-radius: 0.5em;
   gap: 0.5em;
+`;
+
+export const CloseButton = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  img {
+    width: 15px;
+    height: 15px;
+  }
 `;
 
 export const LeftContainer = styled.div`

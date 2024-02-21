@@ -1,19 +1,20 @@
 import { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export interface ButtonIconProps extends HTMLAttributes<HTMLButtonElement> {
   iconName: string,
   alt: string,
-  disabled?: boolean
+  disabled?: boolean,
+  selected?: boolean,
 }
 
-export const ButtonIcon = ({ iconName, alt, disabled, ...props }: ButtonIconProps) => (
-  <ButtonContainer disabled={disabled} {...props}>
+export const ButtonIcon = ({ iconName, alt, disabled, selected, ...props }: ButtonIconProps) => (
+  <ButtonContainer selected={selected} disabled={disabled} {...props}>
     <img width={25} height={25} alt={alt} src={`/icons/${iconName}`}></img>
   </ButtonContainer>
 );
 
-const ButtonContainer = styled.button`
+const ButtonContainer = styled.button<{ selected?: boolean }>`
   border: none;
   display: inline-flex;
   align-items: center;
@@ -35,4 +36,11 @@ const ButtonContainer = styled.button`
     opacity: 0.3;
     cursor: not-allowed;
   }
+
+  ${({selected}) => selected && css`
+    background-color: #CDCDCD;
+    &:not(:disabled):hover {
+      background-color: #e0e0e0;
+    }
+  `}
 `;

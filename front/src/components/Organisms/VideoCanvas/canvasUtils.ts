@@ -1,5 +1,5 @@
 import { MathUtils } from "../../../Utils/MathUtils";
-import { Rect, Source } from "../../../types";
+import { LayerFilter, Rect, Source } from "../../../types";
 
 export const RESIZE_HANLDER_RADIUS = 15;
 
@@ -31,8 +31,17 @@ const renderCropArea = (ctx: CanvasRenderingContext2D, rect: Rect, color: string
 
 
 
-const drawImageFromSource = (ctx: CanvasRenderingContext2D, source: CanvasImageSource, input:Source, output: Source) => {
+const drawImageFromSource = (ctx: CanvasRenderingContext2D, source: CanvasImageSource, input:Source, output: Source, filter: LayerFilter) => {
   const { height, width } = MathUtils.calcualtedInputAspectRatioBasednOutput(input.rect, output.rect);
+
+  switch (filter) {
+    case 'blur':
+      ctx.filter = 'blur(15px)';
+      break;
+    case 'none':
+      ctx.filter = 'none';
+      break;
+  }
 
   ctx.drawImage(
     source,
@@ -45,6 +54,8 @@ const drawImageFromSource = (ctx: CanvasRenderingContext2D, source: CanvasImageS
     output.rect.width,
     output.rect.height,
   );
+
+  ctx.filter = "none";
 }
 
 

@@ -1,7 +1,7 @@
 import { css, styled } from "styled-components";
 
-export const Seeker = styled.div<{ withAnimation: boolean }>`
-  ${({ withAnimation }) => withAnimation && css`
+export const Seeker = styled.div<{ $animate?: boolean }>`
+  ${({ $animate }) => $animate && css`
     transition: left 0.3s ease-in-out;
   `}
 

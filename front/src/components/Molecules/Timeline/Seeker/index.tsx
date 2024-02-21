@@ -32,6 +32,6 @@ export const Seeker = ({ containerRef, seekTo, currentTime, shouldAnimate }: See
   }, [currentTime]);
 
   return (
-    <S.Seeker withAnimation={shouldAnimate} ref={seekerRef} />
+    <S.Seeker $animate={shouldAnimate} ref={seekerRef} />
   )
 };

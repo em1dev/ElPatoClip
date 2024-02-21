@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useCallback } from "react"
 import { Layer } from "../../../../types"
 import { LayerConfiguration } from "./LayerConfiguration"
 import { ButtonIcon } from '../../../Atoms/ButtonIcon';
+import { addNewLayer } from '../../../../Utils/LayerGenerator';
 
 export interface LayerEditorProps {
   layers: Array<Layer>,
@@ -19,6 +20,10 @@ export const LayerEditor = ({
       ...prev.filter(f => f.id !== layer.id),
       layer
     ]));
+  }, [setLayer]);
+
+  const onNewLayerPressed = useCallback(() => {
+    setLayer(addNewLayer);
   }, [setLayer]);
 
   const onLayerIndexIncrease = useCallback((layer: Layer) => {
@@ -59,6 +64,7 @@ export const LayerEditor = ({
           .sort((a, b) => b.zIndex - a.zIndex)
           .map(layer => (
             <LayerConfiguration
+              onDelete={() => setLayer(prev => prev.filter(l => l.id !== layer.id))}
               key={layer.id}
               layer={layer}
               onChange={onLayerChange}
@@ -73,7 +79,7 @@ export const LayerEditor = ({
             />
           ))
       }
-    <ButtonIcon alt='add layer' iconName='MingcuteAddCircleFill.svg' />
+      <ButtonIcon onClick={onNewLayerPressed} alt='add layer' iconName='MingcuteAddCircleFill.svg' />
     </S.Container>
   )
 
