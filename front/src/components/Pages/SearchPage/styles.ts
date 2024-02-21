@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Page = styled.div`
   display: flex;
   flex-direction: column;
-  padding-top: 20%; 
+  padding-top: 8em; 
   width: 40ch;
   margin: auto;
   gap: 1em;
