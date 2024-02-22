@@ -3,7 +3,7 @@ import * as S from '../styles';
 export const TosPage = () => (
   <S.Container>
     <h1>Terms of Service</h1>
-    <i>Last updated 20/02/2024</i>
+    <i>Last updated 22/02/2024</i>
     <p>
       These legal terms constitute a legally binding agreement made between you, whether personally or
       on behalf of an entity, and <b>El Pato Clip</b> concerning your access to and use of the website.
@@ -25,8 +25,8 @@ export const TosPage = () => (
     <ul>
       <li>
         Be responsible for what clips you create so that any clip created
-        does not contain content which is ilegal, hateful, harmful, defamatory,
-        obscene, bullying, abusive, discriminatory, threatening to any person or group,
+        does not contain content which is illegal, hateful, harmful, defamatory,
+        obscene, bullying, abusive, discriminatory, threatening to any person or group and
         sexually explicit.
       </li>
       <li>
@@ -34,10 +34,10 @@ export const TosPage = () => (
         the website or the underlying apis.
       </li>
       <li>
-        Not Circumvent, disable or interfere with security features of the website.
+        Not circumvent, disable or interfere with security features of the website.
       </li>
       <li>
-        Not Use any information obtained from the website to harass, abuse or harm another person.
+        Not use any information obtained from the website to harass, abuse or harm another person.
       </li>
     </ul>
   </S.Container>
