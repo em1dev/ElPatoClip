@@ -4,7 +4,7 @@ const SHORT_SKIP_IN_SECONDS = 3;
 
 export const useVideo = (
   videoRef: React.RefObject<HTMLVideoElement>,
-  setSeekWithAnimation: (value: boolean) => void
+  setSeekWithAnimation?: (value: boolean) => void
   ) => {
   const animationTimeoutId = useRef<null | number>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -47,7 +47,6 @@ export const useVideo = (
   }, [videoRef]);
 
   const seekTo = useCallback((value: number, animate: boolean = false) => {
-    console.log(value);
     if (!videoRef.current) return;
 
     videoRef.current.currentTime = Math.min(value, videoRef.current.duration - 0.1);
@@ -57,9 +56,9 @@ export const useVideo = (
     if (animationTimeoutId.current) {
       clearInterval(animationTimeoutId.current);
     }
-    setSeekWithAnimation(true);
+    setSeekWithAnimation && setSeekWithAnimation(true);
     const timeoutId = setTimeout(() => {
-      setSeekWithAnimation(false);
+      setSeekWithAnimation && setSeekWithAnimation(false);
       animationTimeoutId.current = null;
     }, 300);
     animationTimeoutId.current = timeoutId;

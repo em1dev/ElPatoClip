@@ -1,21 +1,32 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import * as S from './styles';
-import { Layer, Source, TimeSlice } from '../../../types';
-import { VideoCanvas } from '../../Organisms/VideoCanvas';
-import { VideoHeader } from '../../Organisms/VideoHeader';
-import { Timeline } from '../../Molecules/Timeline';
-import { VideoFooter } from '../../Organisms/VideoFooter';
-import { useRenderLoop } from '../../../hooks/useRenderLoop';
-import { ExportModal } from './ExportModal';
-import { useVideo } from './useVideo';
+import { Layer, Source, TimeSlice } from '../../../../types';
+import { VideoCanvas } from '../../../Organisms/VideoCanvas';
+import { VideoHeader } from '../../../Organisms/VideoHeader';
+import { Timeline } from '../../../Molecules/Timeline';
+import { VideoFooter } from '../../../Organisms/VideoFooter';
+import { useRenderLoop } from '../../../../hooks/useRenderLoop';
+import { ExportModal } from '../ExportModal';
+import { useVideo } from '../useVideo';
 import { LayerEditor } from './LayerEditor';
-import { defaultLayers } from '../../../Utils/LayerGenerator';
 
 export interface VideoEditorProps {
-  videoUrl: string
+  videoUrl: string,
+  layers: Array<Layer>,
+  setLayers: Dispatch<SetStateAction<Array<Layer>>>,
+  cropTime: TimeSlice,
+  setCropTime: (value: TimeSlice) => void,
+  onExport: () => void,
 }
 
-const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
+const VideoEditor = ({
+  videoUrl,
+  cropTime,
+  layers,
+  setCropTime,
+  setLayers,
+  onExport
+}: VideoEditorProps) => {
   const [seekWithAnimation, setSeekWithAnimation] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
@@ -26,15 +37,11 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
   } = useVideo(videoRef, setSeekWithAnimation);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
-  const [cropTime, setCropTime] = useState<TimeSlice>({
-    startTime: 0,
-    endTime: 5
-  })
+
   const [videoMetadata, setVideoMetadata] = useState<{
     currentTime: number,
     totalTime: number
   }>({ currentTime: 0, totalTime: 0});
-  const [layers, setLayers] = useState<Array<Layer>>(defaultLayers);
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -103,9 +110,11 @@ const VideoEditor = ({ videoUrl }: VideoEditorProps) => {
   }));
 
   const onRenderClick = () => {
-    setIsExporting(true);
+    onExport()
+    //setIsExporting(true);
   }
 
+  // TODO - remove modal
   const onCloseModalIsClicked = () => {
     setIsExporting(false);
   }

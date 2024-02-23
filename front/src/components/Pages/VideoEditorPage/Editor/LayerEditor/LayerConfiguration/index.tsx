@@ -1,8 +1,8 @@
 import * as S from'./styles';
 import { ChangeEvent, useCallback } from "react"
-import { AspectRatio, Layer, LayerFilter } from "../../../../../types"
-import { Select } from '../../../../Atoms/Select';
-import { ButtonIcon } from '../../../../Atoms/ButtonIcon';
+import { AspectRatio, Layer, LayerFilter } from "../../../../../../types"
+import { Select } from '../../../../../Atoms/Select';
+import { ButtonIcon } from '../../../../../Atoms/ButtonIcon';
 
 export interface LayerConfigurationProps {
   layer: Layer,

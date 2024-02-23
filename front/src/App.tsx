@@ -2,10 +2,10 @@ import './App.css'
 import ClipPage from './components/Pages/ClipPage';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SearchPage from './components/Pages/SearchPage';
-import { TwitchVideoEditor } from './components/Pages/VideoEditor/TwitchVideoEditor';
 import MainTemplate from './components/Templates/MainTemplate';
 import { TosPage } from './components/Pages/InfoPages/TosPage';
 import { PrivacyPage } from './components/Pages/InfoPages/PrivacyPage';
+import { VideoEditorPage } from './components/Pages/VideoEditorPage';
 
 const router = createBrowserRouter([
   {
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
     path: '/editor/:clipId',
     element:
       <MainTemplate withHeader>
-        <TwitchVideoEditor />
+        <VideoEditorPage />
       </MainTemplate>
   },
   {

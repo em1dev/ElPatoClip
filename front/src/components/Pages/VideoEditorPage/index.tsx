@@ -1,9 +1,12 @@
 import * as S from './styles';
 import { useEffect, useState } from "react";
-import VideoEditor from ".";
+import VideoEditor from "./Editor";
 import { useParams } from "react-router-dom";
 import { ElPatoApi } from "../../../api/elPatoClipApi";
 import { Loading } from "../../Atoms/Loading";
+import { Layer, TimeSlice } from '../../../types';
+import { defaultLayers } from '../../../Utils/LayerGenerator';
+import { VideoExporter } from './VideoExporter';
 
 const bytesToRedable = (amount: number) => {
   if (amount > 1000000) {
@@ -15,7 +18,12 @@ const bytesToRedable = (amount: number) => {
   }
 }
 
-export const TwitchVideoEditor = () => {
+export const VideoEditorPage = () => {
+  const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [layers, setLayers] = useState<Array<Layer>>(defaultLayers);
+  // todo - get default crop time from response
+  const [cropTime, setCropTime] = useState<TimeSlice>({ startTime: 0, endTime: 10 });
+
   const { clipId } = useParams<{ clipId: string }>(); 
   const [loading, setIsLoading] = useState<boolean>(false);
   const [urlBlob, setUrlBlob] = useState<string | null>(null);
@@ -28,6 +36,7 @@ export const TwitchVideoEditor = () => {
     if (!clipId) return;
     const onClipDownload = async (clipId: string) => {
       setIsLoading(true);
+      // get clip metadata
       const blob = await ElPatoApi.getClip(clipId, (amount, total) => {
 
         const totalStr = total === 0 ? '?' : bytesToRedable(total);
@@ -54,9 +63,26 @@ export const TwitchVideoEditor = () => {
     </S.LoadingVideoContainer>
   );
 
+  if (isExporting && urlBlob) {
+    return (
+      <VideoExporter
+        videoUrl={urlBlob}
+        layers={layers}
+        timeSlice={cropTime}
+      />
+    )
+  }
+
   if (urlBlob) {
     return (
-        <VideoEditor videoUrl={urlBlob} />
+        <VideoEditor 
+          videoUrl={urlBlob}
+          cropTime={cropTime}
+          layers={layers}
+          setCropTime={setCropTime}
+          setLayers={setLayers}
+          onExport={() => setIsExporting(true)}
+        />
     );
   }
 };

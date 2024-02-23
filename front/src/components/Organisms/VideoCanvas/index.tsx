@@ -1,4 +1,4 @@
-import { useRef, MutableRefObject, useState, useCallback } from 'react';
+import { useRef, MutableRefObject, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import * as S from './styles';
 import { Layer, Point, Source } from '../../../types';
 import { MathUtils } from '../../../Utils/MathUtils';
@@ -36,19 +36,19 @@ export interface VideoCanvasProp {
   videoRef: MutableRefObject<CanvasImageSource | null>,
   videoResolution?: { width: number, height: number },
   layers: Array<Layer>,
-  onOutputChange: (layerId: number, output: Source) => void,
+  onOutputChange?: (layerId: number, output: Source) => void,
   toggleVideoPlayback: () => void,
   renderVideo?: boolean
 }
 
-export const VideoCanvas = ({
+export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>(({
   onOutputChange,
   layers,
   videoRef,
   videoResolution = { width: 1920, height: 1080},
   toggleVideoPlayback,
   renderVideo
-}: VideoCanvasProp) => {
+}, externalRef) => {
   const [interacted, setInteracted] = useState<{
     clickedCorner?: string,
     interactionMode: 'drag' | 'resize',
@@ -59,7 +59,12 @@ export const VideoCanvas = ({
   const [hasMoved, setHasMoved] = useState<boolean>(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(externalRef, () => {
+    return canvasRef.current
+  });
+
   useEventListener<HTMLCanvasElement, MouseEvent>(canvasRef, 'mousedown', (e) => {
+    if (!onOutputChange) return;
     setHasMoved(false);
     const canvas = canvasRef.current;
     if (!videoRef.current) return;
@@ -108,6 +113,7 @@ export const VideoCanvas = ({
   });
 
   useEventListener<Window, MouseEvent>(window, 'mousemove', (e) => {
+    if (!onOutputChange) return;
     setHasMoved(true);
     if (!canvasRef.current) return;
     if (!interacted) return;
@@ -187,6 +193,7 @@ export const VideoCanvas = ({
   })
 
   useEventListener(window, 'mouseup', () => {
+    if (!onOutputChange) return;
     setHasMoved(false);
     setInteracted(null);
     if (hasMoved) return;
@@ -235,4 +242,4 @@ export const VideoCanvas = ({
       />
     </S.CanvasContainer>
   )
-}
+})
