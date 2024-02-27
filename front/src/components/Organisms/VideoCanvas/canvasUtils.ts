@@ -1,9 +1,10 @@
 import { MathUtils } from "../../../Utils/MathUtils";
-import { LayerFilter, Rect, Source } from "../../../types";
+import { LayerFilter, LayerShape, Rect, Source } from "../../../types";
 
 export const RESIZE_HANLDER_RADIUS = 15;
 
 const renderCropArea = (ctx: CanvasRenderingContext2D, rect: Rect, color: string) => {
+
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
   ctx.lineWidth = 5;
@@ -29,9 +30,15 @@ const renderCropArea = (ctx: CanvasRenderingContext2D, rect: Rect, color: string
   ctx.fill();
 }
 
+const drawImageFromSource = (
+  ctx: CanvasRenderingContext2D, 
+  source: CanvasImageSource,
+  input:Source,
+  output: Source,
+  filter: LayerFilter,
+  shape: LayerShape) => {
+  ctx.save();
 
-
-const drawImageFromSource = (ctx: CanvasRenderingContext2D, source: CanvasImageSource, input:Source, output: Source, filter: LayerFilter) => {
   const { height, width } = MathUtils.calcualtedInputAspectRatioBasednOutput(input.rect, output.rect);
 
   switch (filter) {
@@ -41,6 +48,23 @@ const drawImageFromSource = (ctx: CanvasRenderingContext2D, source: CanvasImageS
     case 'none':
       ctx.filter = 'none';
       break;
+  }
+  switch (shape) {
+    case 'circle':
+      ctx.beginPath();
+      ctx.arc(
+        output.rect.x + output.rect.width / 2, 
+        output.rect.y + output.rect.height / 2,
+        Math.min(output.rect.width, output.rect.height) / 2,
+        0, 2 * Math.PI);
+      ctx.closePath();
+      ctx.clip();
+      break;
+    case 'round-rectangle':
+      ctx.beginPath();
+      ctx.roundRect(output.rect.x, output.rect.y, output.rect.width, output.rect.height, 25);
+      ctx.closePath();
+      ctx.clip();
   }
 
   ctx.drawImage(
@@ -54,10 +78,8 @@ const drawImageFromSource = (ctx: CanvasRenderingContext2D, source: CanvasImageS
     output.rect.width,
     output.rect.height,
   );
-
-  ctx.filter = "none";
+  ctx.restore();
 }
-
 
 export const CanvasUtils = {
   drawImageFromSource,

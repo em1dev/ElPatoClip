@@ -5,6 +5,8 @@ export type Point = { x: number, y: number };
 
 export interface Rect extends Point, Size {}
 
+export type LayerShape = 'circle' | 'round-rectangle' | 'rectangle';
+
 export type LayerFilter = 'blur' | 'none';
 
 export type AspectRatio = 'potrait' | 'landscape' | 'free' | 'locked';
@@ -17,7 +19,8 @@ export interface Layer {
   output: Source,
   locked: boolean,
   filter: LayerFilter,
-  aspect: AspectRatio
+  aspect: AspectRatio,
+  shape: LayerShape
 }
 
 export interface Source {

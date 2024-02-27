@@ -1,6 +1,6 @@
 import * as S from'./styles';
 import { ChangeEvent, useCallback } from "react"
-import { AspectRatio, Layer, LayerFilter } from "../../../../../../types"
+import { AspectRatio, Layer, LayerFilter, LayerShape } from "../../../../../../types"
 import { Select } from '../../../../../Atoms/Select';
 import { ButtonIcon } from '../../../../../Atoms/ButtonIcon';
 
@@ -50,6 +50,14 @@ export const LayerConfiguration = ({
     });
   }, [onChange, layer]);
 
+  const onShapeChange = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
+    const shape = e.target.value as LayerShape; 
+    onChange({
+      ...layer,
+      shape
+    })
+  }, [layer, onChange]);
+
   return (
     <S.Container>
       <S.CloseButton>
@@ -89,6 +97,13 @@ export const LayerConfiguration = ({
         <Select value={layer.filter} onChange={onFilterChange}>
           <option value='blur'>Blur</option>
           <option value='none'>Normal</option>
+        </Select>
+
+        <label>Shape</label>
+        <Select value={layer.shape} onChange={onShapeChange}>
+          <option value='rectangle'>Rectangle</option>
+          <option value='round-rectangle'>Round Rectangle</option>
+          <option value='circle'>Circle</option>
         </Select>
       </S.OptionsContainer>
 

@@ -19,6 +19,7 @@ export const addNewLayer = (layers: Array<Layer>) => {
     locked: false,
     filter: 'none',
     aspect: 'free',
+    shape: 'rectangle',
   }
   return [...layers, newLayer];
 };
@@ -27,6 +28,7 @@ const landscapeWithCamTemplate: Array<Layer> = [
     {
         "id": 0,
         "borderColor": "#FF0099",
+        "shape": "circle",
         "zIndex": 2,
         "input": {
             "rect": {
@@ -50,6 +52,7 @@ const landscapeWithCamTemplate: Array<Layer> = [
     },
     {
         "id": 2,
+        "shape": "round-rectangle",
         "borderColor": "#0066FF",
         "zIndex": 1,
         "input": {
@@ -74,6 +77,7 @@ const landscapeWithCamTemplate: Array<Layer> = [
     },
     {
         "id": 1,
+        "shape": "rectangle",
         "borderColor": "#eeff00",
         "zIndex": 0,
         "input": {

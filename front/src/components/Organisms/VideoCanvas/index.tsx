@@ -209,28 +209,32 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
         !canvasRef.current ||
         !videoEl
         ) return;
+      ctx.reset();
+      ctx.save();
 
-      ctx.reset()
       const layersSorted = layers.sort((a, b) => a.zIndex - b.zIndex);
       if (renderVideo) {
         ctx.drawImage(videoEl, 0,0, videoResolution.width,  videoResolution.height);
         ctx.fillStyle = 'rgba(0,0,0,0.7)';
         ctx.fillRect(0,0, videoResolution.width, videoResolution.height);
+        ctx.restore();
+        ctx.save();
 
-        for (const { output, borderColor, locked, filter } of layersSorted) {
+        for (const { output, borderColor, locked, filter, shape } of layersSorted) {
           if (locked) continue;
-          CanvasUtils.drawImageFromSource(ctx, videoEl, output, output, filter);
+          CanvasUtils.drawImageFromSource(ctx, videoEl, output, output, filter, shape);
           CanvasUtils.renderCropArea(ctx, output.rect, borderColor);
         }
         return;
       }
 
-      for (const { output, input, borderColor, locked, filter } of layersSorted) {
+      for (const { output, input, borderColor, locked, filter, shape } of layersSorted) {
         if (!input) return;
-        CanvasUtils.drawImageFromSource(ctx, videoEl, input, output, filter);
+        CanvasUtils.drawImageFromSource(ctx, videoEl, input, output, filter, shape);
         if (locked) continue;
         CanvasUtils.renderCropArea(ctx, output.rect, borderColor);
       }
+      ctx.restore();
   }, [layers, renderVideo, videoRef, videoResolution]));
 
   return (
