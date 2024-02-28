@@ -24,7 +24,7 @@ export const VideoExporter = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const {
     seekTo, setPlayback, toggleVideoPlayback,
-  } = useVideo(videoRef);
+  } = useVideo(videoRef, timeSlice);
 
   const { outputUrl, record } = useCanvasRecording(outputCanvasRef, videoRef);
 
