@@ -27,4 +27,6 @@ export const useDrag = <T extends HTMLElement>(
     if (!el.current) return;
     onMouseUp && onMouseUp(e, el.current);
   }, [el, onMouseUp]));
+
+  return isDraggin;
 };

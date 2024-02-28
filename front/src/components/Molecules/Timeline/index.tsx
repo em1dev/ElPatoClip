@@ -6,6 +6,7 @@ import { Seeker } from './Seeker';
 import { Point, TimeSlice } from '../../../types';
 import { CropHandle } from './CropHandle';
 import { useDrag } from '../../../hooks/useDrag';
+import { useEventListener } from '../../../hooks/useEventListener';
 
 
 const TimerLabelBlock = (label: string) => (
@@ -36,6 +37,7 @@ export const Timeline = ({
   totalDuration = 1000,
 }: TimelineProps) => {
   const layerHandleRef = useRef<HTMLDivElement>(null);
+  const playbackLineContainerRef = useRef<HTMLDivElement>(null);
   const layerContainerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const amountOfTimeBlocks = Math.ceil(totalDuration / 10);
@@ -52,10 +54,14 @@ export const Timeline = ({
 
   useEffect(() => {
     if (!layerContainerRef.current) return;
+    if (!playbackLineContainerRef.current) return;
     const width = secondsToPixels(cropTime.endTime - cropTime.startTime) + layerOffset.left;
     const left = secondsToPixels(cropTime.startTime);
     layerContainerRef.current.style.width = `${width}px`;
     layerContainerRef.current.style.left = `${left}px`;
+
+    playbackLineContainerRef.current.style.width = `${width}px`;
+    playbackLineContainerRef.current.style.left = `${left}px`;
   }, [cropTime]);
 
   const onLeftCropHandle = useCallback((value: number) => {
@@ -108,14 +114,26 @@ export const Timeline = ({
 
   useDrag(layerHandleRef, onLayerHandleDrag, onLayerHandleMouseDown);
 
+  useEventListener<HTMLDivElement, MouseEvent>(playbackLineContainerRef, 'mousedown', (e) => {
+    const newTime = cropTime.startTime + pixelsToSeconds(e.offsetX);
+    seekTo(newTime);
+  });
+
   return (
     <S.Container ref={containerRef}>
-      <Seeker 
+      <Seeker
         shouldAnimate={seekWithAnimation}
         containerRef={containerRef}
         currentTime={currentTime}
         seekTo={seekTo}
       />
+
+      <S.PlaybackLineContainer width={timelineWidthInPx}>
+        <S.PlaybackLine ref={playbackLineContainerRef}>
+          <S.Layer />
+        </S.PlaybackLine>
+      </S.PlaybackLineContainer>
+
       <S.DurationContainer>
         <S.TimeLabel>00:00</S.TimeLabel>
         {timeBlock}

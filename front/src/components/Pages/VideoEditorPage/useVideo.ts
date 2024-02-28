@@ -1,14 +1,44 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRenderLoop } from "../../../hooks/useRenderLoop";
+import { TimeSlice } from "../../../types";
+import { MathUtils } from "../../../Utils/MathUtils";
 
 const SHORT_SKIP_IN_SECONDS = 3;
 
 export const useVideo = (
   videoRef: React.RefObject<HTMLVideoElement>,
-  setSeekWithAnimation?: (value: boolean) => void
+  timeSlice: TimeSlice,
+  setSeekWithAnimation?: (value: boolean) => void,
   ) => {
   const animationTimeoutId = useRef<null | number>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+
+  const [videoMetadata, setVideoMetadata] = useState<{
+    currentTime: number,
+    totalTime: number
+  }>({ currentTime: 0, totalTime: 0});
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const time = video.currentTime
+    video.currentTime = MathUtils.clamp(time, timeSlice.startTime, timeSlice.endTime);
+  }, [timeSlice, videoRef]);
+
+  useRenderLoop(useCallback(() => {
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+
+    if (!video.paused && video.currentTime >= timeSlice.endTime) {
+      video.currentTime = timeSlice.startTime;
+    }
+
+    setVideoMetadata({
+      currentTime: videoRef.current.currentTime,
+      totalTime: videoRef.current.duration
+    })
+  }, [videoRef, timeSlice]));
 
   useEffect(() => {
     if (!videoRef.current) return;
@@ -49,7 +79,11 @@ export const useVideo = (
   const seekTo = useCallback((value: number, animate: boolean = false) => {
     if (!videoRef.current) return;
 
-    videoRef.current.currentTime = Math.min(value, videoRef.current.duration - 0.1);
+    videoRef.current.currentTime = (
+      MathUtils.clamp(Math.min(value,
+        videoRef.current.duration - 0.1),
+        timeSlice.startTime, timeSlice.endTime)
+    );
 
     if (!animate) return;
 
@@ -63,12 +97,11 @@ export const useVideo = (
     }, 300);
     animationTimeoutId.current = timeoutId;
 
-  }, [videoRef, setSeekWithAnimation]);
+  }, [videoRef, setSeekWithAnimation, timeSlice]);
 
   const seekForward = useCallback(() => {
     if (!videoRef.current) return;
 
-    console.log(videoRef.current.currentTime);
     seekTo(videoRef.current.currentTime + SHORT_SKIP_IN_SECONDS, true);
   }, [seekTo, videoRef]);
 
@@ -112,6 +145,7 @@ export const useVideo = (
     setPlayback,
     isPlaying,
     setIsPlaying,
-    isMuted
+    isMuted,
+    videoMetadata,
   };
 }; 

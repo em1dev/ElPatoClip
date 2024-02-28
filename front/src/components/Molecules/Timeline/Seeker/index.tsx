@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import * as S from './styles';
 import { pixelsToSeconds, scruberOffset, secondsToPixels } from '../util';
 import { useDrag } from '../../../../hooks/useDrag';
+import { MathUtils } from '../../../../Utils/MathUtils';
 
 export interface SeekerProps {
   containerRef: React.RefObject<HTMLDivElement | null>,
@@ -21,7 +22,7 @@ export const Seeker = ({ containerRef, seekTo, currentTime, shouldAnimate }: See
     seekTo(pixelsToSeconds(relativeX));
   }, [containerRef, seekTo])
 
-  useDrag(seekerRef, onDrag);
+  const isDragging = useDrag(seekerRef, onDrag);
 
   useEffect(() => {
     const seeker = seekerRef.current;
@@ -29,9 +30,21 @@ export const Seeker = ({ containerRef, seekTo, currentTime, shouldAnimate }: See
     const pixelTime = secondsToPixels(currentTime);
     const seekerPosition = pixelTime + scruberOffset.left;
     seeker.style.left = `${seekerPosition}px`;
+    seeker.dataset.time = MathUtils.secondsToReadableText(currentTime, true);
   }, [currentTime]);
 
+  useEffect(() => {
+    const seeker = seekerRef.current;
+    if (!seeker) return;
+    seeker.dataset.dragging = isDragging.toString();
+  }, [isDragging])
+
+  const replacementOffset = currentTime < 1 ? -20 : undefined;
+
   return (
-    <S.Seeker $animate={shouldAnimate} ref={seekerRef} />
+    <S.Seeker 
+      $replaceHeadLeftOffset={replacementOffset}
+      $animate={shouldAnimate}
+      ref={seekerRef} />
   )
 };

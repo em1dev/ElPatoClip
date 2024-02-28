@@ -76,6 +76,7 @@ export const useCanvasRecording = (
     };
     recorder.start();
 
+    // todo - clear state
     setTimeout(() => {
       recorder.stop();
     }, duration);

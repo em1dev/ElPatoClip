@@ -33,15 +33,10 @@ const VideoEditor = ({
     seekBackwards, seekForward, seekTo,
     seekToEnd, seekToStart, setPlayback,
     toggleMute, toggleVideoPlayback,
-    isMuted, isPlaying
-  } = useVideo(videoRef, setSeekWithAnimation);
+    isMuted, isPlaying, videoMetadata
+  } = useVideo(videoRef, cropTime, setSeekWithAnimation);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
-
-  const [videoMetadata, setVideoMetadata] = useState<{
-    currentTime: number,
-    totalTime: number
-  }>({ currentTime: 0, totalTime: 0});
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -51,13 +46,6 @@ const VideoEditor = ({
     ctx.drawImage(videoRef.current, 0, 0);
   }, []));
 
-  useRenderLoop(useCallback(() => {
-    if (!videoRef.current) return;
-    setVideoMetadata({
-      currentTime: videoRef.current.currentTime,
-      totalTime: videoRef.current.duration
-    })
-  }, []));
 
   useEffect(() => {
     const onKeyUp = (e: KeyboardEvent) => {
