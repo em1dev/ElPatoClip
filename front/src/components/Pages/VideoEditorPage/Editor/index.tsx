@@ -108,7 +108,8 @@ const VideoEditor = ({
   }
 
   return (
-    <S.Container>
+    <>
+      <S.GlobalStyles />
 
       {isExporting && (
         <S.ModalOverlay>
@@ -122,52 +123,58 @@ const VideoEditor = ({
         </S.ModalOverlay>
       )}
 
-      <VideoHeader
-        onMuteToggle={toggleMute}
-        isMuted={isMuted}
-        onRenderClick={onRenderClick}
-        currentTime={videoMetadata.currentTime}
-        videoLength={videoMetadata.totalTime}
-      />
-      <S.VideoContainer>
-        <VideoCanvas
-          toggleVideoPlayback={toggleVideoPlayback}
-          layers={inputLayers}
-          onOutputChange={onInputChange}
-          videoRef={videoCanvasRef}
-          renderVideo
-        />
 
-        <VideoCanvas
-          toggleVideoPlayback={toggleVideoPlayback}
-          onOutputChange={onOutputChange}
-          layers={outputLayers}
-          videoRef={videoCanvasRef}
-          videoResolution={{ height: 1920, width: 1080 }}
-        />
+      <S.VideoContainer>
+        <div>
+          <S.LandscapeVideoContainer>
+            <VideoHeader
+              onMuteToggle={toggleMute}
+              isMuted={isMuted}
+              onRenderClick={onRenderClick}
+              currentTime={videoMetadata.currentTime}
+              videoLength={videoMetadata.totalTime}
+            />
+            <VideoCanvas
+              toggleVideoPlayback={toggleVideoPlayback}
+              layers={inputLayers}
+              onOutputChange={onInputChange}
+              videoRef={videoCanvasRef}
+              renderVideo
+            />
+            <VideoFooter 
+              isPlaying={isPlaying}
+              setIsPlaying={setPlayback}
+              onBackwardClicked={seekBackwards}
+              onForwardClicked={seekForward}
+              onToEndClicked={seekToEnd}
+              onToStartClicked={seekToStart}
+            />
+            <S.TimelineContainer>
+              <Timeline 
+                seekWithAnimation={seekWithAnimation}
+                setCropTime={setCropTime}
+                cropTime={cropTime}
+                currentTime={videoMetadata.currentTime}
+                totalDuration={videoMetadata.totalTime}
+                seekTo={seekTo}
+              />
+            </S.TimelineContainer>
+          </S.LandscapeVideoContainer>
+
+          <VideoCanvas
+            toggleVideoPlayback={toggleVideoPlayback}
+            onOutputChange={onOutputChange}
+            layers={outputLayers}
+            videoRef={videoCanvasRef}
+            videoResolution={{ height: 1920, width: 1080 }}
+          />
+        </div>
         <LayerEditor layers={layers} setLayer={setLayers} />
       </S.VideoContainer>
-      <VideoFooter 
-        isPlaying={isPlaying}
-        setIsPlaying={setPlayback}
-        onBackwardClicked={seekBackwards}
-        onForwardClicked={seekForward}
-        onToEndClicked={seekToEnd}
-        onToStartClicked={seekToStart}
-      />
-      <S.TimelineContainer>
-        <Timeline 
-          seekWithAnimation={seekWithAnimation}
-          setCropTime={setCropTime}
-          cropTime={cropTime}
-          currentTime={videoMetadata.currentTime}
-          totalDuration={videoMetadata.totalTime}
-          seekTo={seekTo}
-        />
-      </S.TimelineContainer>
+
       <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />
       <video loop hidden ref={videoRef} width={960} height={540} src={videoUrl}></video>
-    </S.Container>
+    </>
   )
 }
 

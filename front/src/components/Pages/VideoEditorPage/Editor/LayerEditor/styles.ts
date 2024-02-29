@@ -2,7 +2,8 @@ import { styled } from "styled-components";
 
 export const Container = styled.div`
   min-width: 300px;
-  max-height: 500px;
+  max-width: 300px;
+  max-height: 100%;
   overflow: auto;
   background-color: #252525;
   padding: 1em;

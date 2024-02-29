@@ -6,7 +6,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  height: 8em;
+  height: 9em;
   padding: 0.5em;
   > :first-child {
     z-index: 1;
