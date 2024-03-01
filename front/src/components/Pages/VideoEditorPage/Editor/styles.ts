@@ -44,10 +44,7 @@ export const VideoContainer = styled.div`
     overflow: auto;
     width: calc(100% - 300px);
 
-    max-width: 1980px;
-    @media screen and (max-width: 1920px) {
-      max-width: 1400px;
-    }
+    max-width: 1200px;
 
     display: flex;
     flex-direction: row;
