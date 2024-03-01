@@ -1,4 +1,4 @@
-import { ButtonIcon } from '../../Atoms/ButtonIcon';
+import { ButtonIcon } from '../../../Atoms/ButtonIcon';
 import * as S from './styles';
 
 export interface VideoControlsProps {

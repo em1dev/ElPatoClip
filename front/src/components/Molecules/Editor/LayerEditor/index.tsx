@@ -1,9 +1,9 @@
+import { addNewLayer } from '../../../../Utils/LayerGenerator';
+import { Layer } from '../../../../types';
+import { ButtonIcon } from '../../../Atoms/ButtonIcon';
+import { LayerConfiguration } from './LayerConfiguration';
 import * as S from './styles';
 import { Dispatch, SetStateAction, useCallback } from "react"
-import { Layer } from "../../../../../types"
-import { LayerConfiguration } from "./LayerConfiguration"
-import { ButtonIcon } from '../../../../Atoms/ButtonIcon';
-import { addNewLayer } from '../../../../../Utils/LayerGenerator';
 
 export interface LayerEditorProps {
   layers: Array<Layer>,

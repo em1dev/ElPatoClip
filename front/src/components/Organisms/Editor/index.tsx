@@ -1,14 +1,14 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import * as S from './styles';
-import { Layer, Source, TimeSlice } from '../../../../types';
-import { VideoCanvas } from '../../../Organisms/VideoCanvas';
-import { VideoHeader } from '../../../Organisms/VideoHeader';
-import { Timeline } from '../../../Molecules/Timeline';
-import { VideoFooter } from '../../../Organisms/VideoFooter';
-import { useRenderLoop } from '../../../../hooks/useRenderLoop';
-import { ExportModal } from '../ExportModal';
-import { useVideo } from '../useVideo';
-import { LayerEditor } from './LayerEditor';
+import { useRenderLoop } from '../../../hooks/useRenderLoop';
+import { Layer, TimeSlice, Source } from '../../../types';
+import { Timeline } from '../../Molecules/Editor/Timeline';
+import { VideoCanvas } from '../../Molecules/Editor/VideoCanvas';
+import { VideoFooter } from '../../Molecules/Editor/VideoFooter';
+import { VideoHeader } from '../../Molecules/Editor/VideoHeader';
+import { ExportModal } from '../../Pages/VideoEditorPage/ExportModal';
+import { useVideo } from '../../Pages/VideoEditorPage/useVideo';
+import { LayerEditor } from '../../Molecules/Editor/LayerEditor';
 
 export interface VideoEditorProps {
   videoUrl: string,

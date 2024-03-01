@@ -1,5 +1,5 @@
-import { MathUtils } from "../../../Utils/MathUtils";
-import { LayerFilter, LayerShape, Rect, Source } from "../../../types";
+import { MathUtils } from "../../../../Utils/MathUtils";
+import { LayerFilter, LayerShape, Rect, Source } from "../../../../types";
 
 export const RESIZE_HANLDER_RADIUS = 15;
 

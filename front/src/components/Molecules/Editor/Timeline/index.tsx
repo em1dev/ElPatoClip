@@ -1,12 +1,13 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { MathUtils } from '../../../Utils/MathUtils';
 import * as S from './styles';
 import { MIN_VIDEO_LENGTH, layerOffset, pixelsToSeconds, scruberOffset, secondsToPixels } from './util';
 import { Seeker } from './Seeker';
-import { Point, TimeSlice } from '../../../types';
 import { CropHandle } from './CropHandle';
-import { useDrag } from '../../../hooks/useDrag';
-import { useEventListener } from '../../../hooks/useEventListener';
+import { MathUtils } from '../../../../Utils/MathUtils';
+import { useDrag } from '../../../../hooks/useDrag';
+import { useEventListener } from '../../../../hooks/useEventListener';
+import { TimeSlice, Point } from '../../../../types';
+
 
 
 const TimerLabelBlock = (label: string) => (

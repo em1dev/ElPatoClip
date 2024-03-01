@@ -1,7 +1,7 @@
-import { ButtonIcon } from "../../Atoms/ButtonIcon";
-import { MathUtils } from "../../../Utils/MathUtils";
+import { ButtonIcon } from "../../../Atoms/ButtonIcon";
+import { MathUtils } from "../../../../Utils/MathUtils";
 import * as S from './styles';
-import { Button } from "../../Atoms/Button";
+import { Button } from "../../../Atoms/Button";
 
 export interface VideoHeaderProps {
   videoLength: number,

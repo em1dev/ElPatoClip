@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react';
 import * as S from './styles';
 import { pixelsToSeconds, scruberOffset, secondsToPixels } from '../util';
-import { useDrag } from '../../../../hooks/useDrag';
-import { MathUtils } from '../../../../Utils/MathUtils';
+import { useDrag } from '../../../../../hooks/useDrag';
+import { MathUtils } from '../../../../../Utils/MathUtils';
+
 
 export interface SeekerProps {
   containerRef: React.RefObject<HTMLDivElement | null>,

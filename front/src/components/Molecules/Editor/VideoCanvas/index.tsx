@@ -1,9 +1,9 @@
 import { useRef, MutableRefObject, useState, useCallback, forwardRef, useImperativeHandle } from 'react';
 import * as S from './styles';
-import { Layer, Point, Source } from '../../../types';
-import { MathUtils } from '../../../Utils/MathUtils';
-import { useRenderLoop } from '../../../hooks/useRenderLoop';
-import { useEventListener } from '../../../hooks/useEventListener';
+import { Layer, Point, Source } from '../../../../types';
+import { MathUtils } from '../../../../Utils/MathUtils';
+import { useRenderLoop } from '../../../../hooks/useRenderLoop';
+import { useEventListener } from '../../../../hooks/useEventListener';
 import { CanvasUtils, RESIZE_HANLDER_RADIUS } from './canvasUtils';
 
 const checkIfIsResize = (layers: Array<Layer>, clicked: Point) => {

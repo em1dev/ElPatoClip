@@ -1,12 +1,12 @@
 import * as S from './styles';
 import { useEffect, useState } from "react";
-import VideoEditor from "./Editor";
 import { useParams } from "react-router-dom";
 import { ElPatoApi } from "../../../api/elPatoClipApi";
 import { Loading } from "../../Atoms/Loading";
 import { Layer, TimeSlice } from '../../../types';
 import { defaultLayers } from '../../../Utils/LayerGenerator';
 import { VideoExporter } from './VideoExporter';
+import VideoEditor from '../../Organisms/Editor';
 
 const bytesToRedable = (amount: number) => {
   if (amount > 1000000) {

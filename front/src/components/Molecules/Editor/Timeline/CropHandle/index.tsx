@@ -1,6 +1,6 @@
 import { RefObject, useCallback, useRef } from 'react';
 import * as S from './styles';
-import { useDrag } from '../../../../hooks/useDrag';
+import { useDrag } from '../../../../../hooks/useDrag';
 
 interface CropHandleProps {
   containerRef: RefObject<HTMLDivElement>,

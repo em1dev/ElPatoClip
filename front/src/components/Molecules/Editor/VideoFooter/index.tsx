@@ -1,4 +1,4 @@
-import { VideoControls, VideoControlsProps } from "../../Molecules/VideoControls"
+import { VideoControls, VideoControlsProps } from "../VideoControls"
 
 export interface VideoFooterProps extends VideoControlsProps {
 

@@ -1,8 +1,9 @@
+import { Layer, LayerFilter, AspectRatio, LayerShape } from '../../../../../types';
+import { ButtonIcon } from '../../../../Atoms/ButtonIcon';
+import { Select } from '../../../../Atoms/Select';
 import * as S from'./styles';
 import { ChangeEvent, useCallback } from "react"
-import { AspectRatio, Layer, LayerFilter, LayerShape } from "../../../../../../types"
-import { Select } from '../../../../../Atoms/Select';
-import { ButtonIcon } from '../../../../../Atoms/ButtonIcon';
+
 
 export interface LayerConfigurationProps {
   layer: Layer,
