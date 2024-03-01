@@ -17,8 +17,8 @@ export const ModalOverlay = styled.div`
   }
 `;
 
-export const VideoContainer = styled.div`
-  align-content: center;
+export const Container = styled.div`
+  align-items: center;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -33,56 +33,48 @@ export const VideoContainer = styled.div`
   overflow: hidden;
 
   gap: 1em;
-
   > :last-child {
-    align-self: flex-start;
+    // settings
   }
+`
+export const SideBySideContainer = styled.div`
+  align-items: center;
+  overflow: hidden;
+
+  margin-top: 2em;
+  height: calc(100vh - 15em);
+  max-width: 100%;
+  max-height: 100%;
+
+  display: flex;
+  gap: 1em;
 
   > :first-child {
-    align-self: flex-end;
-    // double canvas
-    overflow: auto;
-    width: calc(100% - 300px);
+    // potrait container
+    aspect-ratio: 9 / 16;
+    height: 100%;
+  }
 
-    max-width: 1200px;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1em;
-
-    > :first-child {
-      // landscape container
-      width: calc(((100% - 1em) / 25) * 17);
-    }
-
-    > :last-child {
-      // potrait video
-      width: 100%;
-
-      aspect-ratio: 9/16;
-      height: 100%;
-      width: 100%;
-    }
+  > :last-child {
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    // landscape container
   }
 `
 
-export const LandscapeVideoContainer = styled.div`
+export const PotraitVideo = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 1em;
-  > :nth-child(2) {
-    // canvas container
-    aspect-ratio: 16/9;
+  height: 100%;
+  //width: 100%;
+  > * {
+    width: 100%;
+    height: 100%;
+    flex: 1 100%;
   }
-`;
-
-export const TimelineContainer = styled.div`
-  overflow: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  //aspect-ratio: 9/16;
+  //min-height: 100%;
+  //width: 100%;
 `;
 
 export const GlobalStyles = createGlobalStyle`

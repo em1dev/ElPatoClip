@@ -2,13 +2,11 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } fr
 import * as S from './styles';
 import { useRenderLoop } from '../../../hooks/useRenderLoop';
 import { Layer, TimeSlice, Source } from '../../../types';
-import { Timeline } from '../../Molecules/Editor/Timeline';
 import { VideoCanvas } from '../../Molecules/Editor/VideoCanvas';
-import { VideoFooter } from '../../Molecules/Editor/VideoFooter';
-import { VideoHeader } from '../../Molecules/Editor/VideoHeader';
 import { ExportModal } from '../../Pages/VideoEditorPage/ExportModal';
 import { useVideo } from '../../Pages/VideoEditorPage/useVideo';
 import { LayerEditor } from '../../Molecules/Editor/LayerEditor';
+import { LeftContainer } from './LeftContainer';
 
 export interface VideoEditorProps {
   videoUrl: string,
@@ -29,12 +27,7 @@ const VideoEditor = ({
 }: VideoEditorProps) => {
   const [seekWithAnimation, setSeekWithAnimation] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const {
-    seekBackwards, seekForward, seekTo,
-    seekToEnd, seekToStart, setPlayback,
-    toggleMute, toggleVideoPlayback,
-    isMuted, isPlaying, videoMetadata
-  } = useVideo(videoRef, cropTime, setSeekWithAnimation);
+  const video = useVideo(videoRef, cropTime, setSeekWithAnimation);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
 
@@ -51,7 +44,7 @@ const VideoEditor = ({
     const onKeyUp = (e: KeyboardEvent) => {
       if (e.key !== ' ') return
       e.preventDefault();
-      toggleVideoPlayback();
+      video.toggleVideoPlayback();
     }
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -65,7 +58,7 @@ const VideoEditor = ({
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('keyup', onKeyUp);
     }
-  }, [toggleVideoPlayback]);
+  }, [video]);
 
   const onInputChange = (id: number, src: Source) => {
     setLayers(prev => (
@@ -124,53 +117,32 @@ const VideoEditor = ({
       )}
 
 
-      <S.VideoContainer>
-        <div>
-          <S.LandscapeVideoContainer>
-            <VideoHeader
-              onMuteToggle={toggleMute}
-              isMuted={isMuted}
-              onRenderClick={onRenderClick}
-              currentTime={videoMetadata.currentTime}
-              videoLength={videoMetadata.totalTime}
-            />
+      <S.Container>
+        <S.SideBySideContainer>
+          <S.PotraitVideo>
             <VideoCanvas
-              toggleVideoPlayback={toggleVideoPlayback}
-              layers={inputLayers}
-              onOutputChange={onInputChange}
+              toggleVideoPlayback={video.toggleVideoPlayback}
+              onOutputChange={onOutputChange}
+              layers={outputLayers}
               videoRef={videoCanvasRef}
-              renderVideo
-            />
-            <VideoFooter 
-              isPlaying={isPlaying}
-              setIsPlaying={setPlayback}
-              onBackwardClicked={seekBackwards}
-              onForwardClicked={seekForward}
-              onToEndClicked={seekToEnd}
-              onToStartClicked={seekToStart}
-            />
-            <S.TimelineContainer>
-              <Timeline 
-                seekWithAnimation={seekWithAnimation}
-                setCropTime={setCropTime}
-                cropTime={cropTime}
-                currentTime={videoMetadata.currentTime}
-                totalDuration={videoMetadata.totalTime}
-                seekTo={seekTo}
-              />
-            </S.TimelineContainer>
-          </S.LandscapeVideoContainer>
+              videoResolution={{ height: 1920, width: 1080 }}
+            />         
+          </S.PotraitVideo>
 
-          <VideoCanvas
-            toggleVideoPlayback={toggleVideoPlayback}
-            onOutputChange={onOutputChange}
-            layers={outputLayers}
-            videoRef={videoCanvasRef}
-            videoResolution={{ height: 1920, width: 1080 }}
+          <LeftContainer 
+            cropTime={cropTime}
+            inputLayers={inputLayers}
+            onInputChange={onInputChange}
+            onRenderClick={onRenderClick}
+            seekWithAnimation={seekWithAnimation}
+            setCropTime={setCropTime}
+            videoCanvasRef={videoCanvasRef}
+            video={video}
           />
-        </div>
+
+        </S.SideBySideContainer>
         <LayerEditor layers={layers} setLayer={setLayers} />
-      </S.VideoContainer>
+      </S.Container>
 
       <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />
       <video loop hidden ref={videoRef} width={960} height={540} src={videoUrl}></video>
