@@ -1,4 +1,3 @@
-import './App.css'
 import ClipPage from './components/Pages/ClipPage';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import SearchPage from './components/Pages/SearchPage';

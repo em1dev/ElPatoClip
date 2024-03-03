@@ -13,6 +13,7 @@ export type AspectRatio = 'potrait' | 'landscape' | 'free' | 'locked';
 
 export interface Layer {
   id: number,
+  name: string,
   zIndex: number,
   borderColor: string,
   input?: Source | undefined,

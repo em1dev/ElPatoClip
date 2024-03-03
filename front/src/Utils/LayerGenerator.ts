@@ -9,9 +9,10 @@ export const addNewLayer = (layers: Array<Layer>) => {
     .sort((a,b) => a.id - b.id)
     .at(-1);
   const id = (lastId?.id ?? 0) + 1;
-  const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+  const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padEnd(6, '0');
   const newLayer: Layer = {
     id,
+    name: `Layer ${id}`,
     borderColor: randomColor,
     zIndex,
     input: { rect: { x: 0, y: 0, width: 150, height: 150 } },
@@ -27,6 +28,7 @@ export const addNewLayer = (layers: Array<Layer>) => {
 const landscapeWithCamTemplate: Array<Layer> = [
     {
         "id": 0,
+        "name": "Layer 0",
         "borderColor": "#FF0099",
         "shape": "circle",
         "zIndex": 2,
@@ -52,6 +54,7 @@ const landscapeWithCamTemplate: Array<Layer> = [
     },
     {
         "id": 2,
+        "name": "Layer 1",
         "shape": "round-rectangle",
         "borderColor": "#0066FF",
         "zIndex": 1,
@@ -71,12 +74,13 @@ const landscapeWithCamTemplate: Array<Layer> = [
                 "height": 450
             }
         },
-        "locked": true,
+        "locked": false,
         "filter": "none",
         "aspect": "free"
     },
     {
         "id": 1,
+        "name": "Layer 2",
         "shape": "rectangle",
         "borderColor": "#eeff00",
         "zIndex": 0,
@@ -96,7 +100,7 @@ const landscapeWithCamTemplate: Array<Layer> = [
                 "height": 1920
             }
         },
-        "locked": true,
+        "locked": false,
         "filter": "blur",
         "aspect": "free"
     }
