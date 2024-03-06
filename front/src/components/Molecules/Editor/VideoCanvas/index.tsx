@@ -2,10 +2,11 @@ import { useRef, MutableRefObject, useCallback, forwardRef, useImperativeHandle,
 import * as S from './styles';
 import { Layer, Source } from '../../../../types';
 import { useEventListener } from '../../../../hooks/useEventListener';
-import { CANVAS_PADDING, VIDEO_RESOLUTIONS, VideoDirection } from './settings';
+import { VideoDirection } from './settings';
 import { useRender } from './hooks/useRender';
 import { useCanvasHover } from './hooks/useCanvasHover';
 import { useCanvasDrag } from './hooks/useCanvasDrag';
+import { useCanvasMetadata } from './hooks/useCanvasMetadata';
 
 export interface VideoCanvasProp {
   videoRef: MutableRefObject<CanvasImageSource | null>,
@@ -44,16 +45,14 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
     layers.find(l => l.id === selectedLayerId)
   ), [selectedLayerId, layers]);
 
-  const videoResolution = useMemo(() => (
-    VIDEO_RESOLUTIONS[direction]
-  ), [direction]);
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const interacted = useCanvasDrag(
-    layersSortedAsc, canvasRef, videoResolution,
-    selectedLayer, setSelectedLayerId, setHoverLayerId, onOutputChange);
+  const canvasMetadata = useCanvasMetadata(canvasRef, withPadding, direction);
 
-  const hoveredLayer = useCanvasHover(layersSortedDesc, hoverLayerId, canvasRef, setHoverLayerId);
+  const interacted = useCanvasDrag(
+    layersSortedAsc, canvasRef, canvasMetadata.videoResolution,
+    selectedLayer, setSelectedLayerId, setHoverLayerId, canvasMetadata.padding, canvasMetadata.scalingFactor, onOutputChange);
+
+  const hoveredLayer = useCanvasHover(layersSortedDesc, hoverLayerId, canvasRef, setHoverLayerId, canvasMetadata.padding);
 
   useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(externalRef, () => {
     return canvasRef.current
@@ -68,15 +67,18 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
     setSelectedLayerId(null);
   }, [setHoverLayerId, setSelectedLayerId]));
 
-  useRender(canvasRef, videoRef, videoResolution, selectedLayer, hoveredLayer, layersSortedAsc, !!renderVideo, !!interacted, withPadding);
+  useRender(
+    canvasRef, videoRef, canvasMetadata,
+    selectedLayer, hoveredLayer, layersSortedAsc,
+    !!renderVideo, !!interacted);
 
   return (
     <S.CanvasContainer>
       <canvas 
         data-type='video-canvas'
         ref={canvasRef} 
-        width={videoResolution.width + (withPadding ? (CANVAS_PADDING * 2) : 0)}
-        height={videoResolution.height + (withPadding ? (CANVAS_PADDING * 2) : 0)}
+        width={canvasMetadata.canvasResolution.width}
+        height={canvasMetadata.canvasResolution.height}
       />
     </S.CanvasContainer>
   )

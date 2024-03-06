@@ -2,7 +2,7 @@ import { Dispatch, RefObject, SetStateAction, useCallback, useState } from "reac
 import { Layer, Point, Rect, Size, Source } from "../../../../../types";
 import { useEventListener } from "../../../../../hooks/useEventListener";
 import { CanvasUtils } from "../util/canvasUtils";
-import { CANVAS_PADDING, MIN_CROP_SIZE } from "../settings";
+import { MIN_CROP_SIZE } from "../settings";
 import { MathUtils } from "../../../../../Utils/MathUtils";
 import { Interactions } from "../util/interactions";
 
@@ -10,7 +10,8 @@ const getNewDraggedPosition = (
   currentPosition: Rect,
   mouseAtPositionOnCanvas: Point,
   interacted: Interaction,
-  videoResolution: Size
+  videoResolution: Size,
+  padding: number
 ) => {
   if (!interacted?.clickedOffsetToOrigin) throw new Error('missing interaction');
 
@@ -21,8 +22,8 @@ const getNewDraggedPosition = (
 
   const newPosition: Rect = {
     ...currentPosition,
-    x: draggedWithOffset.x - CANVAS_PADDING,
-    y: draggedWithOffset.y - CANVAS_PADDING
+    x: draggedWithOffset.x - padding,
+    y: draggedWithOffset.y - padding
   }
 
   newPosition.x = MathUtils.clamp(newPosition.x, 0, videoResolution.width - newPosition.width);
@@ -44,7 +45,9 @@ export const useCanvasDrag = (
   selectedLayer: Layer | undefined,
   setSelectedLayerId: Dispatch<SetStateAction<number | null>>,
   setHoverLayerId: Dispatch<SetStateAction<number | null>>,
-  onOutputChange?: (layerId: number, output: Source) => void,
+  padding: number,
+  scalingFactor: number,
+  onOutputChange?: (layerId: number, output: Source) => void
 ) => {
   const [interacted, setInteracted] = useState<{
     clickedCorner?: string,
@@ -62,7 +65,7 @@ export const useCanvasDrag = (
     const clicked = CanvasUtils.relativePointToCanvasPoint(offsetClick, canvas);
 
     if (selectedLayer) {
-      const hasClickedOnResize = Interactions.isPointOnResizeHandler([selectedLayer], clicked);
+      const hasClickedOnResize = Interactions.isPointOnResizeHandler([selectedLayer], clicked, padding, scalingFactor);
       if (hasClickedOnResize) {
         setInteracted({
           clickedCorner: hasClickedOnResize.cornerBit,
@@ -73,7 +76,7 @@ export const useCanvasDrag = (
       }
     }
 
-    const layer = Interactions.layerClicked(layers, clicked);
+    const layer = Interactions.layerClicked(layers, clicked, padding);
     if (!layer) {
       setSelectedLayerId(null);
       setHoverLayerId(null);
@@ -84,8 +87,8 @@ export const useCanvasDrag = (
     setSelectedLayerId(layer.id);
 
     const offsetClicked = {
-      x: (clicked.x - (layer.output.rect.x + CANVAS_PADDING)),
-      y: (clicked.y - (layer.output.rect.y + CANVAS_PADDING))
+      x: (clicked.x - (layer.output.rect.x + padding)),
+      y: (clicked.y - (layer.output.rect.y + padding))
     };
 
     setInteracted({
@@ -100,7 +103,7 @@ export const useCanvasDrag = (
     { x, y, height, width }: Rect,
     mouseAtPositionOnCanvas: Point,
   ) => {
-    const mouse = MathUtils.subPosition(mouseAtPositionOnCanvas, { x: CANVAS_PADDING, y: CANVAS_PADDING })
+    const mouse = MathUtils.subPosition(mouseAtPositionOnCanvas, { x: padding, y: padding })
 
     if (!interacted?.clickedCorner) return;
 
@@ -142,14 +145,14 @@ export const useCanvasDrag = (
     }
 
     onOutputChange && onOutputChange(id, { rect: newPosition });
-  }, [onOutputChange, interacted, videoResolution]);
+  }, [onOutputChange, interacted, videoResolution, padding]);
 
   const handleDrag = useCallback((currentPosition:Rect, mouseAtPositionOnCanvas: Point, id: number) => {
     if (!interacted || !onOutputChange) return;
-    const newPosition = getNewDraggedPosition(currentPosition, mouseAtPositionOnCanvas, interacted, videoResolution) ;
+    const newPosition = getNewDraggedPosition(currentPosition, mouseAtPositionOnCanvas, interacted, videoResolution, padding) ;
     if (!newPosition) return;
     onOutputChange(id, { rect: newPosition });
-  }, [interacted, videoResolution, onOutputChange]);
+  }, [interacted, videoResolution, onOutputChange, padding]);
 
   useEventListener<Window, MouseEvent>(window, 'mousemove', useCallback((e) => {
     if (!onOutputChange) return;

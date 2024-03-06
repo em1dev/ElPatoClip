@@ -1,15 +1,15 @@
 import { MathUtils } from "../../../../../Utils/MathUtils";
 import { Layer, Point, Rect } from "../../../../../types";
-import { CANVAS_PADDING, RESIZE_HANLDER_RADIUS } from "../settings";
+import { RESIZE_HANLDER_RADIUS } from "../settings";
 
-const layerClicked = (layers: Array<Layer>, point: Point) => {
+const layerClicked = (layers: Array<Layer>, point: Point, padding: number) => {
   const layer = layers
     .filter(layer => !layer.locked)
     .reduce((prevLayer, layer) => {
       const layerRectWithOffsett: Rect = {
         ...layer.output.rect,
-        x: layer.output.rect.x + CANVAS_PADDING,
-        y: layer.output.rect.y + CANVAS_PADDING
+        x: layer.output.rect.x + padding,
+        y: layer.output.rect.y + padding
       };
       const clickedOnLayer = MathUtils.isInsideRect(point, layerRectWithOffsett);
       if (!clickedOnLayer) return prevLayer;
@@ -21,7 +21,7 @@ const layerClicked = (layers: Array<Layer>, point: Point) => {
   return layer;
 }
 
-const isPointOnResizeHandler = (layers: Array<Layer>, point: Point) => {
+const isPointOnResizeHandler = (layers: Array<Layer>, point: Point, padding: number, scalingFactor: number) => {
   let topClickedLayer: Layer | undefined;
   let cornerClicked: string | undefined;
 
@@ -29,11 +29,11 @@ const isPointOnResizeHandler = (layers: Array<Layer>, point: Point) => {
       if (layer.locked) continue;
       const layerPositionOffsetted: Rect = {
         ...layer.output.rect,
-        x: layer.output.rect.x + CANVAS_PADDING,
-        y: layer.output.rect.y + CANVAS_PADDING
+        x: layer.output.rect.x + padding,
+        y: layer.output.rect.y + padding
       }
 
-      const cornerBit = MathUtils.getNearestCorner(point, layerPositionOffsetted, RESIZE_HANLDER_RADIUS);
+      const cornerBit = MathUtils.getNearestCorner(point, layerPositionOffsetted, RESIZE_HANLDER_RADIUS * scalingFactor);
       if (cornerBit === null) continue;
       if (!topClickedLayer) {
         cornerClicked = cornerBit;

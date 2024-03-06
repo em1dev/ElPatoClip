@@ -37,7 +37,7 @@ export const Primary: Story = {
       const ctx = videoRef.current.getContext('2d');
       if (!ctx) return;
       ctx.fillStyle = 'rgb(200,200,200)';
-      ctx.fillRect(0,0, 1080, 1920);
+      ctx.fillRect(0,0, 1920, 1080);
     }, [videoRef]);
 
     const onOutputChange = (id: number, output: Source) => {
@@ -51,8 +51,9 @@ export const Primary: Story = {
 
     return (
       <Container>
-        <canvas width={1080} height={1920} hidden ref={videoRef} />
+        <canvas hidden width={1920} height={1080} ref={videoRef} />
         <Story args={{ 
+          withPadding: true,
           hoverLayerId: hoverLayerId,
           setHoverLayerId: setHoverLayerId,
           renderVideo: true,

@@ -1,7 +1,6 @@
 import { Dispatch, RefObject, SetStateAction, useCallback, useMemo } from "react";
 import { useEventListener } from "../../../../../hooks/useEventListener";
 import { Layer, Point } from "../../../../../types";
-import { CANVAS_PADDING } from "../settings";
 import { CanvasUtils } from "../util/canvasUtils";
 import { MathUtils } from "../../../../../Utils/MathUtils";
 
@@ -10,6 +9,7 @@ export const useCanvasHover = (
   hoverLayerId: number | null,
   canvasRef: RefObject<HTMLCanvasElement>,
   setHoverLayerId: Dispatch<SetStateAction<number | null>>,
+  padding: number,
 ) => {
   const hoveredLayer = useMemo(() => layers.find(l => l.id === hoverLayerId), [hoverLayerId, layers]);
 
@@ -22,7 +22,7 @@ export const useCanvasHover = (
     if (!canvas) return;
     const point: Point = { x: e.offsetX, y: e.offsetY };
     const canvasPoint = CanvasUtils.relativePointToCanvasPoint(point, canvas);
-    const canvasPointWithOffset = { x: canvasPoint.x - CANVAS_PADDING, y: canvasPoint.y - CANVAS_PADDING};
+    const canvasPointWithOffset = { x: canvasPoint.x - padding, y: canvasPoint.y - padding};
     for (const layer of layers) {
       if (layer.locked) continue;
       const isInside = MathUtils.isInsideRect(canvasPointWithOffset, layer.output.rect);
@@ -31,7 +31,7 @@ export const useCanvasHover = (
       return;
     }
     setHoverLayerId(null);
-  }, [layers, setHoverLayerId, canvasRef]));
+  }, [layers, setHoverLayerId, canvasRef, padding]));
 
   return hoveredLayer
 }

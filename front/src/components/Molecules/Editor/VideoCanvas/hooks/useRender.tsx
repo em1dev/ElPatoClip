@@ -1,21 +1,20 @@
 import { RefObject, useCallback } from "react";
 import { useRenderLoop } from "../../../../../hooks/useRenderLoop";
-import { CANVAS_PADDING } from "../settings";
-import { Layer, Size } from "../../../../../types";
+import { Layer } from "../../../../../types";
 import { CanvasUtils } from "../util/canvasUtils";
+import { CanvasMetadata } from "./useCanvasMetadata";
 
 export const useRender = (
   outputCanvasRef: RefObject<HTMLCanvasElement>,
   inputCanvasRef: RefObject<CanvasImageSource>,
-  videoResolution: Size,
+  canvasMetadata: CanvasMetadata,
   selectedLayer: Layer | undefined,
   hoveredLayer: Layer | undefined,
   layers: Array<Layer>,
   renderInput: boolean,
   hasInteracted: boolean,
-  withPadding: boolean
 ) => {
-  const padding = withPadding ? CANVAS_PADDING : 0;
+  const { padding, videoResolution, scalingFactor } = canvasMetadata;
 
   const clipVideoArea = useCallback((ctx: CanvasRenderingContext2D) => {
     // clip canvas to have border radius
@@ -25,9 +24,10 @@ export const useRender = (
 
   const onRender = useCallback(() => {
     const ctx = outputCanvasRef.current?.getContext('2d');
+    const outputCanvas = outputCanvasRef.current;
     const inputCanvas = inputCanvasRef.current;
 
-    if (!ctx || !inputCanvas) return;
+    if (!ctx || !inputCanvas || !outputCanvas) return;
     ctx.reset();
     ctx.save();
 
@@ -52,16 +52,17 @@ export const useRender = (
     }
 
     ctx.restore();
+
     if (hoveredLayer && !hasInteracted) {
-      CanvasUtils.renderCropArea(ctx, hoveredLayer.output.rect, hoveredLayer.borderColor, false);
+      CanvasUtils.renderCropArea(ctx, scalingFactor, hoveredLayer.output.rect, hoveredLayer.borderColor, false, padding);
     }
 
     if (selectedLayer) {
-      CanvasUtils.renderCropArea(ctx, selectedLayer.output.rect, selectedLayer.borderColor, true);
+      CanvasUtils.renderCropArea(ctx, scalingFactor, selectedLayer.output.rect, selectedLayer.borderColor, true, padding);
     }
 
     ctx.restore();
-  }, [layers, renderInput, videoResolution, hoveredLayer, selectedLayer, hasInteracted, inputCanvasRef, clipVideoArea, outputCanvasRef, padding ]);
+  }, [scalingFactor, layers, renderInput, videoResolution, hoveredLayer, selectedLayer, hasInteracted, inputCanvasRef, clipVideoArea, outputCanvasRef, padding ]);
 
   useRenderLoop(onRender);
 }

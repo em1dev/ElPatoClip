@@ -1,38 +1,40 @@
 import { MathUtils } from "../../../../../Utils/MathUtils";
 import { LayerFilter, LayerShape, Point, Rect, Source } from "../../../../../types";
-import { CANVAS_PADDING, RESIZE_HANLDER_RADIUS } from "../settings";
+import { RESIZE_HANLDER_RADIUS } from "../settings";
 
 /**
  * Includes padding
  */
-const renderCropArea = (ctx: CanvasRenderingContext2D, rect: Rect, color: string, withResizers: boolean) => {
-  const x = rect.x + CANVAS_PADDING;
-  const y = rect.y + CANVAS_PADDING;
+const renderCropArea = (ctx: CanvasRenderingContext2D, scalingFactor: number, rect: Rect, color: string, withResizers: boolean, padding: number) => {
+  const x = rect.x + padding;
+  const y = rect.y + padding;
 
   ctx.fillStyle = color;
   ctx.strokeStyle = color;
-  ctx.lineWidth = 5;
+  ctx.lineWidth = 3 * scalingFactor;
   ctx.strokeRect(x, y, rect.width, rect.height);
 
   if (!withResizers) return;
 
+  const radiusScaled = RESIZE_HANLDER_RADIUS * scalingFactor;
+
   ctx.beginPath();
-  ctx.arc(x, y, RESIZE_HANLDER_RADIUS, 0, 2 * Math.PI);
+  ctx.arc(x, y, radiusScaled, 0, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
 
   ctx.beginPath();
-  ctx.arc(x, y + rect.height, RESIZE_HANLDER_RADIUS, 0, 2 * Math.PI);
+  ctx.arc(x, y + rect.height, radiusScaled, 0, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
 
   ctx.beginPath();
-  ctx.arc(x + rect.width, y, RESIZE_HANLDER_RADIUS, 0, 2 * Math.PI);
+  ctx.arc(x + rect.width, y, radiusScaled, 0, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
 
   ctx.beginPath();
-  ctx.arc(x + rect.width, y + rect.height, RESIZE_HANLDER_RADIUS, 0, 2 * Math.PI);
+  ctx.arc(x + rect.width, y + rect.height, radiusScaled, 0, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
 }
