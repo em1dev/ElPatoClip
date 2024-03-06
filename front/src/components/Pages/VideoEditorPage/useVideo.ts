@@ -10,7 +10,7 @@ export const useVideo = (
   timeSlice: TimeSlice,
   setSeekWithAnimation?: (value: boolean) => void,
   ) => {
-  const animationTimeoutId = useRef<null | number>(null);
+  const animationTimeoutId = useRef<null | NodeJS.Timeout>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
 
