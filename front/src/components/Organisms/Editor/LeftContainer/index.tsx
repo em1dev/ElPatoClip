@@ -1,12 +1,14 @@
 import { Layer, Source, TimeSlice } from '../../../../types';
 import { Timeline } from '../../../Molecules/Editor/Timeline';
-import { VideoCanvas } from '../../../Molecules/Editor/VideoCanvas';
+import { VideoCanvas, VideoCanvasProp } from '../../../Molecules/Editor/VideoCanvas';
 import { VideoFooter } from '../../../Molecules/Editor/VideoFooter';
 import { VideoHeader } from '../../../Molecules/Editor/VideoHeader';
 import { useVideo } from '../../../Pages/VideoEditorPage/useVideo';
 import * as S from './styles';
 
-export interface LeftContainerProps {
+export interface LeftContainerProps extends Pick<VideoCanvasProp, 
+  'hoverLayerId' | 'selectedLayerId' | 'setHoverLayerId' | 'setSelectedLayerId'
+> {
   onRenderClick: () => void,
   inputLayers: Array<Layer>,
   onInputChange: (layerId: number, output:Source) => void,
@@ -25,7 +27,11 @@ export const LeftContainer = ({
   cropTime,
   setCropTime,
   video,
-  seekWithAnimation
+  seekWithAnimation,
+  hoverLayerId,
+  selectedLayerId,
+  setHoverLayerId,
+  setSelectedLayerId,
 }: LeftContainerProps) => (
 <S.LandscapeVideoContainer>
   <VideoHeader
@@ -36,11 +42,16 @@ export const LeftContainer = ({
     videoLength={video.videoMetadata.totalTime}
   />
   <VideoCanvas
-    toggleVideoPlayback={video.toggleVideoPlayback}
+    setSelectedLayerId={setSelectedLayerId}
+    selectedLayerId={selectedLayerId}
+    setHoverLayerId={setHoverLayerId}
+    hoverLayerId={hoverLayerId}
+    direction='landscape'
     layers={inputLayers}
     onOutputChange={onInputChange}
     videoRef={videoCanvasRef}
     renderVideo
+    withPadding
   />
   <VideoFooter 
     isPlaying={video.isPlaying}

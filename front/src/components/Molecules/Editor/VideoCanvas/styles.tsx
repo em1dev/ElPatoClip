@@ -7,8 +7,7 @@ export const CanvasContainer = styled.div`
   justify-content: center;
   canvas {
     position: absolute;
-    border-radius: 10px;
-    background-color: #252525;
+    background-color: transparent;
     max-width: 100%;
     max-height: 100%;
     margin: auto;

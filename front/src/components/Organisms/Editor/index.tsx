@@ -30,6 +30,8 @@ const VideoEditor = ({
   const video = useVideo(videoRef, cropTime, setSeekWithAnimation);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
+  const [hoverLayerId, setHoverLayerId] = useState<number | null>(null);
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -116,20 +118,27 @@ const VideoEditor = ({
         </S.ModalOverlay>
       )}
 
-
       <S.Container>
         <S.SideBySideContainer>
           <S.PotraitVideo>
             <VideoCanvas
-              toggleVideoPlayback={video.toggleVideoPlayback}
+              hoverLayerId={hoverLayerId}
+              selectedLayerId={selectedLayerId}
+              setHoverLayerId={setHoverLayerId}
+              setSelectedLayerId={setSelectedLayerId}
+              direction='portrait'
               onOutputChange={onOutputChange}
               layers={outputLayers}
               videoRef={videoCanvasRef}
-              videoResolution={{ height: 1920, width: 1080 }}
+              withPadding
             />         
           </S.PotraitVideo>
 
           <LeftContainer 
+            hoverLayerId={hoverLayerId}
+            selectedLayerId={selectedLayerId}
+            setHoverLayerId={setHoverLayerId}
+            setSelectedLayerId={setSelectedLayerId}
             cropTime={cropTime}
             inputLayers={inputLayers}
             onInputChange={onInputChange}

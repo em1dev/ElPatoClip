@@ -22,9 +22,7 @@ export const VideoExporter = ({
   const outputCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const {
-    seekTo, setPlayback, toggleVideoPlayback,
-  } = useVideo(videoRef, timeSlice);
+  const { seekTo, setPlayback } = useVideo(videoRef, timeSlice);
 
   const { outputUrl, record } = useCanvasRecording(outputCanvasRef, videoRef);
 
@@ -70,9 +68,13 @@ export const VideoExporter = ({
           <video controls src={outputUrl} />
         ) : (
           <VideoCanvas
+            withPadding={false}
             ref={outputCanvasRef}
-            videoResolution={{ width: 1080, height: 1920 }}
-            toggleVideoPlayback={toggleVideoPlayback}
+            direction='portrait'
+            hoverLayerId={null}
+            selectedLayerId={null}
+            setHoverLayerId={() => {}}
+            setSelectedLayerId={() => {}}
             layers={renderLayers}
             videoRef={canvasRef}
           />

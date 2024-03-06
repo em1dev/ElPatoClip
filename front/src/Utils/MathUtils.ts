@@ -1,4 +1,4 @@
-import { Point, Rect, Size } from "../types";
+import { Point, Rect } from "../types";
 
 const isInsideRect = (point: Point, rect: Rect) => (
   point.x >= rect.x &&
@@ -15,15 +15,6 @@ const isNearPoint = (point1: Point, point2:Point, threshold: number) => (
   (Math.abs(point1.x - point2.x) <= threshold) &&
   (Math.abs(point1.y - point2.y) <= threshold)
 );
-
-const convertToCanvasPoint = (resolution: Size, targetPoint: Point, canvas: HTMLCanvasElement) => {
-  const rect = canvas.getBoundingClientRect();
-
-  return {
-    x: targetPoint.x * resolution.width / rect.width,
-    y: targetPoint.y * resolution.height / rect.height
-  } satisfies Point
-};
 
 const secondsToReadableText = (value:number, includeMilliseconds: boolean = false) => {
   const secondsTotal = Math.floor(value);
@@ -71,12 +62,29 @@ export const calcualtedInputAspectRatioBasednOutput = (input: Rect, output: Rect
   return { width, height };
 }
 
+const addPosition = <T extends Point, U extends Point>(point1: T, point2: U): T => {
+  return {
+    ...point1,
+    x: point1.x + point2.x,
+    y: point1.y + point2.y
+  }
+}
+
+const subPosition = <T extends Point, U extends Point>(point1: T, point2: U): T => {
+  return {
+    ...point1,
+    x: point1.x - point2.x,
+    y: point1.y - point2.y
+  }
+}
+
 export const MathUtils = {
   clamp,
   isNearPoint,
   isInsideRect,
-  convertToCanvasPoint,
   secondsToReadableText,
   getNearestCorner,
-  calcualtedInputAspectRatioBasednOutput
+  calcualtedInputAspectRatioBasednOutput,
+  addPosition,
+  subPosition
 };
