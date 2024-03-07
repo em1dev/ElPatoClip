@@ -52,7 +52,7 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
     layersSortedAsc, canvasRef, canvasMetadata.videoResolution,
     selectedLayer, setSelectedLayerId, setHoverLayerId, canvasMetadata.padding, canvasMetadata.scalingFactor, onOutputChange);
 
-  const hoveredLayer = useCanvasHover(layersSortedDesc, hoverLayerId, canvasRef, setHoverLayerId, canvasMetadata.padding);
+  const hoveredLayer = useCanvasHover(layersSortedDesc, hoverLayerId, canvasRef, setHoverLayerId, canvasMetadata.padding, interacted !== null);
 
   useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(externalRef, () => {
     return canvasRef.current

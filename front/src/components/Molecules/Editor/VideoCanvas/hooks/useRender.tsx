@@ -103,11 +103,11 @@ export const useRender = (
     ctx.restore();
 
     if (hoveredLayer && !hasInteracted) {
-      CanvasUtils.renderCropArea(ctx, scalingFactor, hoveredLayer.output.rect, hoveredLayer.borderColor, false, false, padding);
+      CanvasUtils.renderCropArea(ctx, scalingFactor, hoveredLayer.output.rect, hoveredLayer.borderColor, false, padding);
     }
 
     if (selectedLayer) {
-      CanvasUtils.renderCropArea(ctx, scalingFactor, selectedLayer.output.rect, selectedLayer.borderColor, true, selectedLayer.shape !== 'circle', padding);
+      CanvasUtils.renderCropArea(ctx, scalingFactor, selectedLayer.output.rect, selectedLayer.borderColor, true, padding);
       renderResizeInformation(ctx, selectedLayer, scalingFactor, padding);
     }
 

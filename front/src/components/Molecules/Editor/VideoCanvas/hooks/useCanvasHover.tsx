@@ -10,6 +10,7 @@ export const useCanvasHover = (
   canvasRef: RefObject<HTMLCanvasElement>,
   setHoverLayerId: Dispatch<SetStateAction<number | null>>,
   padding: number,
+  disableHover: boolean
 ) => {
   const hoveredLayer = useMemo(() => layers.find(l => l.id === hoverLayerId), [hoverLayerId, layers]);
 
@@ -18,6 +19,7 @@ export const useCanvasHover = (
   }, [setHoverLayerId]));
 
   useEventListener<HTMLCanvasElement, MouseEvent>(canvasRef, 'mousemove', useCallback((e) => {
+    if (disableHover) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const point: Point = { x: e.offsetX, y: e.offsetY };
@@ -31,7 +33,7 @@ export const useCanvasHover = (
       return;
     }
     setHoverLayerId(null);
-  }, [layers, setHoverLayerId, canvasRef, padding]));
+  }, [layers, setHoverLayerId, canvasRef, padding, disableHover]));
 
   return hoveredLayer
 }
