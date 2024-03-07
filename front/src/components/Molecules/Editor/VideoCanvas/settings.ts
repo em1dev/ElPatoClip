@@ -4,7 +4,7 @@ export type VideoDirection = 'portrait' | 'landscape';
 
 export const MIN_CROP_SIZE = 100;
 export const RESIZE_HANLDER_RADIUS = 8;
-export const CANVAS_PADDING = 20;
+export const CANVAS_PADDING = 30;
 export const VIDEO_RESOLUTIONS: Record<VideoDirection, Size> = {
   landscape: {
     width: 1920,

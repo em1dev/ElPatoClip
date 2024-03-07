@@ -2,10 +2,25 @@ import { MathUtils } from "../../../../../Utils/MathUtils";
 import { LayerFilter, LayerShape, Point, Rect, Source } from "../../../../../types";
 import { RESIZE_HANLDER_RADIUS } from "../settings";
 
+const drawCircle = (ctx: CanvasRenderingContext2D, x: number, y: number, radius: number) => {
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, 2 * Math.PI);
+  ctx.closePath();
+  ctx.fill();
+}
+
 /**
  * Includes padding
  */
-const renderCropArea = (ctx: CanvasRenderingContext2D, scalingFactor: number, rect: Rect, color: string, withResizers: boolean, padding: number) => {
+const renderCropArea = (
+    ctx: CanvasRenderingContext2D,
+    scalingFactor: number,
+    rect: Rect,
+    color: string,
+    withResizers: boolean,
+    padding: number
+  ) => {
+
   const x = rect.x + padding;
   const y = rect.y + padding;
 
@@ -18,25 +33,11 @@ const renderCropArea = (ctx: CanvasRenderingContext2D, scalingFactor: number, re
 
   const radiusScaled = RESIZE_HANLDER_RADIUS * scalingFactor;
 
-  ctx.beginPath();
-  ctx.arc(x, y, radiusScaled, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(x, y + rect.height, radiusScaled, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(x + rect.width, y, radiusScaled, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(x + rect.width, y + rect.height, radiusScaled, 0, 2 * Math.PI);
-  ctx.closePath();
-  ctx.fill();
+  // resize handlers
+  drawCircle(ctx, x, y, radiusScaled);
+  drawCircle(ctx, x, y + rect.height, radiusScaled);
+  drawCircle(ctx, x + rect.width, y, radiusScaled);
+  drawCircle(ctx, x + rect.width, y + rect.height, radiusScaled);
 }
 
 const drawImageFromSource = (
