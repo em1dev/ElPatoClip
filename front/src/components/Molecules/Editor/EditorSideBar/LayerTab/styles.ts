@@ -4,7 +4,6 @@ import styled, { css } from "styled-components";
 export const LayerContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin: -1em;
 `;
 
 export const LayerButton = styled.button`

@@ -5,8 +5,8 @@ import { Layer, TimeSlice, Source } from '../../../types';
 import { VideoCanvas } from '../../Molecules/Editor/VideoCanvas';
 import { ExportModal } from '../../Pages/VideoEditorPage/ExportModal';
 import { useVideo } from '../../Pages/VideoEditorPage/useVideo';
-import { LayerEditor } from '../../Molecules/Editor/LayerEditor';
 import { LeftContainer } from './LeftContainer';
+import { EditorSideBar } from '../../Molecules/Editor/EditorSideBar';
 
 export interface VideoEditorProps {
   videoUrl: string,
@@ -150,7 +150,14 @@ const VideoEditor = ({
           />
 
         </S.SideBySideContainer>
-        <LayerEditor layers={layers} setLayer={setLayers} />
+        <S.SidePanelContainer>
+          <EditorSideBar 
+            layers={layers}
+            selectedLayerId={selectedLayerId}
+            setLayers={setLayers}
+            setSelectedLayerId={setSelectedLayerId}
+          />
+        </S.SidePanelContainer>
       </S.Container>
 
       <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />

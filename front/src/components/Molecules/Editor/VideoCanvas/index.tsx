@@ -64,8 +64,7 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
     if (!(target instanceof HTMLElement)) return;
     if (target.dataset.type === 'video-canvas') return;
     setHoverLayerId(null);
-    setSelectedLayerId(null);
-  }, [setHoverLayerId, setSelectedLayerId]));
+  }, [setHoverLayerId]));
 
   useRender(
     canvasRef, videoRef, canvasMetadata,

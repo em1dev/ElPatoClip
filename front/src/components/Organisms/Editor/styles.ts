@@ -37,6 +37,17 @@ export const Container = styled.div`
     // settings
   }
 `
+export const SidePanelContainer = styled.div`
+  height: 100vh;
+  min-height: 100vh;
+
+  max-width: 350px;
+  min-width: 350px;
+  > * {
+    width: 100%;
+  }
+`;
+
 export const SideBySideContainer = styled.div`
   align-items: center;
   overflow: hidden;

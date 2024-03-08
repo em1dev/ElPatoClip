@@ -8,7 +8,7 @@ export interface LayerTab extends ComponentAttributes {}
 
 export const LayerTab = ({
   layers,
-  onLayerChange,
+  onLayersChange,
   selectedLayerId,
   setSelectedLayerId
 }: LayerTab) => {
@@ -17,7 +17,7 @@ export const LayerTab = ({
   const updateLayer = (layerId: number, partialLayer: Partial<Layer>) => {
     const layer = layers.find(l => l.id === layerId);
     if (!layer) return;
-    onLayerChange([ 
+    onLayersChange([ 
       ...layers.filter(l => l.id !== layer.id),
       {
         ...layer,
@@ -38,10 +38,9 @@ export const LayerTab = ({
             selectedLayerId={selectedLayerId}
             setDragLayerId={setDragLayerId}
             setSelectedLayerId={setSelectedLayerId}
-            updateLayers={onLayerChange}
+            updateLayers={onLayersChange}
             updateLayer={updateLayer}
           />
-        
       ))}
     </S.LayerContainer>
   );

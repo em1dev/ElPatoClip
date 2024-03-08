@@ -5,10 +5,16 @@ const preview: Preview = {
   parameters: {
     backgrounds: {
       default: 'base',
-      values: [{
+      values: [
+      {
         name: 'base',
+        value: '#1A1A1A'
+      },
+      {
+        name: 'sidebar',
         value: '#2B2B2B'
-      }]
+      },
+    ]
     },
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {

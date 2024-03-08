@@ -9,7 +9,6 @@ export const TabContent = styled.div`
   background-color: #1A1A1A;
   border-left: solid #494949 1px;
   height: 100%;
-  padding: 1em;
 `;
 
 export const TabButtonContainer = styled.div`

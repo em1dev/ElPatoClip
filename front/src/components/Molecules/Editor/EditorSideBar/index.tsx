@@ -3,7 +3,7 @@ import * as S from './styles';
 import { useState } from "react"
 import { Layer } from "../../../../types"
 import { LayerTab } from './LayerTab';
-import { PlacementProperties } from './PropertiesTab/PlacementProperties';
+import { PropertiesTab } from './PropertiesTab';
 
 export interface EditorSideBarProps {
   layers: Array<Layer>
@@ -39,7 +39,7 @@ export const EditorSideBar = ({
       { selectedTab === Tabs.Layer && (
         <S.TabContent>
           <LayerTab 
-            onLayerChange={setLayers} 
+            onLayersChange={setLayers} 
             layers={layers} 
             selectedLayerId={selectedLayerId}
             setSelectedLayerId={setSelectedLayerId}
@@ -49,8 +49,8 @@ export const EditorSideBar = ({
 
       { selectedTab === Tabs.Properties && (
         <S.TabContent>
-          <PlacementProperties 
-            onLayerChange={setLayers} 
+          <PropertiesTab 
+            onLayersChange={setLayers} 
             layers={layers} 
             selectedLayerId={selectedLayerId}
             setSelectedLayerId={setSelectedLayerId}
