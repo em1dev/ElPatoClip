@@ -15,7 +15,7 @@ export const useCanvasRecording = (
 
     const options: MediaRecorderOptions = { 
       // TODO - check if is supported
-      mimeType: 'video/webm',
+      mimeType: 'video/webm; codecs=vp8',
       videoBitsPerSecond: 6000 * 1000, // max twitch bitrate,
     };
 
