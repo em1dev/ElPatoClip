@@ -144,7 +144,6 @@ export const useVideo = (
     setVolume,
     setPlayback,
     isPlaying,
-    setIsPlaying,
     isMuted,
     videoMetadata,
   };

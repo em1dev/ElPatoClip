@@ -1,12 +1,12 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import * as S from './styles';
 import { useRenderLoop } from '../../../hooks/useRenderLoop';
-import { Layer, TimeSlice, Source } from '../../../types';
-import { VideoCanvas } from '../../Molecules/Editor/VideoCanvas';
-import { ExportModal } from '../../Pages/VideoEditorPage/ExportModal';
+import { Layer, TimeSlice } from '../../../types';
 import { useVideo } from '../../Pages/VideoEditorPage/useVideo';
-import { LeftContainer } from './LeftContainer';
-import { EditorSideBar } from '../../Molecules/Editor/EditorSideBar';
+import { Content } from './Content';
+import { EditorHeader } from './Header';
+import { Footer } from './Footer';
+import { RightContainer } from './RightContainer';
 
 export interface VideoEditorProps {
   videoUrl: string,
@@ -29,7 +29,6 @@ const VideoEditor = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const video = useVideo(videoRef, cropTime, setSeekWithAnimation);
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [isExporting, setIsExporting] = useState<boolean>(false);
   const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
   const [hoverLayerId, setHoverLayerId] = useState<number | null>(null);
 
@@ -40,7 +39,6 @@ const VideoEditor = ({
     if (!ctx) return;
     ctx.drawImage(videoRef.current, 0, 0);
   }, []));
-
 
   useEffect(() => {
     const onKeyUp = (e: KeyboardEvent) => {
@@ -62,102 +60,37 @@ const VideoEditor = ({
     }
   }, [video]);
 
-  const onInputChange = (id: number, src: Source) => {
-    setLayers(prev => (
-      prev.map(i => i.id !== id ? i : {
-        ...i,
-        input: src
-      } satisfies Layer)
-    ));
-  };
-
-  const onOutputChange = (id: number, output: Source) => {
-    setLayers(prev => (
-      prev.map(i => i.id !== id ? i : {
-        ...i,
-        output: output
-      } satisfies Layer)
-    ));
-  }
-
-  const inputLayers: Array<Layer> = layers.map((item) => ({
-    ...item,
-    input: undefined,
-    output: item.input!,
-  }));
-
-  const outputLayers: Array<Layer> = layers.map((item) => ({
-    ...item,
-    output: item.output,
-    input: item.input
-  }));
-
-  const onRenderClick = () => {
-    onExport()
-    //setIsExporting(true);
-  }
-
-  // TODO - remove modal
-  const onCloseModalIsClicked = () => {
-    setIsExporting(false);
-  }
-
   return (
     <>
       <S.GlobalStyles />
 
-      {isExporting && (
-        <S.ModalOverlay>
-          <ExportModal 
-            closeModal={onCloseModalIsClicked}
-            videoUrl={videoUrl}
-            layers={layers}
-            endTime={cropTime.endTime}
-            startTime={cropTime.startTime}
-          />
-        </S.ModalOverlay>
-      )}
-
       <S.Container>
-        <S.SideBySideContainer>
-          <S.PotraitVideo>
-            <VideoCanvas
+        <EditorHeader onExportClick={onExport} />
+        <S.InnerContainer>
+          <S.CanvasContainer>
+            <Content
               hoverLayerId={hoverLayerId}
+              layers={layers}
               selectedLayerId={selectedLayerId}
               setHoverLayerId={setHoverLayerId}
+              setLayers={setLayers}
               setSelectedLayerId={setSelectedLayerId}
-              direction='portrait'
-              onOutputChange={onOutputChange}
-              layers={outputLayers}
-              videoRef={videoCanvasRef}
-              withPadding
-            />         
-          </S.PotraitVideo>
-
-          <LeftContainer 
-            hoverLayerId={hoverLayerId}
-            selectedLayerId={selectedLayerId}
-            setHoverLayerId={setHoverLayerId}
-            setSelectedLayerId={setSelectedLayerId}
-            cropTime={cropTime}
-            inputLayers={inputLayers}
-            onInputChange={onInputChange}
-            onRenderClick={onRenderClick}
-            seekWithAnimation={seekWithAnimation}
-            setCropTime={setCropTime}
-            videoCanvasRef={videoCanvasRef}
-            video={video}
-          />
-
-        </S.SideBySideContainer>
-        <S.SidePanelContainer>
-          <EditorSideBar 
+              videoCanvasRef={videoCanvasRef}
+            />
+            <Footer 
+              cropTime={cropTime}
+              video={video}
+              seekWithAnimation={seekWithAnimation}
+              setCropTime={setCropTime}
+            />
+          </S.CanvasContainer>
+          <RightContainer 
             layers={layers}
             selectedLayerId={selectedLayerId}
             setLayers={setLayers}
             setSelectedLayerId={setSelectedLayerId}
           />
-        </S.SidePanelContainer>
+        </S.InnerContainer>
       </S.Container>
 
       <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />

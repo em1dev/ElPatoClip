@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   overflow: auto;
   position: relative;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   justify-content: flex-end;
   height: 9em;

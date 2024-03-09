@@ -12,6 +12,7 @@ export const TabContent = styled.div`
 `;
 
 export const TabButtonContainer = styled.div`
+  background-color: #0B0B0B;
 `;
 
 export const TabButton = styled.button<{ $selected?: boolean }>`

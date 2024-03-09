@@ -23,10 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/editor/:clipId',
-    element:
-      <MainTemplate withHeader>
-        <VideoEditorPage />
-      </MainTemplate>
+    element: <VideoEditorPage />
   },
   {
     path: '/tos',

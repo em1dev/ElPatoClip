@@ -1,5 +1,4 @@
 import { useRef, MutableRefObject, useCallback, forwardRef, useImperativeHandle, useMemo } from 'react';
-import * as S from './styles';
 import { Layer, Source } from '../../../../types';
 import { useEventListener } from '../../../../hooks/useEventListener';
 import { VideoDirection } from './settings';
@@ -72,13 +71,11 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
     !!renderVideo, !!interacted);
 
   return (
-    <S.CanvasContainer>
-      <canvas 
-        data-type='video-canvas'
-        ref={canvasRef} 
-        width={canvasMetadata.canvasResolution.width}
-        height={canvasMetadata.canvasResolution.height}
-      />
-    </S.CanvasContainer>
+    <canvas 
+      data-type='video-canvas'
+      ref={canvasRef} 
+      width={canvasMetadata.canvasResolution.width}
+      height={canvasMetadata.canvasResolution.height}
+    />
   )
 })
