@@ -16,7 +16,7 @@ export const EditorHeader = ({
   return (
     <S.Container>
       <a onClick={onClick}>
-        <img width={20} src="/public/icons/MingcuteLeftFill.svg"></img>
+        <img width={20} src="/icons/MingcuteLeftFill.svg"></img>
         back
       </a>
 
