@@ -50,7 +50,7 @@ const drawImageFromSource = (
   padding: number) => {
 
   ctx.save();
-  const { height, width } = MathUtils.calcualtedInputAspectRatioBasednOutput(input.rect, output.rect);
+  const adjustedInput = MathUtils.calcualtedInputAspectRatioBasednOutput(input.rect, output.rect);
   const x = output.rect.x + padding;
   const y = output.rect.y + padding;
 
@@ -93,10 +93,10 @@ const drawImageFromSource = (
 
   ctx.drawImage(
     source,
-    input.rect.x,
-    input.rect.y,
-    width,
-    height,
+    adjustedInput.x,
+    adjustedInput.y,
+    adjustedInput.width,
+    adjustedInput.height,
     x,
     y,
     output.rect.width,

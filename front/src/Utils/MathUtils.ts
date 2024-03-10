@@ -59,7 +59,18 @@ export const calcualtedInputAspectRatioBasednOutput = (input: Rect, output: Rect
     width *= scaling2;
   }
 
-  return { width, height };
+  const centerPoint = { x: input.x + (input.width / 2), y: input.y + (input.height / 2) };
+  const centeredOrigin = MathUtils.subPosition(centerPoint, {
+    x: width / 2,
+    y: height /2
+  });
+
+  return { 
+    x: centeredOrigin.x,
+    y: centeredOrigin.y,
+    width, 
+    height 
+  };
 }
 
 const addPosition = <T extends Point, U extends Point>(point1: T, point2: U): T => {
