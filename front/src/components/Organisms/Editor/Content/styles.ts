@@ -29,4 +29,3 @@ export const Potrait = styled(CanvasContainer)`
 export const Landscape = styled(CanvasContainer)`
   aspect-ratio: 16/9;
 `
-

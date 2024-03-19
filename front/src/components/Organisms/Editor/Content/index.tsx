@@ -66,8 +66,16 @@ export const Content = ({
 
     // if only landscape is visible
     if (landscapeContainerRef.current && !potraitContainerRef.current) {
+      const calculatedHeight = ((width / 16) * 9);
+      if (calculatedHeight > height) {
+        landscapeContainerRef.current.style.height = height + 'px';
+        landscapeContainerRef.current.style.width = '';
+        return;
+      }
+
       landscapeContainerRef.current.style.height = '';
       landscapeContainerRef.current.style.width = width + 'px';
+      return;
     }
 
     // if both are visible

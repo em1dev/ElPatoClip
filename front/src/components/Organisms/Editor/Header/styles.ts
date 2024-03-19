@@ -22,7 +22,7 @@ export const CanvasSelectionContainer = styled.div`
 export const CanvasSelectionButton = styled.button<{ selected: boolean }>`
   background-color: ${({ selected }) => selected ? "#313131" : "transparent"};
   &:hover {
-    background-color: #313131;
+    background-color: #272727;
   }
   cursor: pointer;
   border: none;
