@@ -13,6 +13,7 @@ export const useVideo = (
   const animationTimeoutId = useRef<null | NodeJS.Timeout>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [volumeInternal, setVolumeInternal] = useState<number>(1);
 
   const [videoMetadata, setVideoMetadata] = useState<{
     currentTime: number,
@@ -47,6 +48,7 @@ export const useVideo = (
     const onStop = () => { setIsPlaying(false); };
     const onVolumeChange = () => { 
       setIsMuted(!!videoRef.current?.muted);
+      setVolumeInternal(videoRef.current?.volume ?? 1);
     };
 
     video.addEventListener('play', onPlay);
@@ -146,5 +148,6 @@ export const useVideo = (
     isPlaying,
     isMuted,
     videoMetadata,
+    volume: volumeInternal,
   };
 }; 

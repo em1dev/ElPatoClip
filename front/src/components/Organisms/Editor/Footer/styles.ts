@@ -34,3 +34,8 @@ export const TimelineContainer = styled.div`
     max-width: 100%;
   }
 `;
+
+export const VolumeContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;

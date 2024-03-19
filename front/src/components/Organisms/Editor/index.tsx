@@ -84,6 +84,8 @@ const VideoEditor = ({
               videoCanvasRef={videoCanvasRef}
             />
             <Footer 
+              setVolume={video.setVolume}
+              volume={video.volume}
               cropTime={cropTime}
               video={video}
               seekWithAnimation={seekWithAnimation}

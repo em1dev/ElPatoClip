@@ -10,14 +10,18 @@ export interface FooterProps {
   seekWithAnimation: boolean,
   video: ReturnType<typeof useVideo>,
   cropTime: TimeSlice,
-  setCropTime: (value: TimeSlice) => void
+  setCropTime: (value: TimeSlice) => void,
+  volume: number,
+  setVolume: (value: number) => void,
 }
 
 export const Footer = ({
   seekWithAnimation,
   video,
   cropTime,
-  setCropTime
+  setCropTime,
+  setVolume,
+  volume
 }: FooterProps) => (
   <S.Container>
     <div>
@@ -38,11 +42,23 @@ export const Footer = ({
         onToStartClicked={video.seekToStart}
         setIsPlaying={video.setPlayback}
       />
-      <ButtonIcon 
-        onClick={video.toggleMute} 
-        alt="toggle mute"
-        iconName={video.isMuted ? 'MingcuteVolumeMuteFill.svg' : 'MingcuteVolumeFill.svg'}
-      />
+
+      <S.VolumeContainer>
+        <input 
+          type="range" 
+          min={0} 
+          max={10} 
+          step={1} 
+          value={volume * 10}
+          onChange={(e) => setVolume(parseInt(e.target.value) / 10)}
+        />
+
+        <ButtonIcon 
+          onClick={video.toggleMute} 
+          alt="toggle mute"
+          iconName={video.isMuted ? 'MingcuteVolumeMuteFill.svg' : 'MingcuteVolumeFill.svg'}
+        />
+      </S.VolumeContainer>
     </div>
 
     <S.TimelineContainer>
