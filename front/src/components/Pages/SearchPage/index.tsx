@@ -91,7 +91,7 @@ const SearchPage = () => {
 
       <S.CenterSection>
         <h2>What is El Pato Clip</h2>
-        <p>An open source project developed by streamers to met streamers needs. 100% free and open source with no watermark</p>
+        <p>An open source project developed by streamers to meet streamers needs. 100% free and open source with no watermark</p>
         <p>Offers more functionality than the existing Twitch clip editor, while remaining free with more features planned</p>
       </S.CenterSection>
 
@@ -104,8 +104,8 @@ const SearchPage = () => {
             <S.Anchor href="https://twitch.tv/patitodev">twitch.tv/patitodev</S.Anchor>
           </div>
           <div>
-            <p>El Pato Clip is an open source project actively maintained by PatitoDev, development of el pato clip can be seen on their twitch channel.</p>
-            <p>Everyone is welcomed to contribute and suggest ideas.</p>
+            <p>El Pato Clip is an open source project actively maintained by PatitoDev, development of el pato clip can be seen on their twitch channel</p>
+            <p>Everyone is welcomed to contribute and suggest ideas</p>
           </div>
         </S.AboutSectionContent>
       </S.AboutMeSection>
