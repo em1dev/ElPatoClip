@@ -14,3 +14,19 @@ export const Container = styled.header`
     }
   }
 `;
+
+export const CanvasSelectionContainer = styled.div`
+  display: flex;
+`;
+
+export const CanvasSelectionButton = styled.button<{ selected: boolean }>`
+  background-color: ${({ selected }) => selected ? "#313131" : "transparent"};
+  &:hover {
+    background-color: #313131;
+  }
+  cursor: pointer;
+  border: none;
+  img {
+    height: 60px;
+  }
+`;

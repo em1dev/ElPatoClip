@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import * as S from './styles';
 import { useRenderLoop } from '../../../hooks/useRenderLoop';
-import { Layer, TimeSlice } from '../../../types';
+import { Layer, TimeSlice, VisibleCanvas } from '../../../types';
 import { useVideo } from '../../Pages/VideoEditorPage/useVideo';
 import { Content } from './Content';
 import { EditorHeader } from './Header';
@@ -31,6 +31,7 @@ const VideoEditor = ({
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
   const [hoverLayerId, setHoverLayerId] = useState<number | null>(null);
+  const [visibleCanvases, setVisibleCanvases] = useState<VisibleCanvas>("both");
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -65,10 +66,15 @@ const VideoEditor = ({
       <S.GlobalStyles />
 
       <S.Container>
-        <EditorHeader onExportClick={onExport} />
+        <EditorHeader 
+          selectedVisbleCanvas={visibleCanvases}
+          onSelectedVisibleCanvas={setVisibleCanvases}
+          onExportClick={onExport}
+        />
         <S.InnerContainer>
           <S.CanvasContainer>
             <Content
+              visibleCanvases={visibleCanvases}
               hoverLayerId={hoverLayerId}
               layers={layers}
               selectedLayerId={selectedLayerId}

@@ -5,6 +5,8 @@ export type Point = { x: number, y: number };
 
 export interface Rect extends Point, Size {}
 
+export type VisibleCanvas = 'landscape' | 'potrait' | 'both';
+
 export type LayerShape = 'circle' | 'round-rectangle' | 'rectangle';
 
 export type LayerFilter = 'blur' | 'none';
