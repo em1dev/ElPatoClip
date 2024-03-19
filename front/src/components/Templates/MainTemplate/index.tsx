@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import * as S from "./styles";
 import { useState } from "react";
-import { AiOutlineClose, AiOutlineMenu } from "react-icons/ai";
 
 export interface MainTemplateProps {
   children: React.ReactNode;
@@ -9,13 +8,13 @@ export interface MainTemplateProps {
 }
 
 const MainTemplate = (props: MainTemplateProps) => {
-  const [nav, setNav] = useState(false);
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   const handleNav = () => {
-    setNav(!nav);
+    setIsNavOpen(!isNavOpen);
   };
   const handleLinkClick = () => {
-    setNav(false);
+    setIsNavOpen(false);
   };
 
   return (
@@ -44,19 +43,19 @@ const MainTemplate = (props: MainTemplateProps) => {
             </S.Links>
 
             <S.BurgerIcon>
-              <div onClick={handleNav}>
-                {nav ? (
+              <button onClick={handleNav}>
+                {isNavOpen ? (
                   <>
-                    <AiOutlineClose size={20} />
+                    <img width={20} src="/icons/MingcuteCloseFill.svg"></img>
                   </>
                 ) : (
-                  <AiOutlineMenu size={20} />
+                  <img width={20} src="/icons/MingcuteMenuFill.svg"></img>
                 )}
-              </div>
+              </button>
             </S.BurgerIcon>
           </S.Header>
 
-          {nav && (
+          {isNavOpen && (
             <S.BurgerMenu>
               <Link to="/privacy" onClick={handleLinkClick}>
                 Privacy

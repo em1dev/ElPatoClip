@@ -62,6 +62,10 @@ export const BurgerIcon = styled.div`
   display: none !important;
   @media (max-width: 768px) {
     display: flex !important;
+    button {
+      background-color: transparent;
+      border: none;
+    }
   }
 `;
 
