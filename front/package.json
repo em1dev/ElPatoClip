@@ -17,6 +17,7 @@
     "@ffmpeg/ffmpeg": "0.11.5",
     "@react-hook/resize-observer": "^1.2.6",
     "@types/styled-components": "^5.1.34",
+    "fix-webm-duration": "^1.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.0",

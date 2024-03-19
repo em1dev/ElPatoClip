@@ -1,3 +1,4 @@
+import fixWebmDuration from "fix-webm-duration";
 import { RefObject, useCallback, useState } from "react";
 
 export const useCanvasRecording = (
@@ -20,7 +21,6 @@ export const useCanvasRecording = (
     };
 
     const canvasStream = canvasRef.current.captureStream(60);
-
 
     const videoAsCompatibleMedia = (videoRef.current as unknown as {
       captureStream?: (fps: number) => MediaStream
@@ -71,8 +71,10 @@ export const useCanvasRecording = (
         type: "video/webm",
       });
 
-      const url = URL.createObjectURL(blob);
-      setOutputUrl(url);
+      fixWebmDuration(blob, duration, (videoFixedBlob) => {
+        const url = URL.createObjectURL(videoFixedBlob);
+        setOutputUrl(url);
+      });
     };
     recorder.start();
 
