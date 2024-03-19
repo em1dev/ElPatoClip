@@ -10,7 +10,7 @@ export const HeaderContainer = styled.header`
   width: 100%;
   position: fixed;
   top: 0;
-  background-color: #1A1A1A;
+  background-color: #1a1a1a;
   z-index: 2;
 `;
 
@@ -28,7 +28,7 @@ export const Header = styled.div`
     display: flex;
     gap: 0.8em;
   }
-`
+`;
 
 export const Links = styled.div`
   display: flex;
@@ -45,6 +45,9 @@ export const Links = styled.div`
       transform: translateY(5px);
     }
   }
+  @media (max-width: 768px) {
+    display: none !important;
+  }
 `;
 
 export const HeaderLogo = styled(Link)`
@@ -53,4 +56,26 @@ export const HeaderLogo = styled(Link)`
   align-items: center;
   justify-content: center;
   gap: 0.5em;
+`;
+
+export const BurgerIcon = styled.div`
+  display: none !important;
+  @media (max-width: 768px) {
+    display: flex !important;
+  }
+`;
+
+export const BurgerMenu = styled.div`
+  background-color: #282929;
+  border-radius: 0.5em;
+  margin-top: -1.5em;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  right: 2em;
+  padding: 0.5em 2em 0.5em 2em;
+  @media (min-width: 768px) {
+    display: none !important;
+  }
 `;
