@@ -76,9 +76,10 @@ export const BurgerMenu = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
+  text-align: center;
   gap: 1em;
-  right: 2em;
-  padding: 0.5em 2em 0.5em 2em;
+  width: 100%;
+  padding: 1em;
   @media (min-width: 768px) {
     display: none !important;
   }
