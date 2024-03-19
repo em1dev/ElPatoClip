@@ -23,11 +23,6 @@ export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  > div {
-    display: flex;
-    gap: 0.8em;
-  }
 `;
 
 export const Links = styled.div`
@@ -46,7 +41,7 @@ export const Links = styled.div`
     }
   }
   @media (max-width: 768px) {
-    display: none !important;
+    display: none;
   }
 `;
 
@@ -59,9 +54,9 @@ export const HeaderLogo = styled(Link)`
 `;
 
 export const BurgerIcon = styled.div`
-  display: none !important;
+  display: none;
   @media (max-width: 768px) {
-    display: flex !important;
+    display: flex;
     button {
       background-color: transparent;
       border: none;
@@ -76,6 +71,7 @@ export const BurgerMenu = styled.div`
   background-color: #1a1a1a;
   border-radius: 0.5em;
   margin-top: -1.5em;
+
   position: inline;
   display: flex;
   flex-direction: column;
@@ -84,6 +80,9 @@ export const BurgerMenu = styled.div`
   width: 100%;
   height: 100vh;
   padding: 2em;
+  a {
+    padding: 1.5em;
+  }
   @media (min-width: 768px) {
     display: none;
   }
