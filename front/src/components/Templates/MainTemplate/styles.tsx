@@ -66,21 +66,25 @@ export const BurgerIcon = styled.div`
       background-color: transparent;
       border: none;
     }
+    button:hover {
+      cursor: pointer;
+    }
   }
 `;
 
 export const BurgerMenu = styled.div`
-  background-color: #282929;
+  background-color: #1a1a1a;
   border-radius: 0.5em;
   margin-top: -1.5em;
-  position: absolute;
+  position: inline;
   display: flex;
   flex-direction: column;
   text-align: center;
-  gap: 1em;
+  gap: 3em;
   width: 100%;
-  padding: 1em;
+  height: 100vh;
+  padding: 2em;
   @media (min-width: 768px) {
-    display: none !important;
+    display: none;
   }
 `;

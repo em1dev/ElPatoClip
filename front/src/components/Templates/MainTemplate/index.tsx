@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import * as S from "./styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface MainTemplateProps {
   children: React.ReactNode;
@@ -16,6 +16,14 @@ const MainTemplate = (props: MainTemplateProps) => {
   const handleLinkClick = () => {
     setIsNavOpen(false);
   };
+
+  useEffect(() => {
+    if (isNavOpen) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+  }, [isNavOpen]);
 
   return (
     <>
@@ -43,14 +51,14 @@ const MainTemplate = (props: MainTemplateProps) => {
             </S.Links>
 
             <S.BurgerIcon>
-              <button onClick={handleNav}>
-                {isNavOpen ? (
-                  <>
-                    <img width={20} src="/icons/MingcuteCloseFill.svg"></img>
-                  </>
-                ) : (
-                  <img width={20} src="/icons/MingcuteMenuFill.svg"></img>
-                )}
+              <button type="button" title="Toggle Menu" onClick={handleNav}>
+                <img
+                  width={22}
+                  src={`/icons/${
+                    isNavOpen ? "MingcuteCloseFill.svg" : "MingcuteMenuFill.svg"
+                  }`}
+                  alt={`${isNavOpen ? "close menu" : "open menu"}`}
+                ></img>
               </button>
             </S.BurgerIcon>
           </S.Header>
