@@ -86,7 +86,7 @@ const SearchPage = () => {
 
           <p><i>100% Free, Open source and no watermark</i></p>
         </div>
-        <img src="/imgs/EditorPreview.png"/>
+        <img alt="editor preview" src="/imgs/EditorPreview.png"/>
       </S.SearchSection>
 
       <S.CenterSection>
@@ -99,7 +99,7 @@ const SearchPage = () => {
         <h2>Who is behind El Pato Clip</h2>
         <S.AboutSectionContent>
           <div>
-            <img width={100} src="/imgs/ProfilePic.png" />
+            <img alt="patitodev" width={100} src="/imgs/ProfilePic.png" />
             <p>Patito Dev</p>
             <S.Anchor href="https://twitch.tv/patitodev">twitch.tv/patitodev</S.Anchor>
           </div>
