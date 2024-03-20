@@ -1,19 +1,14 @@
 import { keyframes, styled } from "styled-components";
 
 export const Page = styled.div`
-  max-width: 90em;
-  margin: auto;
-  padding: 2em;
 `;
 
 export const Header = styled.div`
-  padding: 0.5em 1.5em;
 `;
 
 export const Container = styled.div`
   display: grid;
   gap: 3em;
-  padding: 0.5em;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 `
 
@@ -38,8 +33,9 @@ export const ModalOverlay = styled.div`
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
   > div {
-    max-width: 80%;
-    max-height: 80%;
+    margin: 1em;
+    max-width: 100%;
+    max-height: 100%;
   }
   animation: ${fadeIn} 0.2s ease-in-out;
 `;
@@ -47,7 +43,7 @@ export const ModalOverlay = styled.div`
 export const LoadingContainer = styled.div`
   display: flex;
   width: 100%;
-  padding: 1em;
+  padding: 2em;
   justify-content: center;
   align-items: center;
 `;
@@ -70,11 +66,13 @@ export const ProfileDetails = styled.div`
 `;
 
 export const FilterContainer = styled.div`
-  padding: 0.5em 0;
+  white-space: nowrap;
+  padding: 0.5em 2.5em 0.5em 0.5em;
+  margin-left: -0.5em;
   display: flex;
-  flex-wrap: wrap;
   gap: 0.5em;
-  align-items: center;
+  overflow: auto;
+  max-width: 100%;
 `;
 
 export const InfoLabel = styled.div`

@@ -61,7 +61,12 @@ const ClipPage = () => {
     })();
   }, [channelId]);
 
-  const loadPage = useCallback(async (cursor?: string, startDate?: string) => {
+  const loadPage = useCallback(async (
+    cursor?: string,
+    startDate?: string,
+    cancellationToken?: { shouldCancel: boolean }
+  ) => {
+
     if (!channelId) return;
     setIsLoading(true);
 
@@ -71,6 +76,7 @@ const ClipPage = () => {
       startedAt: startDate
     });
 
+    if (cancellationToken?.shouldCancel) return;
     setClips((prev) => ({
       data: [...prev?.data ?? [], ...resp.data],
       pagination: resp.pagination,
@@ -79,11 +85,16 @@ const ClipPage = () => {
   }, [channelId]);
 
   useEffect(() => {
+    const cancellationToken = { shouldCancel: false };
     (async () => {
       setClips(null);
       const startDate = generateFilter(selectedFilter).startDate;
-      await loadPage(undefined, startDate);
+      await loadPage(undefined, startDate, cancellationToken);
     })();
+
+    return () => {
+      cancellationToken.shouldCancel = true;
+    }
   }, [loadPage, selectedFilter]);
 
   const loaderTriggerRef = useOnIntersection<HTMLButtonElement>(useCallback(() => {
@@ -96,6 +107,12 @@ const ClipPage = () => {
   }, [clips, loadPage, selectedFilter, isLoading]));
 
   useEffect(() => {
+    if (selectedClip) {
+      document.body.classList.add("menu-open");
+    } else {
+      document.body.classList.remove("menu-open");
+    }
+    
     const el = modalContainerRef.current;
     const onBodyClick = (e: MouseEvent) => {
       if (!selectedClip) return;
@@ -113,26 +130,26 @@ const ClipPage = () => {
     <S.Page>
     { channelDetails && (
       <S.Header>
-          <S.ProfileDetails>
-            <img alt={`${channelDetails.display_name}`} src={channelDetails.profile_image_url} />
-            <div>{channelDetails.display_name}</div>
-          </S.ProfileDetails>
+        <S.ProfileDetails>
+          <img alt={`${channelDetails.display_name}`} src={channelDetails.profile_image_url} />
+          <div>{channelDetails.display_name}</div>
+        </S.ProfileDetails>
 
-          <S.FilterContainer>
-            <span>Best of</span>
-            <Button 
-              onClick={() => setSelectedFilter('all time')} 
-              theme={selectedFilter === 'all time' ? 'light' : 'dark'}
-            >All time</Button>
-            <Button 
-              onClick={() => setSelectedFilter('24 hours')} 
-              theme={selectedFilter === '24 hours' ? 'light' : 'dark'}
-            >Last 24 hours</Button>
-            <Button 
-              onClick={() => setSelectedFilter('last 7 days')} 
-              theme={selectedFilter === 'last 7 days' ? 'light' : 'dark'}
-            >Last 7 Days</Button>
-          </S.FilterContainer>
+        <div>Best of</div>
+        <S.FilterContainer>
+          <Button 
+            onClick={() => setSelectedFilter('all time')} 
+            theme={selectedFilter === 'all time' ? 'light' : 'dark'}
+          >All time</Button>
+          <Button 
+            onClick={() => setSelectedFilter('24 hours')} 
+            theme={selectedFilter === '24 hours' ? 'light' : 'dark'}
+          >Last 24 hours</Button>
+          <Button 
+            onClick={() => setSelectedFilter('last 7 days')} 
+            theme={selectedFilter === 'last 7 days' ? 'light' : 'dark'}
+          >Last 7 Days</Button>
+        </S.FilterContainer>
       </S.Header>
     )}
 

@@ -1,24 +1,29 @@
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+
+const CommonLayout = css`
+  margin: auto;
+  max-width: 100em;
+  padding: 0 2em;
+  width: 100%;
+`;
 
 export const Container = styled.main`
-  margin: 1em;
-  margin-top: 2em;
+  ${CommonLayout}
+  margin-top: 4em;
 `;
 
 export const HeaderContainer = styled.header`
   width: 100%;
   position: fixed;
   top: 0;
-  background-color: #1a1a1a;
   z-index: 2;
 `;
 
 export const Header = styled.div`
-  margin: auto;
-  max-width: 90em;
-  padding: 0 2em;
-  width: 100%;
+  ${CommonLayout}
+
+  background-color: #1a1a1a;
   height: 5em;
   display: flex;
   align-items: center;
@@ -32,12 +37,11 @@ export const Links = styled.div`
   a {
     color: #adadad;
     text-decoration: none;
-    transition: transform 0.3s ease-in-out;
-    transform: translateY(0px);
     padding: 1em 0.2em 0 0.2em;
+    text-underline-offset: 0.4em;
     &:hover {
       color: white;
-      transform: translateY(5px);
+      text-decoration: underline;
     }
   }
   @media (max-width: 768px) {
@@ -67,18 +71,24 @@ export const BurgerIcon = styled.div`
   }
 `;
 
-export const BurgerMenu = styled.div`
-  background-color: #1a1a1a;
-  border-radius: 0.5em;
-  margin-top: -1.5em;
+export const BurgerMenu = styled.div<{ $isOpen: boolean }>`
+  overflow: auto;
+  position: absolute;
+  height: calc(100vh - 5em);
 
-  position: inline;
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(100vw);
+
+  ${({ $isOpen }) => $isOpen && css`
+    transform: translateX(0);
+  `}
+
+  background-color: #1a1a1a;
   display: flex;
   flex-direction: column;
   text-align: center;
-  gap: 3em;
+  gap: 2em;
   width: 100%;
-  height: 100vh;
   padding: 2em;
   a {
     padding: 1.5em;

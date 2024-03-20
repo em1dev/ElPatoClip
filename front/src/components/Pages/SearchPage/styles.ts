@@ -2,12 +2,11 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Page = styled.div`
-  font-size: 1.2em;
   display: flex;
   flex-direction: column;
-  margin: 1em;
   gap: 1em;
   > * {
+    font-size: 1.2em;
     flex: 1 100%;
   }
 
@@ -44,6 +43,10 @@ export const Page = styled.div`
 
   section {
     margin-bottom: 5em;
+
+    @media (max-width: 768px) {
+      margin-bottom: 3em;
+    }
   }
 `;
 
@@ -56,16 +59,22 @@ export const Anchor = styled.a`
 `;
 
 export const SearchSection = styled.section`
-  padding-top: 10em;
+  padding-top: 7em;
+  @media (max-width: 768px) {
+    padding-top: 3em;
+  }
   flex: 1 100%;
   min-height: 100%;
   display: flex;
   flex-direction: row;
   margin: auto;
-  gap: 5em;
+  gap: 1em;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  > * {
+    margin: auto;
+  }
   > img {
     width: calc(min(700px, 100%));
   }
@@ -154,6 +163,7 @@ export const SearchResultItem = styled(Link)`
   align-items: center;
   gap: 1em;
   padding: 0.8em 1em;
+
   img {
     width: 5ch;
     aspect-ratio: 1 / 1;

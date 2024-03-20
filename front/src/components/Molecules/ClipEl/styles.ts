@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
 export const Container = styled.button`
+  &:focus-within {
+    outline: solid 2px #d3d3d3;
+  }
+
   font-family: inherit;
   border: none;
   outline: none;

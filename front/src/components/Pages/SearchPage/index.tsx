@@ -76,7 +76,7 @@ const SearchPage = () => {
               {
                 recentItems.map((item) => (
                   <S.SearchResultItem to={`/clips/${item.id}`} key={item.id}>
-                    <img alt={item.displayName} src={item.profileImg} />
+                    <img alt="" src={item.profileImg} />
                     {item.displayName}
                   </S.SearchResultItem>
                 ))
@@ -99,7 +99,7 @@ const SearchPage = () => {
         <h2>Who is behind El Pato Clip</h2>
         <S.AboutSectionContent>
           <div>
-            <img alt="patitodev" width={100} src="/imgs/ProfilePic.png" />
+            <img alt="patitodev logo" width={100} src="/imgs/ProfilePic.png" />
             <p>Patito Dev</p>
             <S.Anchor href="https://twitch.tv/patitodev">twitch.tv/patitodev</S.Anchor>
           </div>

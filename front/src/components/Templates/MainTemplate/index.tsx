@@ -32,7 +32,7 @@ const MainTemplate = (props: MainTemplateProps) => {
           <S.Header>
             <div>
               <S.HeaderLogo to="/">
-                <img height={23} src="/icons/loading.png" alt="el pato clip" />
+                <img height={23} src="/icons/loading.png" alt="" />
                 El Pato Clip
               </S.HeaderLogo>
             </div>
@@ -63,30 +63,36 @@ const MainTemplate = (props: MainTemplateProps) => {
             </S.BurgerIcon>
           </S.Header>
 
-          {isNavOpen && (
-            <S.BurgerMenu>
-              <Link to="/privacy" onClick={handleLinkClick}>
-                Privacy
-              </Link>
-              <Link to="/tos" onClick={handleLinkClick}>
-                ToS
-              </Link>
-              <Link
-                target="_blank"
-                to="https://github.com/Niv3K-El-Pato/ElPatoClip"
-                onClick={handleLinkClick}
-              >
-                Source Code
-              </Link>
-              <Link
-                target="_blank"
-                to="https://ko-fi.com/niv3k_el_pato"
-                onClick={handleLinkClick}
-              >
-                Support Me :3
-              </Link>
-            </S.BurgerMenu>
-          )}
+          <S.BurgerMenu aria-hidden={!isNavOpen} $isOpen={isNavOpen}>
+            <Link 
+              tabIndex={!isNavOpen ? -1 : undefined}
+              to="/privacy" 
+              onClick={handleLinkClick}>
+              Privacy
+            </Link>
+            <Link 
+              tabIndex={!isNavOpen ? -1 : undefined}
+              to="/tos"
+              onClick={handleLinkClick}>
+              ToS
+            </Link>
+            <Link
+              tabIndex={!isNavOpen ? -1 : undefined}
+              target="_blank"
+              to="https://github.com/Niv3K-El-Pato/ElPatoClip"
+              onClick={handleLinkClick}
+            >
+              Source Code
+            </Link>
+            <Link
+              tabIndex={!isNavOpen ? -1 : undefined}
+              target="_blank"
+              to="https://ko-fi.com/niv3k_el_pato"
+              onClick={handleLinkClick}
+            >
+              Support Me :3
+            </Link>
+          </S.BurgerMenu>
         </S.HeaderContainer>
       )}
 
