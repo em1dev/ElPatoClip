@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import * as S from "./styles";
-import { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
+import * as S from './styles';
+import { useEffect, useState } from 'react';
 
 export interface MainTemplateProps {
   children: React.ReactNode;
@@ -19,9 +19,9 @@ const MainTemplate = (props: MainTemplateProps) => {
 
   useEffect(() => {
     if (isNavOpen) {
-      document.body.classList.add("menu-open");
+      document.body.classList.add('menu-open');
     } else {
-      document.body.classList.remove("menu-open");
+      document.body.classList.remove('menu-open');
     }
   }, [isNavOpen]);
 
@@ -55,9 +55,9 @@ const MainTemplate = (props: MainTemplateProps) => {
                 <img
                   width={22}
                   src={`/icons/${
-                    isNavOpen ? "MingcuteCloseFill.svg" : "MingcuteMenuFill.svg"
+                    isNavOpen ? 'MingcuteCloseFill.svg' : 'MingcuteMenuFill.svg'
                   }`}
-                  alt={`${isNavOpen ? "close menu" : "open menu"}`}
+                  alt={`${isNavOpen ? 'close menu' : 'open menu'}`}
                 ></img>
               </button>
             </S.BurgerIcon>

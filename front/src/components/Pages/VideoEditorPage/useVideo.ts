@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useRenderLoop } from "../../../hooks/useRenderLoop";
-import { TimeSlice } from "../../../types";
-import { MathUtils } from "../../../Utils/MathUtils";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useRenderLoop } from '../../../hooks/useRenderLoop';
+import { TimeSlice } from '../../../types';
+import { MathUtils } from '../../../Utils/MathUtils';
 
 const SHORT_SKIP_IN_SECONDS = 3;
 
@@ -9,7 +9,7 @@ export const useVideo = (
   videoRef: React.RefObject<HTMLVideoElement>,
   timeSlice: TimeSlice,
   setSeekWithAnimation?: (value: boolean) => void,
-  ) => {
+) => {
   const animationTimeoutId = useRef<null | NodeJS.Timeout>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isMuted, setIsMuted] = useState<boolean>(false);
@@ -23,7 +23,7 @@ export const useVideo = (
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    const time = video.currentTime
+    const time = video.currentTime;
     video.currentTime = MathUtils.clamp(time, timeSlice.startTime, timeSlice.endTime);
   }, [timeSlice, videoRef]);
 
@@ -38,7 +38,7 @@ export const useVideo = (
     setVideoMetadata({
       currentTime: videoRef.current.currentTime,
       totalTime: videoRef.current.duration
-    })
+    });
   }, [videoRef, timeSlice]));
 
   useEffect(() => {
@@ -60,7 +60,7 @@ export const useVideo = (
       video.removeEventListener('ended', onStop);
       video.removeEventListener('pause', onStop);
       video.removeEventListener('volumechange', onVolumeChange);
-    }
+    };
   }, [videoRef]);
 
   const setPlayback = useCallback((value: boolean) => {
@@ -72,7 +72,7 @@ export const useVideo = (
     if (!videoRef.current) return;
 
     if (videoRef.current.paused) {
-      videoRef.current.play()
+      videoRef.current.play();
       return;
     }
     videoRef.current.pause();
@@ -84,7 +84,7 @@ export const useVideo = (
     videoRef.current.currentTime = (
       MathUtils.clamp(Math.min(value,
         videoRef.current.duration - 0.1),
-        timeSlice.startTime, timeSlice.endTime)
+      timeSlice.startTime, timeSlice.endTime)
     );
 
     if (!animate) return;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.header`
   display: flex;
@@ -20,7 +20,7 @@ export const CanvasSelectionContainer = styled.div`
 `;
 
 export const CanvasSelectionButton = styled.button<{ selected: boolean }>`
-  background-color: ${({ selected }) => selected ? "#313131" : "transparent"};
+  background-color: ${({ selected }) => selected ? '#313131' : 'transparent'};
   &:hover {
     background-color: #272727;
   }

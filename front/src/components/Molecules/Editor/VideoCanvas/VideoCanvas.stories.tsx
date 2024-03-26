@@ -11,7 +11,7 @@ const meta = {
   component: VideoCanvas,
   parameters: { },
   tags: ['autodocs'],
-} satisfies Meta<typeof VideoCanvas>
+} satisfies Meta<typeof VideoCanvas>;
 
 export default meta;
 type Story = StoryObj;
@@ -47,7 +47,7 @@ export const Primary: Story = {
           output: output
         } satisfies Layer)
       ));
-    }
+    };
 
     return (
       <Container>
@@ -64,6 +64,6 @@ export const Primary: Story = {
           onOutputChange,
         }} />
       </Container>
-      )
+    );
   }]
 };

@@ -9,7 +9,7 @@ const meta = {
   component: EditorSideBar,
   parameters: { },
   tags: ['autodocs'],
-} satisfies Meta<typeof EditorSideBar>
+} satisfies Meta<typeof EditorSideBar>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -25,7 +25,7 @@ export const Primary: Story = {
 
     return (
       <Story args={{ layers, setLayers, setSelectedLayerId, selectedLayerId }} />
-      )
+    );
   }]
 };
 
@@ -47,6 +47,6 @@ export const LongList: Story = {
 
     return (
       <Story args={{ layers, setLayers, setSelectedLayerId, selectedLayerId }} />
-      )
+    );
   }]
 };

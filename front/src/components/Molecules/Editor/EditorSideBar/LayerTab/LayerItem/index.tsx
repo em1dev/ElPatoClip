@@ -17,14 +17,14 @@ export interface LayerItemProps {
 }
 
 export const LayerItem = ({
-    dragLayerId,
-    layer,
-    selectedLayerId,
-    setDragLayerId,
-    setSelectedLayerId,
-    updateLayer,
-    updateLayers
-  }: LayerItemProps) => {
+  dragLayerId,
+  layer,
+  selectedLayerId,
+  setDragLayerId,
+  setSelectedLayerId,
+  updateLayer,
+  updateLayers
+}: LayerItemProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
 
@@ -43,11 +43,11 @@ export const LayerItem = ({
 
   const onLayerClick = useCallback(() => {
     setSelectedLayerId(layer.id);
-  }, [layer, setSelectedLayerId])
+  }, [layer, setSelectedLayerId]);
 
   const onDragEnd:React.DragEventHandler<HTMLDivElement> = useCallback(() => {
     setDragLayerId(null);
-  }, [setDragLayerId])
+  }, [setDragLayerId]);
 
   const onDragOver:React.DragEventHandler<HTMLDivElement> = (e) => {
     const target = e.currentTarget;
@@ -57,14 +57,14 @@ export const LayerItem = ({
     const box = target.getBoundingClientRect();
     const centerY = box.y + (box.height / 2);
     target.dataset.over = e.clientY < centerY ? 'top' : 'bot';
-  }
+  };
 
   const onDragEnter:React.DragEventHandler<HTMLDivElement> = (e) => {
     const target = e.currentTarget;
     if (!(target instanceof HTMLElement)) return;
     if (target.dataset.id === undefined) return;
     e.preventDefault();
-  }
+  };
 
   const onDragLeave:React.DragEventHandler<HTMLDivElement> = (e) => {
     const target = e.currentTarget;
@@ -72,7 +72,7 @@ export const LayerItem = ({
     if (target.dataset.id === undefined) return;
     e.preventDefault();
     target.dataset.over = undefined;
-  }
+  };
 
   const onDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
@@ -106,7 +106,7 @@ export const LayerItem = ({
 
   const onLockedButtonClicked = (
     e:React.MouseEvent<HTMLButtonElement, MouseEvent>, layer: Layer
-    ) => {
+  ) => {
     e.stopPropagation();
     updateLayer(layer.id, { locked: !layer.locked });
     setSelectedLayerId(layer.id);
@@ -114,14 +114,14 @@ export const LayerItem = ({
 
   const onDoubleClick = () => {
     setIsEditingName(true);
-  }
+  };
 
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (!isEditingName) return;
     if (['Escape', 'Enter'].includes(e.key)) {
       setIsEditingName(false);
     }
-  }
+  };
 
   return (
     <S.LayerButtonContainer 
@@ -133,8 +133,8 @@ export const LayerItem = ({
       onDragLeave={onDragLeave}
       onDragEnd={onDragEnd}
       onDragStart={() => {
-        setDragLayerId(layer.id)
-        setSelectedLayerId(layer.id)
+        setDragLayerId(layer.id);
+        setSelectedLayerId(layer.id);
       }}
       onDragOver={onDragOver}
       onDrop={onDrop}
@@ -156,11 +156,11 @@ export const LayerItem = ({
             onKeyDown={onKeyDown}
             ref={inputRef}
             value={layer.name}
-            onChange={(e) => { updateLayer(layer.id, { name: e.target.value })}}
+            onChange={(e) => { updateLayer(layer.id, { name: e.target.value });}}
           />
-        : (
-          <span> {layer.name} </span>
-        )
+          : (
+            <span> {layer.name} </span>
+          )
         }
       </div>
 
@@ -170,11 +170,11 @@ export const LayerItem = ({
           onClick={(e) => onLockedButtonClicked(e, layer)}
           iconName={
             layer.locked ?
-            'MingcuteLockLine.svg' :
-            'MingcuteUnlockLine.svg'
+              'MingcuteLockLine.svg' :
+              'MingcuteUnlockLine.svg'
           } 
         />
       </div>
     </S.LayerButtonContainer>
-  )
+  );
 };

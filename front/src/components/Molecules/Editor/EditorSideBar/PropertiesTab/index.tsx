@@ -1,7 +1,7 @@
 import * as S from './styles';
-import { ComponentAttributes } from "../types";
-import { LayerProperties } from "./LayerProperties";
-import { PlacementProperties } from "./PlacementProperties";
+import { ComponentAttributes } from '../types';
+import { LayerProperties } from './LayerProperties';
+import { PlacementProperties } from './PlacementProperties';
 import { useCallback, useMemo } from 'react';
 import { Layer } from '../../../../../types';
 
@@ -19,17 +19,17 @@ export const PropertiesTab = (props: PropertiesTabProps) => {
         ...l,
         ...layer
       }
-    )))
+    )));
   }, [props]);
 
   if (!selectedLayer) {
-    return null
+    return null;
   }
 
   return (
-  <S.Tab>
-    <PlacementProperties layer={selectedLayer} updateLayer={onLayerChange} />
-    <LayerProperties layer={selectedLayer} updateLayer={onLayerChange} />
-  </S.Tab>
-  )
-}
+    <S.Tab>
+      <PlacementProperties layer={selectedLayer} updateLayer={onLayerChange} />
+      <LayerProperties layer={selectedLayer} updateLayer={onLayerChange} />
+    </S.Tab>
+  );
+};

@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import { styled } from 'styled-components';
 
 export const Container = styled.div`
   max-height: calc(100vh - 400px);
@@ -20,12 +20,12 @@ export const CanvasContainer = styled.div`
     max-height: 100%;
     margin: auto;
   }
-`
+`;
 export const Potrait = styled(CanvasContainer)`
   height: 100%;
   aspect-ratio: 9/16;
-`
+`;
 
 export const Landscape = styled(CanvasContainer)`
   aspect-ratio: 16/9;
-`
+`;

@@ -1,4 +1,4 @@
-import { css, styled } from "styled-components";
+import { css, styled } from 'styled-components';
 
 export const Seeker = styled.div<{ 
     $animate?: boolean,
@@ -43,9 +43,9 @@ export const Seeker = styled.div<{
     padding: 0.2em;
     left: 
     ${({ $replaceHeadLeftOffset }) => $replaceHeadLeftOffset !== undefined ? 
-      `${$replaceHeadLeftOffset}px` :
-      `calc(-80px / 2)`
-    };
+    `${$replaceHeadLeftOffset}px` :
+    'calc(-80px / 2)'
+};
     color: rgba(26,26,26,1);
     top: -1ch;
     width: 80px;

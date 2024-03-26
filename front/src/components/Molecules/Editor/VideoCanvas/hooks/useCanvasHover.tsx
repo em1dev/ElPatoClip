@@ -1,8 +1,8 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useMemo } from "react";
-import { useEventListener } from "../../../../../hooks/useEventListener";
-import { Layer, Point } from "../../../../../types";
-import { CanvasUtils } from "../util/canvasUtils";
-import { MathUtils } from "../../../../../Utils/MathUtils";
+import { Dispatch, RefObject, SetStateAction, useCallback, useMemo } from 'react';
+import { useEventListener } from '../../../../../hooks/useEventListener';
+import { Layer, Point } from '../../../../../types';
+import { CanvasUtils } from '../util/canvasUtils';
+import { MathUtils } from '../../../../../Utils/MathUtils';
 
 export const useCanvasHover = (
   layers: Array<Layer>,
@@ -35,5 +35,5 @@ export const useCanvasHover = (
     setHoverLayerId(null);
   }, [layers, setHoverLayerId, canvasRef, padding, disableHover]));
 
-  return hoveredLayer
-}
+  return hoveredLayer;
+};

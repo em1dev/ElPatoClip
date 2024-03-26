@@ -1,9 +1,9 @@
 import * as S from './styles';
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { Layer, TimeSlice } from "../../../../types"
-import { useVideo } from "../useVideo";
-import { useRenderLoop } from "../../../../hooks/useRenderLoop";
-import { VideoCanvas } from "../../../Molecules/Editor/VideoCanvas";
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { Layer, TimeSlice } from '../../../../types';
+import { useVideo } from '../useVideo';
+import { useRenderLoop } from '../../../../hooks/useRenderLoop';
+import { VideoCanvas } from '../../../Molecules/Editor/VideoCanvas';
 import { Button } from '../../../Atoms/Button';
 import { useCanvasRecording } from './useCanvasRecording';
 import { useEventListener } from '../../../../hooks/useEventListener';
@@ -42,10 +42,10 @@ export const VideoExporter = ({
   }, []));
 
   const download = useCallback((blobUrl: string) => {
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     document.body.appendChild(a);
     a.href = blobUrl;
-    a.download = "test.webm";
+    a.download = 'test.webm';
     a.click();
   }, []);
 
@@ -88,5 +88,5 @@ export const VideoExporter = ({
         <h2>Rendering...</h2>
       }
     </S.Container>
-  )
-}
+  );
+};

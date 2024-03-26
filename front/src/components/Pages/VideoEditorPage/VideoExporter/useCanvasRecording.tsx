@@ -1,5 +1,5 @@
-import fixWebmDuration from "fix-webm-duration";
-import { RefObject, useCallback, useState } from "react";
+import fixWebmDuration from 'fix-webm-duration';
+import { RefObject, useCallback, useState } from 'react';
 
 export const useCanvasRecording = (
   canvasRef: RefObject<HTMLCanvasElement>,
@@ -68,7 +68,7 @@ export const useCanvasRecording = (
       }
 
       const blob = new Blob(recordedData, {
-        type: "video/webm",
+        type: 'video/webm',
       });
 
       fixWebmDuration(blob, duration, (videoFixedBlob) => {
@@ -88,5 +88,5 @@ export const useCanvasRecording = (
   return {
     record,
     outputUrl
-  }
+  };
 };

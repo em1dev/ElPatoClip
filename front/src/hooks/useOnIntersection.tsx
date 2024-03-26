@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from 'react';
 
 export const useOnIntersection = <T extends HTMLElement>(onIntersection: () => void) => {
   const intersectionRef = useRef<IntersectionObserver | null>(null);
@@ -27,8 +27,8 @@ export const useOnIntersection = <T extends HTMLElement>(onIntersection: () => v
     intersectionRef.current = new IntersectionObserver((e) => {
       if (!e.at(0)?.isIntersecting) return;
       callbackRef.current();
-    })
-  }, [])
+    });
+  }, []);
 
   return setRef;
-}
+};

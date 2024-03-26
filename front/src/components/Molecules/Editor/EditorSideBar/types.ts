@@ -1,4 +1,4 @@
-import { Layer } from "../../../../types";
+import { Layer } from '../../../../types';
 
 export interface ComponentAttributes {
   layers: Array<Layer>,

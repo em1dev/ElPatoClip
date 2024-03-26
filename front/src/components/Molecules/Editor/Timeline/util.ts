@@ -14,6 +14,6 @@ export const scruberOffset = {
 export const layerOffset = {
   left: 20,
   right: 10,
-}
+};
 
 export const MIN_VIDEO_LENGTH = 10;

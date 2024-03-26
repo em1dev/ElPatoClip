@@ -14,7 +14,7 @@ const ClipEl = forwardRef<HTMLButtonElement, ClipProps>(({ clip, onClick }: Clip
   <S.Container ref={ref} onClick={onClick}>
     <S.EmbedContainer>
       <Badge>{MathUtils.secondsToReadableText(clip.duration)}</Badge>
-        <img alt={`clip ${clip.title}`} src={clip.thumbnail_url}></img>
+      <img alt={`clip ${clip.title}`} src={clip.thumbnail_url}></img>
       <Badge>{clip.view_count} views</Badge>
     </S.EmbedContainer>
 

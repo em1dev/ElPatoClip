@@ -1,10 +1,10 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useState } from "react";
-import { Layer, Point, Rect, Size, Source } from "../../../../../types";
-import { useEventListener } from "../../../../../hooks/useEventListener";
-import { CanvasUtils } from "../util/canvasUtils";
-import { MIN_CROP_SIZE } from "../settings";
-import { MathUtils } from "../../../../../Utils/MathUtils";
-import { Interactions } from "../util/interactions";
+import { Dispatch, RefObject, SetStateAction, useCallback, useState } from 'react';
+import { Layer, Point, Rect, Size, Source } from '../../../../../types';
+import { useEventListener } from '../../../../../hooks/useEventListener';
+import { CanvasUtils } from '../util/canvasUtils';
+import { MIN_CROP_SIZE } from '../settings';
+import { MathUtils } from '../../../../../Utils/MathUtils';
+import { Interactions } from '../util/interactions';
 
 const getNewDraggedPosition = (
   currentPosition: Rect,
@@ -18,18 +18,18 @@ const getNewDraggedPosition = (
   const draggedWithOffset = {
     x: mouseAtPositionOnCanvas.x - interacted.clickedOffsetToOrigin.x,
     y: mouseAtPositionOnCanvas.y - interacted.clickedOffsetToOrigin.y
-  }
+  };
 
   const newPosition: Rect = {
     ...currentPosition,
     x: draggedWithOffset.x - padding,
     y: draggedWithOffset.y - padding
-  }
+  };
 
   newPosition.x = MathUtils.clamp(newPosition.x, 0, videoResolution.width - newPosition.width);
   newPosition.y = MathUtils.clamp(newPosition.y, 0, videoResolution.height - newPosition.height);
   return newPosition;
-}
+};
 
 export interface Interaction {
   clickedCorner?: string,
@@ -103,7 +103,7 @@ export const useCanvasDrag = (
     { x, y, height, width }: Rect,
     mouseAtPositionOnCanvas: Point,
   ) => {
-    const mouse = MathUtils.subPosition(mouseAtPositionOnCanvas, { x: padding, y: padding })
+    const mouse = MathUtils.subPosition(mouseAtPositionOnCanvas, { x: padding, y: padding });
 
     if (!interacted?.clickedCorner) return;
 
@@ -174,14 +174,14 @@ export const useCanvasDrag = (
     const mouseAtPositionOnCanvas = CanvasUtils.relativePointToCanvasPoint(relativeMousePosition, canvasRef.current);
 
     switch (interacted.interactionMode) {
-      case 'drag':
-        handleDrag(currentPosition, mouseAtPositionOnCanvas, layer.id);
-        break;
-      case 'resize':
-        handleResize(layer.id, currentPosition, mouseAtPositionOnCanvas);
-        break;
+    case 'drag':
+      handleDrag(currentPosition, mouseAtPositionOnCanvas, layer.id);
+      break;
+    case 'resize':
+      handleResize(layer.id, currentPosition, mouseAtPositionOnCanvas);
+      break;
     }
-  }, [canvasRef, handleDrag, handleResize, interacted, layers, onOutputChange]))
+  }, [canvasRef, handleDrag, handleResize, interacted, layers, onOutputChange]));
 
   useEventListener(window, 'mouseup', useCallback(() => {
     if (!onOutputChange) return;

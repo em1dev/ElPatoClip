@@ -1,5 +1,5 @@
 import ClipPage from './components/Pages/ClipPage';
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SearchPage from './components/Pages/SearchPage';
 import MainTemplate from './components/Templates/MainTemplate';
 import { TosPage } from './components/Pages/InfoPages/TosPage';
@@ -43,6 +43,6 @@ const router = createBrowserRouter([
 
 const App = () => (
   <RouterProvider router={router}/>
-)
+);
 
-export default App
+export default App;

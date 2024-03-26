@@ -1,7 +1,7 @@
 import * as S from './styles';
-import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useLayoutEffect, useRef } from "react";
-import { VideoCanvas } from "../../../Molecules/Editor/VideoCanvas"
-import { Layer, Source, VisibleCanvas } from "../../../../types";
+import { Dispatch, RefObject, SetStateAction, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import { VideoCanvas } from '../../../Molecules/Editor/VideoCanvas';
+import { Layer, Source, VisibleCanvas } from '../../../../types';
 import useResizeObserver from '@react-hook/resize-observer';
 
 export interface ContentProps {
@@ -46,7 +46,7 @@ export const Content = ({
         output: output
       } satisfies Layer)
     ));
-  }
+  };
 
   const inputLayers: Array<Layer> = layers.map((item) => ({
     ...item,
@@ -99,7 +99,7 @@ export const Content = ({
 
   useEffect(() => {
     handleResize();
-  }, [visibleCanvases, handleResize])
+  }, [visibleCanvases, handleResize]);
 
   useLayoutEffect(handleResize, [handleResize]);
   useResizeObserver(containerRef, handleResize);
@@ -140,6 +140,6 @@ export const Content = ({
         </S.Potrait>
       )}
     </S.Container>
-  )
+  );
 
-}
+};

@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef } from 'react';
 
 export const useEventListener = <T extends EventTarget, E extends Event>(
   elRef: MutableRefObject<T | null> | T,
@@ -21,6 +21,6 @@ export const useEventListener = <T extends EventTarget, E extends Event>(
 
     return () => {
       el?.removeEventListener(event, handlerProxy);
-    }
+    };
   }, [elRef, event]);
-}
+};

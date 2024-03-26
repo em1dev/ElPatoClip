@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Container = styled.div`
   overflow: auto;
@@ -17,7 +17,7 @@ export const DurationContainer = styled.div`
   margin-top: auto;
   display: flex;
   align-items: center;
-`
+`;
 
 export const TimelineContainer = styled.div<{ width: number }>`
   border-radius: 0.5em;
@@ -25,7 +25,7 @@ export const TimelineContainer = styled.div<{ width: number }>`
   margin-left: 7px;
   background-color: #252525;
   width: ${ props => props.width }px;
-`
+`;
 
 export const LayerContainer = styled.div`
   z-index: 1;
@@ -75,7 +75,7 @@ export const PlaybackLineContainer = styled.div<{ width: number }>`
   margin-left: 7px;
   background-color: #252525;
   width: ${ props => props.width}px;
-`
+`;
 
 export const PlaybackLine = styled.div`
   position: relative;

@@ -1,7 +1,7 @@
 import * as S from './styles';
 
-import { useState } from "react"
-import { Layer } from "../../../../types"
+import { useState } from 'react';
+import { Layer } from '../../../../types';
 import { LayerTab } from './LayerTab';
 import { PropertiesTab } from './PropertiesTab';
 
@@ -59,5 +59,5 @@ export const EditorSideBar = ({
       )}
 
     </S.Container>
-  )
-}
+  );
+};

@@ -1,8 +1,8 @@
 import * as S from './styles';
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { ElPatoApi } from "../../../api/elPatoClipApi";
-import { Loading } from "../../Atoms/Loading";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { ElPatoApi } from '../../../api/elPatoClipApi';
+import { Loading } from '../../Atoms/Loading';
 import { Layer, TimeSlice } from '../../../types';
 import { defaultLayers } from '../../../Utils/LayerGenerator';
 import { VideoExporter } from './VideoExporter';
@@ -11,12 +11,12 @@ import VideoEditor from '../../Organisms/Editor';
 const bytesToRedable = (amount: number) => {
   if (amount > 1000000) {
     // mb
-    return (amount / 1000000).toFixed(2).toString() + ' mb'
+    return (amount / 1000000).toFixed(2).toString() + ' mb';
   } else {
     // kb
-    return (amount / 10000).toString() + ' kb'
+    return (amount / 10000).toString() + ' kb';
   }
-}
+};
 
 export const VideoEditorPage = () => {
   const [isExporting, setIsExporting] = useState<boolean>(false);
@@ -49,7 +49,7 @@ export const VideoEditorPage = () => {
       setUrlBlob(URL.createObjectURL(blob));
       setIsLoading(false);
       setProgress(null);
-    }
+    };
     onClipDownload(clipId);
   },[clipId]);
 
@@ -70,19 +70,19 @@ export const VideoEditorPage = () => {
         layers={layers}
         timeSlice={cropTime}
       />
-    )
+    );
   }
 
   if (urlBlob) {
     return (
-        <VideoEditor 
-          videoUrl={urlBlob}
-          cropTime={cropTime}
-          layers={layers}
-          setCropTime={setCropTime}
-          setLayers={setLayers}
-          onExport={() => setIsExporting(true)}
-        />
+      <VideoEditor 
+        videoUrl={urlBlob}
+        cropTime={cropTime}
+        layers={layers}
+        setCropTime={setCropTime}
+        setLayers={setLayers}
+        onExport={() => setIsExporting(true)}
+      />
     );
   }
 };

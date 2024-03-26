@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const CanvasContainer = styled.div`
   position: relative;
@@ -12,4 +12,4 @@ export const CanvasContainer = styled.div`
     max-height: 100%;
     margin: auto;
   }
-`
+`;

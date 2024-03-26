@@ -21,5 +21,5 @@ export const CropHandle = ({
 
   useDrag(elRef, onDrag);
 
-  return <S.Container ref={elRef} />
+  return <S.Container ref={elRef} />;
 };

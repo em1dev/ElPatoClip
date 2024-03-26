@@ -25,7 +25,7 @@ const SearchPage = () => {
       setSearchResult(resp);
       setIsLoading(false);
     })();
-  }, [searchString])
+  }, [searchString]);
 
   const SearchResults = useMemo(() => {
     if (!searchString.trim()) return null;
@@ -35,27 +35,27 @@ const SearchPage = () => {
     }
 
     if (!searchResults.length) {
-      return <div>Not found</div>
+      return <div>Not found</div>;
     }
 
     return (
       searchResults
-      .sort((prev, next) => {
-        const a = next.displayName.toLowerCase()
-          .includes(searchString.toLowerCase());
+        .sort((prev, next) => {
+          const a = next.displayName.toLowerCase()
+            .includes(searchString.toLowerCase());
 
-        const b = prev.displayName.toLowerCase()
-          .includes(searchString.toLowerCase())
+          const b = prev.displayName.toLowerCase()
+            .includes(searchString.toLowerCase());
 
-        if (a === b) return 0;
-        return (a) ? 1 : -1
-      })
-      .map((item) => (
-        <S.SearchResultItem to={`/clips/${item.id}`} key={item.id}>
-          <img alt={item.displayName} src={item.profileImg} />
-          {item.displayName}
-        </S.SearchResultItem>
-    )));
+          if (a === b) return 0;
+          return (a) ? 1 : -1;
+        })
+        .map((item) => (
+          <S.SearchResultItem to={`/clips/${item.id}`} key={item.id}>
+            <img alt={item.displayName} src={item.profileImg} />
+            {item.displayName}
+          </S.SearchResultItem>
+        )));
   }, [searchString, searchResults, isLoading]);
 
   return (
@@ -66,9 +66,9 @@ const SearchPage = () => {
           <p>Edit your twitch clips into vertical format for TikTok and YouTube shorts</p>
           <input value={value} onChange={(e) => setValue(e.target.value)} placeholder='twitch channel name' />
           { SearchResults && (
-              <S.SearchResultContainer>
-                {SearchResults}
-              </S.SearchResultContainer>
+            <S.SearchResultContainer>
+              {SearchResults}
+            </S.SearchResultContainer>
           ) }
 
           {!!recentItems.length && !SearchResults  && (
@@ -110,7 +110,7 @@ const SearchPage = () => {
         </S.AboutSectionContent>
       </S.AboutMeSection>
     </S.Page>
-  )
-}
+  );
+};
 
 export default SearchPage;

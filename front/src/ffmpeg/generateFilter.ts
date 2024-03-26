@@ -1,5 +1,5 @@
-import { MathUtils } from "../Utils/MathUtils";
-import { Layer } from "../types";
+import { MathUtils } from '../Utils/MathUtils';
+import { Layer } from '../types';
 
 export interface VideoSettings {
   startTime: number,

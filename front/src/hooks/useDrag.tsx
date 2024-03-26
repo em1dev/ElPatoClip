@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import { useEventListener } from "./useEventListener";
+import { useCallback, useState } from 'react';
+import { useEventListener } from './useEventListener';
 
 export const useDrag = <T extends HTMLElement>(
   el: React.RefObject<T | null>,

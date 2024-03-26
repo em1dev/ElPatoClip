@@ -54,7 +54,7 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
   const hoveredLayer = useCanvasHover(layersSortedDesc, hoverLayerId, canvasRef, setHoverLayerId, canvasMetadata.padding, interacted !== null);
 
   useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(externalRef, () => {
-    return canvasRef.current
+    return canvasRef.current;
   });
 
   useEventListener<Window, MouseEvent>(window, 'mousedown', useCallback((e) => {
@@ -77,5 +77,5 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
       width={canvasMetadata.canvasResolution.width}
       height={canvasMetadata.canvasResolution.height}
     />
-  )
-})
+  );
+});

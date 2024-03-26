@@ -1,5 +1,5 @@
 import * as S from './styles';
-import { Layer } from "../../../../../types"
+import { Layer } from '../../../../../types';
 import { ComponentAttributes } from '../types';
 import { useState } from 'react';
 import { LayerItem } from './LayerItem';
@@ -24,13 +24,13 @@ export const LayerTab = ({
         ...partialLayer
       }
     ]);
-  }
+  };
 
   return (
     <S.LayerContainer>
       {layers
-      .sort((a,b) => b.zIndex - a.zIndex)
-      .map((layer) => (
+        .sort((a,b) => b.zIndex - a.zIndex)
+        .map((layer) => (
           <LayerItem 
             key={layer.id}
             dragLayerId={dragLayerId}
@@ -41,7 +41,7 @@ export const LayerTab = ({
             updateLayers={onLayersChange}
             updateLayer={updateLayer}
           />
-      ))}
+        ))}
     </S.LayerContainer>
   );
-}
+};

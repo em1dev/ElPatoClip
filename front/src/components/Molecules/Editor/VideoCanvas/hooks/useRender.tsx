@@ -1,9 +1,9 @@
-import { RefObject, useCallback } from "react";
-import { useRenderLoop } from "../../../../../hooks/useRenderLoop";
-import { Layer, Point } from "../../../../../types";
-import { CanvasUtils } from "../util/canvasUtils";
-import { CanvasMetadata } from "./useCanvasMetadata";
-import { MathUtils } from "../../../../../Utils/MathUtils";
+import { RefObject, useCallback } from 'react';
+import { useRenderLoop } from '../../../../../hooks/useRenderLoop';
+import { Layer, Point } from '../../../../../types';
+import { CanvasUtils } from '../util/canvasUtils';
+import { CanvasMetadata } from './useCanvasMetadata';
+import { MathUtils } from '../../../../../Utils/MathUtils';
 
 const renderResizeInformation = (ctx: CanvasRenderingContext2D, layer: Layer, scalingFactor: number, padding: number) => {
   ctx.save();
@@ -18,7 +18,7 @@ const renderResizeInformation = (ctx: CanvasRenderingContext2D, layer: Layer, sc
   const centerPointBot: Point = {
     x: layer.output.rect.x + (layer.output.rect.width / 2),
     y: (layer.output.rect.y + layer.output.rect.height)
-  }
+  };
 
   const posWithPadding = MathUtils.addPosition(centerPointBot, { 
     x: padding, 
@@ -51,7 +51,7 @@ const renderResizeInformation = (ctx: CanvasRenderingContext2D, layer: Layer, sc
 
   ctx.closePath();
   ctx.restore();
-}
+};
 
 export const useRender = (
   outputCanvasRef: RefObject<HTMLCanvasElement>,
@@ -115,4 +115,4 @@ export const useRender = (
   }, [scalingFactor, layers, renderInput, videoResolution, hoveredLayer, selectedLayer, hasInteracted, inputCanvasRef, clipVideoArea, outputCanvasRef, padding ]);
 
   useRenderLoop(onRender);
-}
+};

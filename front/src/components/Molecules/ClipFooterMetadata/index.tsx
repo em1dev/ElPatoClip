@@ -23,6 +23,6 @@ const ClipFooterMetadata = ({
       <div>{subTitleRight}</div>
     </S.FooterItem>
   </S.Footer>
-)
+);
 
 export default ClipFooterMetadata;

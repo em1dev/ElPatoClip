@@ -1,5 +1,5 @@
 import * as S from './styles';
-import { Clip } from "../../../../api/elPatoClipApi/types";
+import { Clip } from '../../../../api/elPatoClipApi/types';
 import ClipFooterMetadata from '../../../Molecules/ClipFooterMetadata';
 
 export interface ClipModalProps {

@@ -31,7 +31,7 @@ const VideoEditor = ({
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
   const [hoverLayerId, setHoverLayerId] = useState<number | null>(null);
-  const [visibleCanvases, setVisibleCanvases] = useState<VisibleCanvas>("both");
+  const [visibleCanvases, setVisibleCanvases] = useState<VisibleCanvas>('both');
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -43,22 +43,22 @@ const VideoEditor = ({
 
   useEffect(() => {
     const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key !== ' ') return
+      if (e.key !== ' ') return;
       e.preventDefault();
       video.toggleVideoPlayback();
-    }
+    };
 
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== ' ') return
+      if (e.key !== ' ') return;
       e.preventDefault();
-    }
+    };
 
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('keyup', onKeyUp);
-    }
+    };
   }, [video]);
 
   return (
@@ -104,7 +104,7 @@ const VideoEditor = ({
       <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />
       <video loop hidden ref={videoRef} width={960} height={540} src={videoUrl}></video>
     </>
-  )
-}
+  );
+};
 
 export default VideoEditor;

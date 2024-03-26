@@ -44,15 +44,15 @@ export const ExportModal = ({
     a.download = 'out.mp4';
     a.click();
     document.body.removeChild(a);
-  }
+  };
 
   const onCancel = () => {
     cancel();
     // delay closing of modal to avoid memory unallocated access
     setTimeout(() => {
       closeModal();
-    }, 100)
-  }
+    }, 100);
+  };
 
   useEffect(() => {
     if (!logContainerRef.current) return;
@@ -85,5 +85,5 @@ export const ExportModal = ({
         </>
       )}
     </S.Container>
-  )
+  );
 };

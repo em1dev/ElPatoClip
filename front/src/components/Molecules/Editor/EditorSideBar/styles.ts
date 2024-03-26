@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
@@ -40,5 +40,5 @@ export const TabButton = styled.button<{ $selected?: boolean }>`
         color: #D9D9D9;
       }
     `
-  }
+}
 `;

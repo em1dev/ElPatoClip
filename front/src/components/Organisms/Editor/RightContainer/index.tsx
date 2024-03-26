@@ -1,7 +1,7 @@
 import * as S from './styles';
-import { Dispatch, SetStateAction } from "react"
-import { Layer } from "../../../../types"
-import { EditorSideBar } from "../../../Molecules/Editor/EditorSideBar"
+import { Dispatch, SetStateAction } from 'react';
+import { Layer } from '../../../../types';
+import { EditorSideBar } from '../../../Molecules/Editor/EditorSideBar';
 
 export interface RightContainerProps {
   layers: Array<Layer>,
@@ -24,4 +24,4 @@ export const RightContainer = ({
       setSelectedLayerId={setSelectedLayerId}
     />
   </S.Container>
-)
+);

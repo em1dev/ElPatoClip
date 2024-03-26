@@ -1,4 +1,4 @@
-import { Size } from "../../../../types";
+import { Size } from '../../../../types';
 
 export type VideoDirection = 'portrait' | 'landscape';
 
@@ -14,4 +14,4 @@ export const VIDEO_RESOLUTIONS: Record<VideoDirection, Size> = {
     width: 1080,
     height: 1920,
   }
-}
+};

@@ -1,4 +1,4 @@
-import { Point, Rect } from "../types";
+import { Point, Rect } from '../types';
 
 const isInsideRect = (point: Point, rect: Rect) => (
   point.x >= rect.x &&
@@ -23,7 +23,7 @@ const secondsToReadableText = (value:number, includeMilliseconds: boolean = fals
   const seconds = secondsTotal - (minutes * 60);
   let text = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   if (includeMilliseconds){
-    text += `.${milliseconds.toString().padStart(2, '0')}`
+    text += `.${milliseconds.toString().padStart(2, '0')}`;
   }
   return text;
 };
@@ -71,23 +71,23 @@ export const calcualtedInputAspectRatioBasednOutput = (input: Rect, output: Rect
     width, 
     height 
   };
-}
+};
 
 const addPosition = <T extends Point, U extends Point>(point1: T, point2: U): T => {
   return {
     ...point1,
     x: point1.x + point2.x,
     y: point1.y + point2.y
-  }
-}
+  };
+};
 
 const subPosition = <T extends Point, U extends Point>(point1: T, point2: U): T => {
   return {
     ...point1,
     x: point1.x - point2.x,
     y: point1.y - point2.y
-  }
-}
+  };
+};
 
 export const MathUtils = {
   clamp,

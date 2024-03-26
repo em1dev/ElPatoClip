@@ -21,7 +21,7 @@ export const Seeker = ({ containerRef, seekTo, currentTime, shouldAnimate }: See
     const containerRect = container.getBoundingClientRect(); 
     const relativeX =  e.x - containerRect.x + container.scrollLeft - scruberOffset.left;
     seekTo(pixelsToSeconds(relativeX));
-  }, [containerRef, seekTo])
+  }, [containerRef, seekTo]);
 
   const isDragging = useDrag(seekerRef, onDrag);
 
@@ -38,7 +38,7 @@ export const Seeker = ({ containerRef, seekTo, currentTime, shouldAnimate }: See
     const seeker = seekerRef.current;
     if (!seeker) return;
     seeker.dataset.dragging = isDragging.toString();
-  }, [isDragging])
+  }, [isDragging]);
 
   const replacementOffset = currentTime < 1 ? -20 : undefined;
 
@@ -47,5 +47,5 @@ export const Seeker = ({ containerRef, seekTo, currentTime, shouldAnimate }: See
       $replaceHeadLeftOffset={replacementOffset}
       $animate={shouldAnimate}
       ref={seekerRef} />
-  )
+  );
 };

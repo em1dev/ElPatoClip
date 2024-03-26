@@ -1,5 +1,5 @@
 import * as S from './styles';
-import { Button } from "../../../Atoms/Button";
+import { Button } from '../../../Atoms/Button';
 import { VisibleCanvas } from '../../../../types';
 
 export interface EditorHeader {
@@ -16,7 +16,7 @@ export const EditorHeader = ({
 
   const onClick = () => {
     history.go(-1);
-  }
+  };
 
   return (
     <S.Container>

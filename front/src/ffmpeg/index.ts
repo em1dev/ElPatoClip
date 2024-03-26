@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FFmpeg, createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
-import { MathUtils } from "../Utils/MathUtils";
-import { VideoSettings, generateFilter } from "./generateFilter";
+import { MathUtils } from '../Utils/MathUtils';
+import { VideoSettings, generateFilter } from './generateFilter';
 
 const INPUT_FILE = 'in.mp4';
 
@@ -16,7 +16,7 @@ export const useFfmpeg = (
     (async () => {
       try {
         const ffmpeg = createFFmpeg({
-          corePath: "/ffmpeg/ffmpeg-core.js",
+          corePath: '/ffmpeg/ffmpeg-core.js',
           log: true,
         });
         ffmpegRef.current = ffmpeg;
@@ -33,7 +33,7 @@ export const useFfmpeg = (
           logRef.current(err.message);
         }
       }
-    })()
+    })();
   }, []);
 
   useEffect(() => {
@@ -62,16 +62,16 @@ export const useFfmpeg = (
     const data = ffmpegRef.current.FS('readFile', 'output.mp4');
     const videoUrl =  URL.createObjectURL(new Blob([data.buffer], {type: 'video/mp4'}));
     return videoUrl;
-  }, [])
+  }, []);
 
   const cancel = useCallback(() => {
     if (!ffmpegRef.current) return;
     ffmpegRef.current.exit();
-  }, [])
+  }, []);
 
   return {
     editVideo,
     wasmLoaded,
     cancel,
-  }
-}
+  };
+};

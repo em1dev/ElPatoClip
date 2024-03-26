@@ -1,5 +1,5 @@
-import useResizeObserver from '@react-hook/resize-observer'
-import { RefObject, useEffect, useState } from "react";
+import useResizeObserver from '@react-hook/resize-observer';
+import { RefObject, useEffect, useState } from 'react';
 import { CANVAS_PADDING, VIDEO_RESOLUTIONS, VideoDirection } from '../settings';
 import { Size } from '../../../../../types';
 
@@ -26,8 +26,8 @@ export const useCanvasMetadata = (
     setCanvasMetadata(prev => ({
       ...prev,
       canvasSize: VIDEO_RESOLUTIONS[videoDirection]
-    }))
-  }, [videoDirection])
+    }));
+  }, [videoDirection]);
 
 
   useResizeObserver(canvasRef, (entry) => {
@@ -38,7 +38,7 @@ export const useCanvasMetadata = (
     const canvasResolution: Size = {
       width: videoResolution.width,
       height: videoResolution.height
-    }
+    };
 
     canvasResolution.width += (CANVAS_PADDING * 2) * scalingFactor;
     canvasResolution.height += (CANVAS_PADDING * 2) * scalingFactor;
@@ -48,8 +48,8 @@ export const useCanvasMetadata = (
       canvasResolution,
       scalingFactor: scalingFactor,
       padding: CANVAS_PADDING * scalingFactor,
-    }))
-  })
+    }));
+  });
 
   return canvasMetadata;
-}
+};

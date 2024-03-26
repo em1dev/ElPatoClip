@@ -1,4 +1,4 @@
-import { keyframes, styled } from "styled-components";
+import { keyframes, styled } from 'styled-components';
 
 export const Page = styled.div`
 `;
@@ -10,7 +10,7 @@ export const Container = styled.div`
   display: grid;
   gap: 3em;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-`
+`;
 
 const fadeIn = keyframes`
   from {

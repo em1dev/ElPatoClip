@@ -1,4 +1,4 @@
-import { GlqClipInfoResponse } from "./types";
+import { GlqClipInfoResponse } from './types';
 
 const BASE_URL = 'https://gql.twitch.tv/gql';
 const CLIENT_ID = 'kimne78kx3ncx6brgo4mv6wki5h1ko';
@@ -7,19 +7,19 @@ const HASH = '6e465bb8446e2391644cf079851c0cb1b96928435a240f07ed4b240f0acc6f1b';
 const downloadClip = async (clipId: string, hash: string = HASH) => {
 
   const data = [
-        {
-            operationName: "ClipsDownloadButton",
-            variables: {
-                slug: clipId,
-            },
-            extensions: {
-                persistedQuery: {
-                    version: 1,
-                    sha256Hash: hash,
-                }
-            },
+    {
+      operationName: 'ClipsDownloadButton',
+      variables: {
+        slug: clipId,
+      },
+      extensions: {
+        persistedQuery: {
+          version: 1,
+          sha256Hash: hash,
         }
-    ];
+      },
+    }
+  ];
 
   const resp = await fetch(BASE_URL, {
     method: 'POST',
@@ -47,4 +47,4 @@ const downloadClip = async (clipId: string, hash: string = HASH) => {
 
 export const TwitchApi = {
   downloadClip
-}
+};

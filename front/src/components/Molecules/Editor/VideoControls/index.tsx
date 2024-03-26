@@ -28,4 +28,4 @@ export const VideoControls = ({
     <ButtonIcon onClick={onForwardClicked} alt="fordward" iconName='MingcuteFastForwardFill.svg' />
     <ButtonIcon onClick={onToEndClicked} alt="to end" iconName='MingcuteSkipForwardFill.svg' />
   </S.Container>
-)
+);

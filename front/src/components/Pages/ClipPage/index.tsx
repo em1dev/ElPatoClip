@@ -94,7 +94,7 @@ const ClipPage = () => {
 
     return () => {
       cancellationToken.shouldCancel = true;
-    }
+    };
   }, [loadPage, selectedFilter]);
 
   const loaderTriggerRef = useOnIntersection<HTMLButtonElement>(useCallback(() => {
@@ -108,9 +108,9 @@ const ClipPage = () => {
 
   useEffect(() => {
     if (selectedClip) {
-      document.body.classList.add("menu-open");
+      document.body.classList.add('menu-open');
     } else {
-      document.body.classList.remove("menu-open");
+      document.body.classList.remove('menu-open');
     }
     
     const el = modalContainerRef.current;
@@ -123,62 +123,62 @@ const ClipPage = () => {
     el?.addEventListener('click', onBodyClick);
     return () => {
       el?.removeEventListener('click', onBodyClick);
-    }
+    };
   }, [selectedClip]);
 
   return (
     <S.Page>
-    { channelDetails && (
-      <S.Header>
-        <S.ProfileDetails>
-          <img alt={`${channelDetails.display_name}`} src={channelDetails.profile_image_url} />
-          <div>{channelDetails.display_name}</div>
-        </S.ProfileDetails>
+      { channelDetails && (
+        <S.Header>
+          <S.ProfileDetails>
+            <img alt={`${channelDetails.display_name}`} src={channelDetails.profile_image_url} />
+            <div>{channelDetails.display_name}</div>
+          </S.ProfileDetails>
 
-        <div>Best of</div>
-        <S.FilterContainer>
-          <Button 
-            onClick={() => setSelectedFilter('all time')} 
-            theme={selectedFilter === 'all time' ? 'light' : 'dark'}
-          >All time</Button>
-          <Button 
-            onClick={() => setSelectedFilter('24 hours')} 
-            theme={selectedFilter === '24 hours' ? 'light' : 'dark'}
-          >Last 24 hours</Button>
-          <Button 
-            onClick={() => setSelectedFilter('last 7 days')} 
-            theme={selectedFilter === 'last 7 days' ? 'light' : 'dark'}
-          >Last 7 Days</Button>
-        </S.FilterContainer>
-      </S.Header>
-    )}
+          <div>Best of</div>
+          <S.FilterContainer>
+            <Button 
+              onClick={() => setSelectedFilter('all time')} 
+              theme={selectedFilter === 'all time' ? 'light' : 'dark'}
+            >All time</Button>
+            <Button 
+              onClick={() => setSelectedFilter('24 hours')} 
+              theme={selectedFilter === '24 hours' ? 'light' : 'dark'}
+            >Last 24 hours</Button>
+            <Button 
+              onClick={() => setSelectedFilter('last 7 days')} 
+              theme={selectedFilter === 'last 7 days' ? 'light' : 'dark'}
+            >Last 7 Days</Button>
+          </S.FilterContainer>
+        </S.Header>
+      )}
 
-    {selectedClip && (
-      <S.ModalOverlay ref={modalContainerRef}>
-        <ClipModal clip={selectedClip} />
-      </S.ModalOverlay>
-    )}
+      {selectedClip && (
+        <S.ModalOverlay ref={modalContainerRef}>
+          <ClipModal clip={selectedClip} />
+        </S.ModalOverlay>
+      )}
 
-    <S.Container>
-      {clips?.data.map((clip, index) => (
+      <S.Container>
+        {clips?.data.map((clip, index) => (
           <ClipEl 
             ref={(index === clips.data.length - 1) ? loaderTriggerRef : undefined} 
             key={clip.id} clip={clip} onClick={() => setSelectedClipId(clip.id)} 
           />
-      ))}
+        ))}
 
-      {clips?.data.length === 0 && (
-        <S.InfoLabel>No clips where found</S.InfoLabel>
-      )}
+        {clips?.data.length === 0 && (
+          <S.InfoLabel>No clips where found</S.InfoLabel>
+        )}
 
-      {isLoading && (
-        <S.LoadingContainer>
-          <Loading />
-        </S.LoadingContainer>
-      )}
-    </S.Container>
-  </S.Page>
-  )
-}
+        {isLoading && (
+          <S.LoadingContainer>
+            <Loading />
+          </S.LoadingContainer>
+        )}
+      </S.Container>
+    </S.Page>
+  );
+};
 
-export default ClipPage
+export default ClipPage;

@@ -51,7 +51,7 @@ export const Timeline = ({
   const timelineWidthInPx = useMemo(() => {
     if (isNaN(totalDuration)) return 100;
     return secondsToPixels(totalDuration) + scruberOffset.right;
-  }, [totalDuration])
+  }, [totalDuration]);
 
   useEffect(() => {
     if (!layerContainerRef.current) return;
@@ -71,7 +71,7 @@ export const Timeline = ({
     setCropTime({
       endTime: cropTime.endTime,
       startTime: Math.max(cropTime.endTime - timeDiff, 0)
-    })
+    });
   }, [setCropTime, cropTime, totalDuration]);
 
   const onRightCropHandle = useCallback((value: number) => {
@@ -80,7 +80,7 @@ export const Timeline = ({
     setCropTime({
       startTime: cropTime.startTime,
       endTime: Math.min(cropTime.startTime + timeDiff, totalDuration)
-    })
+    });
   }, [cropTime, setCropTime, totalDuration]);
 
   const [layerHandleDragOffset, setLayerHandleDragOffset] = useState<Point>({ x: 0, y:0 });
@@ -110,7 +110,7 @@ export const Timeline = ({
     setLayerHandleDragOffset({
       x: e.x,
       y: e.y
-    })
+    });
   }, []);
 
   useDrag(layerHandleRef, onLayerHandleDrag, onLayerHandleMouseDown);
@@ -144,11 +144,11 @@ export const Timeline = ({
 
         <S.LayerContainer ref={layerContainerRef}>
           <CropHandle containerRef={containerRef} onMove={onLeftCropHandle} />
-            <S.Layer ref={layerHandleRef} />
+          <S.Layer ref={layerHandleRef} />
           <CropHandle containerRef={containerRef} onMove={onRightCropHandle} />
         </S.LayerContainer>
 
       </S.TimelineContainer>
     </S.Container>
-  )
+  );
 };

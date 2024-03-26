@@ -1,7 +1,7 @@
 import * as S from './styles';
-import { ButtonIcon } from "../../../Atoms/ButtonIcon";
-import { Timeline } from "../../../Molecules/Editor/Timeline";
-import { VideoControls } from "../../../Molecules/Editor/VideoControls";
+import { ButtonIcon } from '../../../Atoms/ButtonIcon';
+import { Timeline } from '../../../Molecules/Editor/Timeline';
+import { VideoControls } from '../../../Molecules/Editor/VideoControls';
 import { MathUtils } from '../../../../Utils/MathUtils';
 import { useVideo } from '../../../Pages/VideoEditorPage/useVideo';
 import { TimeSlice } from '../../../../types';
@@ -73,4 +73,4 @@ export const Footer = ({
     </S.TimelineContainer>
 
   </S.Container>
-)
+);

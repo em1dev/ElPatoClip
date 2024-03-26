@@ -2,12 +2,12 @@
 export const readBlob = async (response: Response, onUpdate: (progress: number, total: number) => void) => {
   const data = await readUint8Array(response, onUpdate);
   return new Blob([data]);
-}
+};
 
 export const readString = async (response: Response, onUpdate: (progress: number, total: number) => void) => {
   const data = await readUint8Array(response, onUpdate);
   return new TextDecoder('utf-8').decode(data);
-}
+};
 
 const readUint8Array = async (response:Response, onUpdate: (progress: number, total: number) => void) => {
   if (!response.body) throw new Error('no body was found');
@@ -15,7 +15,7 @@ const readUint8Array = async (response:Response, onUpdate: (progress: number, to
 
   const contentLength = response.headers.get('content-length') ?? '0'; 
 
-  let total = Number.parseInt(contentLength)
+  let total = Number.parseInt(contentLength);
   total = isNaN(total) ? 0 : total;
   onUpdate(0, total);
 
@@ -43,5 +43,5 @@ const readUint8Array = async (response:Response, onUpdate: (progress: number, to
     position += chunk.length;
   }
 
-  return body
-}
+  return body;
+};
