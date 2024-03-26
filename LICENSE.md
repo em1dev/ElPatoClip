@@ -17,6 +17,10 @@ to harm ducks or any duck-related activities is strictly prohibited. Furthermore
 any attempt to rename the software project to a name associated with geese, directly
 or indirectly, is also prohibited. 
 
+**AI Model Restriction Clause**: The use of the source code in this software for training or
+operating artificial intelligence models, including but not limited to machine learning models, 
+neural networks, or any other AI systems, is strictly prohibited.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
