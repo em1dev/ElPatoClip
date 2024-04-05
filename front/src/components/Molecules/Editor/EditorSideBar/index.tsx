@@ -1,28 +1,15 @@
 import * as S from './styles';
 
 import { useState } from 'react';
-import { Layer } from '../../../../types';
 import { LayerTab } from './LayerTab';
 import { PropertiesTab } from './PropertiesTab';
-
-export interface EditorSideBarProps {
-  layers: Array<Layer>
-  setLayers: React.Dispatch<React.SetStateAction<Array<Layer>>>,
-  selectedLayerId: number | null,
-  setSelectedLayerId: React.Dispatch<React.SetStateAction<number | null>>,
-}
 
 enum Tabs {
   Layer,
   Properties
 }
 
-export const EditorSideBar = ({
-  layers,
-  setLayers,
-  selectedLayerId,
-  setSelectedLayerId
-}: EditorSideBarProps) => {
+export const EditorSideBar = () => {
   const [selectedTab, setSelectedTab] = useState(Tabs.Layer);
 
   return (
@@ -38,23 +25,13 @@ export const EditorSideBar = ({
 
       { selectedTab === Tabs.Layer && (
         <S.TabContent>
-          <LayerTab 
-            onLayersChange={setLayers} 
-            layers={layers} 
-            selectedLayerId={selectedLayerId}
-            setSelectedLayerId={setSelectedLayerId}
-          />
+          <LayerTab />
         </S.TabContent>
       )}
 
       { selectedTab === Tabs.Properties && (
         <S.TabContent>
-          <PropertiesTab 
-            onLayersChange={setLayers} 
-            layers={layers} 
-            selectedLayerId={selectedLayerId}
-            setSelectedLayerId={setSelectedLayerId}
-          />
+          <PropertiesTab />
         </S.TabContent>
       )}
 

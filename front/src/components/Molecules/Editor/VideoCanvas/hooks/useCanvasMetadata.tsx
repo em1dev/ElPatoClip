@@ -13,8 +13,9 @@ export interface CanvasMetadata {
 export const useCanvasMetadata = (
   canvasRef: RefObject<HTMLCanvasElement>,
   withPadding: boolean = false,
-  videoDirection: VideoDirection) => {
-  
+  videoDirection: VideoDirection
+) => {
+
   const [canvasMetadata, setCanvasMetadata] = useState<CanvasMetadata>({ 
     padding: 0,
     scalingFactor: 1,
@@ -42,7 +43,7 @@ export const useCanvasMetadata = (
 
     canvasResolution.width += (CANVAS_PADDING * 2) * scalingFactor;
     canvasResolution.height += (CANVAS_PADDING * 2) * scalingFactor;
-    
+
     setCanvasMetadata(prev => ({
       ...prev,
       canvasResolution,

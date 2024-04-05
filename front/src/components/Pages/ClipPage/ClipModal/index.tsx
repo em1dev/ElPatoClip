@@ -15,7 +15,11 @@ const ClipModal = ({ clip }: ClipModalProps) => (
       title={clip.title}
       rightTitle={new Date(clip.created_at).toLocaleDateString()}
       subTitle={`Created by: ${clip.creator_name}`}
-      subTitleRight={<S.Button reloadDocument to={`${location.origin}/editor/${clip.id}`}>Edit</S.Button>}
+      subTitleRight={(
+        <S.Button to={`${location.origin}/editor/${clip.id}`}>
+          Edit
+        </S.Button>
+      )}
     />
   </S.Container>
 );

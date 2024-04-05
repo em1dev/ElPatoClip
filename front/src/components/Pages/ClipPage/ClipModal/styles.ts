@@ -8,7 +8,8 @@ export const Container = styled.div`
   flex-direction: column;
   padding: 1.5em;
   border-radius: 1.3em;
-  > iframe {
+  iframe {
+    background-color: #151515;
     aspect-ratio: 1920 / 1080;
     border: none;
     border-radius: 1em;
@@ -21,7 +22,7 @@ export const Button = styled(Link)`
   text-decoration: none;
   cursor: pointer;
   margin: 0.5em;
-  font-family: poppins;
+  font-family: inherit;
   font-weight: 500;
   border: none;
   background: #FFEB39;

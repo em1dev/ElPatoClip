@@ -5,41 +5,48 @@ import { useDebouce } from '../../../hooks/useDebounce';
 import { Loading } from '../../Atoms/Loading';
 import { ElPatoApi } from '../../../api/elPatoClipApi';
 import { recentChannelsStore } from '../../../store/recentChannelsStore';
+import { ApiResponse } from '../../../api/types';
 
 const recentItems = recentChannelsStore.load();
 
 const SearchPage = () => {
+  const [searchResults, setSearchResults] = useState<ApiResponse<ChannelSearchResponse[]> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const [value, setValue] = useState<string>('');
   const searchString = useDebouce(value);
-  const [searchResults, setSearchResult] = useState<Array<ChannelSearchResponse>>([]);
 
   useEffect(() => {
     (async () => {
       if (searchString.trim().length === 0) {
-        setSearchResult([]);
+        setSearchResults(null);
         return;
       }
       setIsLoading(true);
       const resp = await ElPatoApi.searchUser(searchString);
-      setSearchResult(resp);
+      setSearchResults(resp);
       setIsLoading(false);
     })();
   }, [searchString]);
 
   const SearchResults = useMemo(() => {
-    if (!searchString.trim()) return null;
-
     if (isLoading) {
       return (<Loading />);
     }
 
-    if (!searchResults.length) {
+    if (searchResults === null)
+      return null;
+
+    if (searchResults.error) {
+      return <div>Error loading channels. Please try again later</div>;
+    }
+
+    if (!searchResults.data.length) {
       return <div>Not found</div>;
     }
 
     return (
-      searchResults
+      searchResults.data
         .sort((prev, next) => {
           const a = next.displayName.toLowerCase()
             .includes(searchString.toLowerCase());
@@ -52,7 +59,7 @@ const SearchPage = () => {
         })
         .map((item) => (
           <S.SearchResultItem to={`/clips/${item.id}`} key={item.id}>
-            <img alt={item.displayName} src={item.profileImg} />
+            <img alt="" src={item.profileImg} />
             {item.displayName}
           </S.SearchResultItem>
         )));
@@ -71,7 +78,7 @@ const SearchPage = () => {
             </S.SearchResultContainer>
           ) }
 
-          {!!recentItems.length && !SearchResults  && (
+          {!!recentItems.length && !SearchResults && (
             <S.RecentItemsContainer>
               {
                 recentItems.map((item) => (
@@ -99,7 +106,7 @@ const SearchPage = () => {
         <h2>Who is behind El Pato Clip</h2>
         <S.AboutSectionContent>
           <div>
-            <img alt="patitodev logo" width={100} src="/imgs/ProfilePic.png" />
+            <img alt="Patito logo" width={100} src="/imgs/ProfilePic.png" />
             <p>Patito Dev</p>
             <S.Anchor href="https://twitch.tv/patitodev">twitch.tv/patitodev</S.Anchor>
           </div>

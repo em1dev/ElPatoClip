@@ -39,3 +39,10 @@ export const GlobalStyles = createGlobalStyle`
   main {
   }
 `;
+
+export const RightContainer = styled.div`
+  max-width: 300px;
+  min-width: 300px;
+  overflow: auto;
+  height: 100%;
+`;

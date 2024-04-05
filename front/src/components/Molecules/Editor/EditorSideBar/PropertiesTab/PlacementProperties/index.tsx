@@ -1,14 +1,12 @@
 import * as S from './styles';
 import { useCallback } from 'react';
 import { Input } from '../../../../../Atoms/Input';
-import { PropertyTabInterface } from '../type';
 import { Rect } from '../../../../../../types';
+import { useEditorState } from '../../../../../../store/EditorState/useEditorState';
 
-export interface PlacementPropertiesProps extends PropertyTabInterface {}
-
-export const PlacementProperties = ({
-  layer, updateLayer
-}: PlacementPropertiesProps) => {
+export const PlacementProperties = () => {
+  const selectedLayer = useEditorState(state => state.selectedLayer);
+  const updateLayerPartially = useEditorState(state => state.updateLayerPartially);
 
   const onChange = useCallback((selector: 'input' | 'output', rect: {
     x?: string,
@@ -16,7 +14,9 @@ export const PlacementProperties = ({
     width?: string,
     height?: string
   }) => {
-    const layerSelected = layer[selector];
+    if (!selectedLayer) return;
+
+    const layerSelected = selectedLayer[selector];
     if (!layerSelected) return;
 
     const prevRect = { ...layerSelected.rect };
@@ -29,15 +29,15 @@ export const PlacementProperties = ({
       prevRect[key as keyof Rect] = valueAsInt;
     }
 
-    updateLayer(layer.id, {
+    updateLayerPartially(selectedLayer.id, {
       [selector]: {
         ...layerSelected,
         rect: prevRect, 
       }
     });
-  }, [updateLayer, layer]);
+  }, [updateLayerPartially, selectedLayer]);
 
-  if (!layer.input) return;
+  if (!selectedLayer || !selectedLayer.input) return;
 
   return (
     <>
@@ -48,7 +48,7 @@ export const PlacementProperties = ({
             <span>X</span>
             <Input
               size='sm'
-              value={layer.input.rect.x}
+              value={selectedLayer.input.rect.x}
               type='number'
               onChange={(e) => {
                 onChange('input', { x: e.target.value });
@@ -57,7 +57,7 @@ export const PlacementProperties = ({
             <span>Y</span>
             <Input
               size='sm'
-              value={layer.input.rect.y}
+              value={selectedLayer.input.rect.y}
               type='number'
               onChange={(e) => {
                 onChange('input', { y: e.target.value });
@@ -69,7 +69,7 @@ export const PlacementProperties = ({
             <span>W</span>
             <Input
               size='sm'
-              value={layer.input.rect.width}
+              value={selectedLayer.input.rect.width}
               type='number'
               onChange={(e) => {
                 onChange('input', { width: e.target.value });
@@ -78,7 +78,7 @@ export const PlacementProperties = ({
             <span>H</span>
             <Input
               size='sm'
-              value={layer.input.rect.height}
+              value={selectedLayer.input.rect.height}
               type='number'
               onChange={(e) => {
                 onChange('input', { height: e.target.value });
@@ -94,7 +94,7 @@ export const PlacementProperties = ({
             <span>X</span>
             <Input
               size='sm'
-              value={layer.output.rect.x}
+              value={selectedLayer.output.rect.x}
               type='number'
               onChange={(e) => {
                 onChange('output', { x: e.target.value });
@@ -103,7 +103,7 @@ export const PlacementProperties = ({
             <span>Y</span>
             <Input
               size='sm'
-              value={layer.output.rect.y}
+              value={selectedLayer.output.rect.y}
               type='number'
               onChange={(e) => {
                 onChange('output', { y: e.target.value });
@@ -115,7 +115,7 @@ export const PlacementProperties = ({
             <span>W</span>
             <Input
               size='sm'
-              value={layer.output.rect.width}
+              value={selectedLayer.output.rect.width}
               type='number'
               onChange={(e) => {
                 onChange('output', { width: e.target.value });
@@ -124,7 +124,7 @@ export const PlacementProperties = ({
             <span>H</span>
             <Input
               size='sm'
-              value={layer.output.rect.height}
+              value={selectedLayer.output.rect.height}
               type='number'
               onChange={(e) => {
                 onChange('output', { height: e.target.value });

@@ -1,14 +1,13 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as S from './styles';
-import { MIN_VIDEO_LENGTH, layerOffset, pixelsToSeconds, scruberOffset, secondsToPixels } from './util';
+import { MIN_VIDEO_LENGTH, layerOffset, pixelsToSeconds, scrubberOffset, secondsToPixels } from './util';
 import { Seeker } from './Seeker';
 import { CropHandle } from './CropHandle';
 import { MathUtils } from '../../../../Utils/MathUtils';
 import { useDrag } from '../../../../hooks/useDrag';
 import { useEventListener } from '../../../../hooks/useEventListener';
-import { TimeSlice, Point } from '../../../../types';
-
-
+import { Point } from '../../../../types';
+import { useEditorState } from '../../../../store/EditorState/useEditorState';
 
 const TimerLabelBlock = (label: string) => (
   <Fragment key={label}>
@@ -20,23 +19,13 @@ const TimerLabelBlock = (label: string) => (
   </Fragment>
 );
 
-export interface TimelineProps {
-  cropTime: TimeSlice,
-  setCropTime: (value: TimeSlice) => void,
-  totalDuration: number,
-  currentTime: number,
-  seekTo: (to: number) => void,
-  seekWithAnimation: boolean,
-}
 
-export const Timeline = ({
-  currentTime,
-  seekTo,
-  cropTime,
-  setCropTime,
-  seekWithAnimation,
-  totalDuration = 1000,
-}: TimelineProps) => {
+export const Timeline = () => {
+  const { endTime, startTime } = useEditorState(state => state.timeSlice);
+  const setTimeSlice = useEditorState(state => state.setTimeSlice);
+  const totalDuration = useEditorState(state => state.videoMetadata.totalTime);
+  const seekTo = useEditorState(state => state.seekTo);
+
   const layerHandleRef = useRef<HTMLDivElement>(null);
   const playbackLineContainerRef = useRef<HTMLDivElement>(null);
   const layerContainerRef = useRef<HTMLDivElement>(null);
@@ -50,38 +39,38 @@ export const Timeline = ({
 
   const timelineWidthInPx = useMemo(() => {
     if (isNaN(totalDuration)) return 100;
-    return secondsToPixels(totalDuration) + scruberOffset.right;
+    return secondsToPixels(totalDuration) + scrubberOffset.right;
   }, [totalDuration]);
 
   useEffect(() => {
     if (!layerContainerRef.current) return;
     if (!playbackLineContainerRef.current) return;
-    const width = secondsToPixels(cropTime.endTime - cropTime.startTime) + layerOffset.left;
-    const left = secondsToPixels(cropTime.startTime);
+    const width = secondsToPixels(endTime - startTime) + layerOffset.left;
+    const left = secondsToPixels(startTime);
     layerContainerRef.current.style.width = `${width}px`;
     layerContainerRef.current.style.left = `${left}px`;
 
     playbackLineContainerRef.current.style.width = `${width}px`;
     playbackLineContainerRef.current.style.left = `${left}px`;
-  }, [cropTime]);
+  }, [startTime, endTime]);
 
   const onLeftCropHandle = useCallback((value: number) => {
-    const startTime = pixelsToSeconds(value - 33);
-    const timeDiff = MathUtils.clamp(cropTime.endTime - startTime, MIN_VIDEO_LENGTH, totalDuration);
-    setCropTime({
-      endTime: cropTime.endTime,
-      startTime: Math.max(cropTime.endTime - timeDiff, 0)
+    const newStartTime = pixelsToSeconds(value - 33);
+    const timeDiff = MathUtils.clamp(endTime - newStartTime, MIN_VIDEO_LENGTH, totalDuration);
+    setTimeSlice({
+      endTime: endTime,
+      startTime: Math.max(endTime - timeDiff, 0)
     });
-  }, [setCropTime, cropTime, totalDuration]);
+  }, [setTimeSlice, endTime, totalDuration]);
 
   const onRightCropHandle = useCallback((value: number) => {
-    const endTime = pixelsToSeconds(value - 33);
-    const timeDiff = MathUtils.clamp(endTime - cropTime.startTime, MIN_VIDEO_LENGTH, totalDuration);
-    setCropTime({
-      startTime: cropTime.startTime,
-      endTime: Math.min(cropTime.startTime + timeDiff, totalDuration)
+    const newEndTime = pixelsToSeconds(value - 33);
+    const timeDiff = MathUtils.clamp(newEndTime - startTime, MIN_VIDEO_LENGTH, totalDuration);
+    setTimeSlice({
+      startTime: startTime,
+      endTime: Math.min(startTime + timeDiff, totalDuration)
     });
-  }, [cropTime, setCropTime, totalDuration]);
+  }, [startTime, setTimeSlice, totalDuration]);
 
   const [layerHandleDragOffset, setLayerHandleDragOffset] = useState<Point>({ x: 0, y:0 });
 
@@ -89,22 +78,23 @@ export const Timeline = ({
     const diffPosition = e.x - layerHandleDragOffset.x;
     const secondsToMove = pixelsToSeconds(diffPosition);
     const newCropTime = {
-      ...cropTime
+      startTime,
+      endTime
     };
-    const cropDuration = cropTime.endTime - cropTime.startTime;
+    const cropDuration = endTime - startTime;
 
     if (secondsToMove < 0) {
-      newCropTime.startTime = Math.max(cropTime.startTime + secondsToMove, 0);
+      newCropTime.startTime = Math.max(startTime + secondsToMove, 0);
       newCropTime.endTime = newCropTime.startTime + cropDuration;
     }
 
     if (secondsToMove > 0) {
-      newCropTime.endTime = Math.min(cropTime.endTime + secondsToMove, totalDuration);
+      newCropTime.endTime = Math.min(endTime + secondsToMove, totalDuration);
       newCropTime.startTime = newCropTime.endTime - cropDuration;
     }
     setLayerHandleDragOffset({ x: e.x, y: e.y });
-    setCropTime(newCropTime);
-  }, [cropTime, layerHandleDragOffset, totalDuration, setCropTime]);
+    setTimeSlice(newCropTime);
+  }, [startTime, endTime, layerHandleDragOffset, totalDuration, setTimeSlice]);
 
   const onLayerHandleMouseDown = useCallback((e: MouseEvent) => {
     setLayerHandleDragOffset({
@@ -116,18 +106,13 @@ export const Timeline = ({
   useDrag(layerHandleRef, onLayerHandleDrag, onLayerHandleMouseDown);
 
   useEventListener<HTMLDivElement, MouseEvent>(playbackLineContainerRef, 'mousedown', (e) => {
-    const newTime = cropTime.startTime + pixelsToSeconds(e.offsetX);
+    const newTime = startTime + pixelsToSeconds(e.offsetX);
     seekTo(newTime);
   });
 
   return (
     <S.Container ref={containerRef}>
-      <Seeker
-        shouldAnimate={seekWithAnimation}
-        containerRef={containerRef}
-        currentTime={currentTime}
-        seekTo={seekTo}
-      />
+      <Seeker containerRef={containerRef} />
 
       <S.PlaybackLineContainer width={timelineWidthInPx}>
         <S.PlaybackLine ref={playbackLineContainerRef}>

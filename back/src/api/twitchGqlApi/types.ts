@@ -8,7 +8,7 @@ export interface GlqResponse<T, U extends GlqBaseExtension = GlqBaseExtension> {
   extensions: U
 }
 
-export interface GlqClipInfoResponse extends GlqResponse<{ clip?: GlqClip }>{};
+export interface GlqClipInfoResponse extends GlqResponse<{ clip?: GlqClip }>{}
 export interface GlqUserClips extends GlqResponse<{
   user: {
     clips: {
@@ -31,7 +31,7 @@ export interface GlqUserClips extends GlqResponse<{
           }>,
     }
   }
-}>{};
+}>{}
 
 export interface GlqClip {
   id: string,

@@ -2,37 +2,33 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Layer } from '../../../../../../types';
 import * as S from '../styles';
 import { ButtonIcon } from '../../../../../Atoms/ButtonIcon';
+import { useEditorState } from '../../../../../../store/EditorState/useEditorState';
 
 export interface LayerItemProps {
   layer: Layer,
-
-  selectedLayerId: number | null,
-  setSelectedLayerId: React.Dispatch<React.SetStateAction<number | null>>,
-
   dragLayerId: number | null,
   setDragLayerId: React.Dispatch<React.SetStateAction<number | null>>,
-
-  updateLayer: (id: number, changes: Partial<Layer>) => void,
-  updateLayers:  React.Dispatch<React.SetStateAction<Array<Layer>>>,
 }
 
 export const LayerItem = ({
   dragLayerId,
   layer,
-  selectedLayerId,
   setDragLayerId,
-  setSelectedLayerId,
-  updateLayer,
-  updateLayers
 }: LayerItemProps) => {
+  const layers = useEditorState(state => state.layers);
+  const setLayers = useEditorState(state => state.setLayers);
+  const updateLayerPartially = useEditorState(state => state.updateLayerPartially);
+  const selectedLayer = useEditorState(state => state.selectedLayer);
+  const setSelectedLayer = useEditorState(state => state.setSelectedLayer);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
 
   useEffect(() => {
-    if (selectedLayerId !== layer.id) {
+    if (selectedLayer?.id !== layer.id) {
       setIsEditingName(false);
     }
-  }, [selectedLayerId, isEditingName, layer]);
+  }, [selectedLayer, isEditingName, layer]);
 
   useEffect(() => {
     if (!isEditingName) return;
@@ -42,8 +38,8 @@ export const LayerItem = ({
   }, [isEditingName]);
 
   const onLayerClick = useCallback(() => {
-    setSelectedLayerId(layer.id);
-  }, [layer, setSelectedLayerId]);
+    setSelectedLayer(layer.id);
+  }, [layer, setSelectedLayer]);
 
   const onDragEnd:React.DragEventHandler<HTMLDivElement> = useCallback(() => {
     setDragLayerId(null);
@@ -74,7 +70,7 @@ export const LayerItem = ({
     target.dataset.over = undefined;
   };
 
-  const onDrop: React.DragEventHandler<HTMLDivElement> = (e) => {
+  const onDrop: React.DragEventHandler<HTMLDivElement> = useCallback((e) => {
     e.preventDefault();
     const target = e.currentTarget;
     if (!(target instanceof HTMLElement)) return;
@@ -83,33 +79,32 @@ export const LayerItem = ({
     const isOnTop = target.dataset.over === 'top';
     target.dataset.over = undefined;
     if (id === dragLayerId?.toString()) return;
-    updateLayers((prev) => {
-      const layersSortedAsc = prev
-        .filter(l => l.id !== dragLayerId)
-        .sort((a,b) => a.zIndex - b.zIndex);
 
-      const draggedLayer = prev.find(l => l.id === dragLayerId);
-      const hoveredLayer = prev.find(l => l.id.toString() === id);
-      if (!draggedLayer || !hoveredLayer) return prev;
+    const layersSortedAsc = layers
+      .filter(l => l.id !== dragLayerId)
+      .sort((a,b) => a.zIndex - b.zIndex);
 
-      let dragIndex = layersSortedAsc.findIndex(l => l.id.toString() === id);
-      if (dragIndex === -1) return prev;
-      if (isOnTop) {
-        dragIndex += 1;
-      }
-      const rest = layersSortedAsc.splice(dragIndex);
-      const newArray = [...layersSortedAsc,  draggedLayer, ...rest]
-        .map((l, index) => ({...l, zIndex: index}));
-      return newArray;
-    });
-  };
+    const draggedLayer = layers.find(l => l.id === dragLayerId);
+    const hoveredLayer = layers.find(l => l.id.toString() === id);
+    if (!draggedLayer || !hoveredLayer) return;
+
+    let dragIndex = layersSortedAsc.findIndex(l => l.id.toString() === id);
+    if (dragIndex === -1) return;
+    if (isOnTop) {
+      dragIndex += 1;
+    }
+    const rest = layersSortedAsc.splice(dragIndex);
+    const newLayers = [...layersSortedAsc,  draggedLayer, ...rest]
+      .map((l, index) => ({...l, zIndex: index}));
+    setLayers(newLayers);
+  }, [layers, dragLayerId, setLayers]);
 
   const onLockedButtonClicked = (
     e:React.MouseEvent<HTMLButtonElement, MouseEvent>, layer: Layer
   ) => {
     e.stopPropagation();
-    updateLayer(layer.id, { locked: !layer.locked });
-    setSelectedLayerId(layer.id);
+    updateLayerPartially(layer.id, { locked: !layer.locked });
+    setSelectedLayer(layer.id);
   };
 
   const onDoubleClick = () => {
@@ -125,8 +120,8 @@ export const LayerItem = ({
 
   return (
     <S.LayerButtonContainer 
-      $selected={selectedLayerId === layer.id}
-      key={layer.id}         
+      $selected={selectedLayer?.id === layer.id}
+      key={layer.id}
       data-id={layer.id}
       draggable
       onDragEnter={onDragEnter}
@@ -134,7 +129,7 @@ export const LayerItem = ({
       onDragEnd={onDragEnd}
       onDragStart={() => {
         setDragLayerId(layer.id);
-        setSelectedLayerId(layer.id);
+        setSelectedLayer(layer.id);
       }}
       onDragOver={onDragOver}
       onDrop={onDrop}
@@ -146,8 +141,8 @@ export const LayerItem = ({
       />
       <div>
         <S.InputColor 
-          onClick={() => setSelectedLayerId(layer.id)}
-          onChange={(e) => updateLayer(layer.id, { borderColor: e.target.value })} 
+          onClick={() => setSelectedLayer(layer.id)}
+          onChange={(e) => updateLayerPartially(layer.id, { borderColor: e.target.value })} 
           type='color' 
           value={layer.borderColor} 
         />
@@ -156,7 +151,7 @@ export const LayerItem = ({
             onKeyDown={onKeyDown}
             ref={inputRef}
             value={layer.name}
-            onChange={(e) => { updateLayer(layer.id, { name: e.target.value });}}
+            onChange={(e) => { updateLayerPartially(layer.id, { name: e.target.value });}}
           />
           : (
             <span> {layer.name} </span>

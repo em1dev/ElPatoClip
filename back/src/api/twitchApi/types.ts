@@ -1,7 +1,7 @@
 export interface AuthenticationResponse {
   access_token: string,
   expires_in: number,
-  token_type: "bearer"
+  token_type: 'bearer'
 }
 
 export interface TwitchPaginatedResult<T> {

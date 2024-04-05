@@ -1,10 +1,11 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useState } from 'react';
+import { RefObject, useCallback, useState } from 'react';
 import { Layer, Point, Rect, Size, Source } from '../../../../../types';
 import { useEventListener } from '../../../../../hooks/useEventListener';
 import { CanvasUtils } from '../util/canvasUtils';
 import { MIN_CROP_SIZE } from '../settings';
 import { MathUtils } from '../../../../../Utils/MathUtils';
 import { Interactions } from '../util/interactions';
+import { useEditorState } from '../../../../../store/EditorState/useEditorState';
 
 const getNewDraggedPosition = (
   currentPosition: Rect,
@@ -42,13 +43,15 @@ export const useCanvasDrag = (
   layers: Array<Layer>,
   canvasRef: RefObject<HTMLCanvasElement | null>,
   videoResolution: Size,
-  selectedLayer: Layer | undefined,
-  setSelectedLayerId: Dispatch<SetStateAction<number | null>>,
-  setHoverLayerId: Dispatch<SetStateAction<number | null>>,
   padding: number,
   scalingFactor: number,
   onOutputChange?: (layerId: number, output: Source) => void
 ) => {
+  const setHoveredLayer = useEditorState(state => state.setHoveredLayer);
+  const setSelectedLayer = useEditorState(state => state.setSelectedLayer);
+  const selectedLayerId = useEditorState((state) => state.selectedLayer?.id);
+  const selectedLayer = layers.find(l => l.id === selectedLayerId);
+
   const [interacted, setInteracted] = useState<{
     clickedCorner?: string,
     interactionMode: 'drag' | 'resize',
@@ -77,14 +80,10 @@ export const useCanvasDrag = (
     }
 
     const layer = Interactions.layerClicked(layers, clicked, padding);
-    if (!layer) {
-      setSelectedLayerId(null);
-      setHoverLayerId(null);
-      return;
-    }
+    setHoveredLayer(null);
+    setSelectedLayer(layer?.id ?? null);
 
-    setHoverLayerId(null);
-    setSelectedLayerId(layer.id);
+    if (!layer) return;
 
     const offsetClicked = {
       x: (clicked.x - (layer.output.rect.x + padding)),

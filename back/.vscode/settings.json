@@ -2,4 +2,7 @@
     "files.exclude": {
         "**/.env": true
     },
+    "cSpell.words": [
+        "elpatoclip"
+    ],
 }

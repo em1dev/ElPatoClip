@@ -21,7 +21,7 @@ export const CanvasContainer = styled.div`
     margin: auto;
   }
 `;
-export const Potrait = styled(CanvasContainer)`
+export const Portrait = styled(CanvasContainer)`
   height: 100%;
   aspect-ratio: 9/16;
 `;

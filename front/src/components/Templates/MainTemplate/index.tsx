@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
 import * as S from './styles';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useAuth } from '../../../authContext/useAuth';
+import { Button } from '../../Atoms/Button';
+
+
 
 export interface MainTemplateProps {
   children: React.ReactNode;
@@ -8,6 +12,7 @@ export interface MainTemplateProps {
 }
 
 const MainTemplate = (props: MainTemplateProps) => {
+  const auth = useAuth();
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   const handleNav = () => {
@@ -25,6 +30,11 @@ const MainTemplate = (props: MainTemplateProps) => {
     }
   }, [isNavOpen]);
 
+  const onLoginClick = useCallback(() => {
+    const url = `${location.origin}/login`;
+    window.open(url, 'popup', 'toolbar=0,status=0,width=626,height=636');
+  }, []);
+
   return (
     <>
       {props.withHeader && (
@@ -35,19 +45,33 @@ const MainTemplate = (props: MainTemplateProps) => {
                 <img height={23} src="/icons/loading.png" alt="" />
                 El Pato Clip
               </S.HeaderLogo>
+
+              <S.Links>
+                <Link to="/privacy">Privacy</Link>
+                <Link to="/tos">ToS</Link>
+                <Link
+                  target="_blank"
+                  to="https://github.com/Niv3K-El-Pato/ElPatoClip"
+                >
+                Source Code
+                </Link>
+                <Link target="_blank" to="https://ko-fi.com/niv3k_el_pato">
+                Support Me :3
+                </Link>
+              </S.Links>
             </div>
             <S.Links>
-              <Link to="/privacy">Privacy</Link>
-              <Link to="/tos">ToS</Link>
-              <Link
-                target="_blank"
-                to="https://github.com/Niv3K-El-Pato/ElPatoClip"
-              >
-                Source Code
-              </Link>
-              <Link target="_blank" to="https://ko-fi.com/niv3k_el_pato">
-                Support Me :3
-              </Link>
+
+              { auth?.user ? (
+                <>
+                  <Link to="/account">
+                    Account
+                  </Link>
+                  <Button $variant="outline" onClick={auth.logOut}>Logout</Button>
+                </>
+              ) : (
+                <Button $variant='outline' onClick={onLoginClick}>Login</Button>
+              )}
             </S.Links>
 
             <S.BurgerIcon>

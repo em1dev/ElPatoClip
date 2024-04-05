@@ -1,30 +1,32 @@
 import * as S from './styles';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
-import { Layer, TimeSlice } from '../../../../types';
-import { useVideo } from '../useVideo';
+import { useCallback, useEffect, useRef } from 'react';
 import { useRenderLoop } from '../../../../hooks/useRenderLoop';
 import { VideoCanvas } from '../../../Molecules/Editor/VideoCanvas';
-import { Button } from '../../../Atoms/Button';
 import { useCanvasRecording } from './useCanvasRecording';
 import { useEventListener } from '../../../../hooks/useEventListener';
+import { useEditorState } from '../../../../store/EditorState/useEditorState';
+import { ExportSection } from './ExportSection';
+import { Loading } from '../../../Atoms/Loading';
 
-export interface VideoExporterProps {
-  videoUrl: string,
-  layers: Array<Layer>,
-  timeSlice: TimeSlice
-}
+export const VideoExporter = () => {
+  const resetInteractions = useEditorState((state) => state.resetInteractions);
+  const videoBlobUrl = useEditorState((state) => state.videoBlobUrl);
+  const timeSlice = useEditorState((state) => state.timeSlice);
 
-export const VideoExporter = ({
-  layers,
-  timeSlice,
-  videoUrl
-}: VideoExporterProps) => {
   const outputCanvasRef = useRef<HTMLCanvasElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { seekTo, setPlayback } = useVideo(videoRef, timeSlice);
+  const { seekTo, setPlayback, setVideoRef } = useEditorState();
 
   const { outputUrl, record } = useCanvasRecording(outputCanvasRef, videoRef);
+
+  useEffect(() => {
+    resetInteractions();
+  }, [resetInteractions]);
+
+  useEffect(() => {
+    setVideoRef(videoRef);
+  }, [videoRef, setVideoRef]);
 
   useEventListener<HTMLVideoElement, Event>(videoRef, 'loadeddata', () => {
     seekTo(timeSlice.startTime);
@@ -41,25 +43,12 @@ export const VideoExporter = ({
     ctx.drawImage(videoRef.current, 0, 0);
   }, []));
 
-  const download = useCallback((blobUrl: string) => {
-    const a = document.createElement('a');
-    document.body.appendChild(a);
-    a.href = blobUrl;
-    a.download = 'test.webm';
-    a.click();
-  }, []);
-
   useEffect(() => {
     if (!outputUrl) return;
     setPlayback(false);
   }, [outputUrl, setPlayback]);
 
-  const renderLayers: Array<Layer> = useMemo(() => layers.map((item) => ({
-    ...item,
-    locked: true,
-    output: item.output,
-    input: item.input
-  })), [layers]);
+  if (!videoBlobUrl) return null;
 
   return (
     <S.Container>
@@ -71,22 +60,27 @@ export const VideoExporter = ({
             withPadding={false}
             ref={outputCanvasRef}
             direction='portrait'
-            hoverLayerId={null}
-            selectedLayerId={null}
-            setHoverLayerId={() => {}}
-            setSelectedLayerId={() => {}}
-            layers={renderLayers}
             videoRef={canvasRef}
+            type='output'
+            locked
           />
         )}
       </S.VideoContainer>
       <canvas hidden ref={canvasRef} width={1920} height={1080} />
-      <video hidden ref={videoRef} src={videoUrl} width={1920} height={1080} />
-      { outputUrl ?
-        <Button theme='light' onClick={() => download(outputUrl)}>Download</Button>
-        : 
-        <h2>Rendering...</h2>
-      }
+      <video preload='auto' hidden ref={videoRef} src={videoBlobUrl} width={1920} height={1080} />
+
+      <S.RightContainer>
+
+        { outputUrl ?  (
+          <ExportSection videoUrl={outputUrl} />
+        ) : (
+          <S.ExportingLoaderContainer>
+            <p>Recording video...</p>
+            <Loading />
+          </S.ExportingLoaderContainer>
+        )}
+
+      </S.RightContainer>
     </S.Container>
   );
 };

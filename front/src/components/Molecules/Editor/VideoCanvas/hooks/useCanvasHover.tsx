@@ -1,22 +1,21 @@
-import { Dispatch, RefObject, SetStateAction, useCallback, useMemo } from 'react';
+import { RefObject, useCallback } from 'react';
 import { useEventListener } from '../../../../../hooks/useEventListener';
 import { Layer, Point } from '../../../../../types';
 import { CanvasUtils } from '../util/canvasUtils';
 import { MathUtils } from '../../../../../Utils/MathUtils';
+import { useEditorState } from '../../../../../store/EditorState/useEditorState';
 
 export const useCanvasHover = (
   layers: Array<Layer>,
-  hoverLayerId: number | null,
   canvasRef: RefObject<HTMLCanvasElement>,
-  setHoverLayerId: Dispatch<SetStateAction<number | null>>,
   padding: number,
   disableHover: boolean
 ) => {
-  const hoveredLayer = useMemo(() => layers.find(l => l.id === hoverLayerId), [hoverLayerId, layers]);
+  const setHoveredLayer = useEditorState((state) => state.setHoveredLayer);
 
   useEventListener<HTMLCanvasElement, MouseEvent>(canvasRef, 'mouseleave', useCallback(() => {
-    setHoverLayerId(null);
-  }, [setHoverLayerId]));
+    setHoveredLayer(null);
+  }, [setHoveredLayer]));
 
   useEventListener<HTMLCanvasElement, MouseEvent>(canvasRef, 'mousemove', useCallback((e) => {
     if (disableHover) return;
@@ -29,11 +28,9 @@ export const useCanvasHover = (
       if (layer.locked) continue;
       const isInside = MathUtils.isInsideRect(canvasPointWithOffset, layer.output.rect);
       if (!isInside) continue;
-      setHoverLayerId(layer.id);
+      setHoveredLayer(layer.id);
       return;
     }
-    setHoverLayerId(null);
-  }, [layers, setHoverLayerId, canvasRef, padding, disableHover]));
-
-  return hoveredLayer;
+    setHoveredLayer(null);
+  }, [layers, setHoveredLayer, canvasRef, padding, disableHover]));
 };

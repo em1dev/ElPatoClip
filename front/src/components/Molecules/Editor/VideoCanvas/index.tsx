@@ -1,57 +1,68 @@
 import { useRef, MutableRefObject, useCallback, forwardRef, useImperativeHandle, useMemo } from 'react';
-import { Layer, Source } from '../../../../types';
+import { Source } from '../../../../types';
 import { useEventListener } from '../../../../hooks/useEventListener';
 import { VideoDirection } from './settings';
 import { useRender } from './hooks/useRender';
 import { useCanvasHover } from './hooks/useCanvasHover';
 import { useCanvasDrag } from './hooks/useCanvasDrag';
 import { useCanvasMetadata } from './hooks/useCanvasMetadata';
+import { useEditorState } from '../../../../store/EditorState/useEditorState';
 
 export interface VideoCanvasProp {
   videoRef: MutableRefObject<CanvasImageSource | null>,
   direction?: VideoDirection,
-  layers: Array<Layer>,
   onOutputChange?: (layerId: number, output: Source) => void,
-  renderVideo?: boolean
-  selectedLayerId: number | null,
-  setSelectedLayerId: React.Dispatch<React.SetStateAction<number | null>>
-  hoverLayerId: number | null,
-  setHoverLayerId: React.Dispatch<React.SetStateAction<number | null>>,
-  withPadding: boolean
+  renderVideo?: boolean,
+  withPadding: boolean,
+  type: 'input' | 'output',
+  locked?: boolean
 }
 
 export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>(({
   onOutputChange,
-  layers,
   videoRef,
   renderVideo,
   direction = 'portrait',
-  hoverLayerId,
-  setHoverLayerId,
-  selectedLayerId,
-  setSelectedLayerId,
-  withPadding
+  withPadding,
+  type,
+  locked = false
 }, externalRef) => {
+  const layerData = useEditorState(state => state.layers);
+
+  const layers = useMemo(() =>{
+    if (type === 'input') {
+      return layerData.map((item) => ({
+        ...item,
+        input: undefined,
+        output: item.input!,
+      }));
+    }
+
+    // output
+    return layerData.map((item) => ({
+      ...item,
+      output: item.output,
+      input: item.input,
+      locked: locked ?? item.locked
+    }));
+  }, [layerData, type, locked]);
+
   const layersSortedAsc = useMemo(() => ( 
     layers.toSorted((a,b) => (a.zIndex - b.zIndex))
   ), [layers]); 
 
   const layersSortedDesc = useMemo(() => ( 
     layers.toSorted((a,b) => (b.zIndex - a.zIndex))
-  ), [layers]); 
+  ), [layers]);
 
-  const selectedLayer = useMemo(() => (
-    layers.find(l => l.id === selectedLayerId)
-  ), [selectedLayerId, layers]);
+  const setHoveredLayer = useEditorState(state => state.setHoveredLayer);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const canvasMetadata = useCanvasMetadata(canvasRef, withPadding, direction);
 
-  const interacted = useCanvasDrag(
-    layersSortedAsc, canvasRef, canvasMetadata.videoResolution,
-    selectedLayer, setSelectedLayerId, setHoverLayerId, canvasMetadata.padding, canvasMetadata.scalingFactor, onOutputChange);
+  const interacted = useCanvasDrag(layersSortedAsc, canvasRef, canvasMetadata.videoResolution, canvasMetadata.padding, canvasMetadata.scalingFactor, onOutputChange);
 
-  const hoveredLayer = useCanvasHover(layersSortedDesc, hoverLayerId, canvasRef, setHoverLayerId, canvasMetadata.padding, interacted !== null);
+  useCanvasHover(layersSortedDesc, canvasRef, canvasMetadata.padding, interacted !== null);
 
   useImperativeHandle<HTMLCanvasElement | null, HTMLCanvasElement | null>(externalRef, () => {
     return canvasRef.current;
@@ -62,13 +73,10 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
     const target = e.target;
     if (!(target instanceof HTMLElement)) return;
     if (target.dataset.type === 'video-canvas') return;
-    setHoverLayerId(null);
-  }, [setHoverLayerId]));
+    setHoveredLayer(null);
+  }, [setHoveredLayer]));
 
-  useRender(
-    canvasRef, videoRef, canvasMetadata,
-    selectedLayer, hoveredLayer, layersSortedAsc,
-    !!renderVideo, !!interacted);
+  useRender(layersSortedAsc, canvasRef, videoRef, canvasMetadata, !!renderVideo, !!interacted);
 
   return (
     <canvas 

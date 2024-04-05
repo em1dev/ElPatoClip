@@ -6,7 +6,7 @@ export const pixelsToSeconds = (value: number) => (
   value / (50 / 2)
 );
 
-export const scruberOffset = {
+export const scrubberOffset = {
   left: 31,
   right: 31 + 7,
 };

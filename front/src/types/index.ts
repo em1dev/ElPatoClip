@@ -5,13 +5,13 @@ export type Point = { x: number, y: number };
 
 export interface Rect extends Point, Size {}
 
-export type VisibleCanvas = 'landscape' | 'potrait' | 'both';
+export type VisibleCanvas = 'landscape' | 'portrait' | 'both';
 
 export type LayerShape = 'circle' | 'round-rectangle' | 'rectangle';
 
 export type LayerFilter = 'blur' | 'none';
 
-export type AspectRatio = 'potrait' | 'landscape' | 'free' | 'locked';
+export type AspectRatio = 'portrait' | 'landscape' | 'free' | 'locked';
 
 export interface Layer {
   id: number,

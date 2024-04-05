@@ -1,37 +1,28 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import * as S from './styles';
 import { useRenderLoop } from '../../../hooks/useRenderLoop';
-import { Layer, TimeSlice, VisibleCanvas } from '../../../types';
-import { useVideo } from '../../Pages/VideoEditorPage/useVideo';
+import { VideoEvents } from './VideoEvents';
 import { Content } from './Content';
 import { EditorHeader } from './Header';
 import { Footer } from './Footer';
-import { RightContainer } from './RightContainer';
+import { useEditorState } from '../../../store/EditorState/useEditorState';
+import { EditorSideBar } from '../../Molecules/Editor/EditorSideBar';
 
 export interface VideoEditorProps {
-  videoUrl: string,
-  layers: Array<Layer>,
-  setLayers: Dispatch<SetStateAction<Array<Layer>>>,
-  cropTime: TimeSlice,
-  setCropTime: (value: TimeSlice) => void,
   onExport: () => void,
 }
 
-const VideoEditor = ({
-  videoUrl,
-  cropTime,
-  layers,
-  setCropTime,
-  setLayers,
-  onExport
-}: VideoEditorProps) => {
-  const [seekWithAnimation, setSeekWithAnimation] = useState<boolean>(false);
+const VideoEditor = ({ onExport }: VideoEditorProps) => {
+  const videoUrl = useEditorState(state => state.videoBlobUrl);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const video = useVideo(videoRef, cropTime, setSeekWithAnimation);
+  const setVideoRef = useEditorState(state => state.setVideoRef);
+  const toggleVideoPlayback = useEditorState(state => state.toggleVideoPlayback);
+
+  useEffect(() => {
+    setVideoRef(videoRef);
+  }, [videoRef, setVideoRef]);
+
   const videoCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [selectedLayerId, setSelectedLayerId] = useState<number | null>(null);
-  const [hoverLayerId, setHoverLayerId] = useState<number | null>(null);
-  const [visibleCanvases, setVisibleCanvases] = useState<VisibleCanvas>('both');
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -45,7 +36,7 @@ const VideoEditor = ({
     const onKeyUp = (e: KeyboardEvent) => {
       if (e.key !== ' ') return;
       e.preventDefault();
-      video.toggleVideoPlayback();
+      toggleVideoPlayback();
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -59,50 +50,31 @@ const VideoEditor = ({
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('keyup', onKeyUp);
     };
-  }, [video]);
+  }, [toggleVideoPlayback]);
+
+  if (!videoUrl) return null;
 
   return (
     <>
       <S.GlobalStyles />
 
+      <VideoEvents />
+
       <S.Container>
-        <EditorHeader 
-          selectedVisbleCanvas={visibleCanvases}
-          onSelectedVisibleCanvas={setVisibleCanvases}
-          onExportClick={onExport}
-        />
+        <EditorHeader onExportClick={onExport} />
         <S.InnerContainer>
           <S.CanvasContainer>
-            <Content
-              visibleCanvases={visibleCanvases}
-              hoverLayerId={hoverLayerId}
-              layers={layers}
-              selectedLayerId={selectedLayerId}
-              setHoverLayerId={setHoverLayerId}
-              setLayers={setLayers}
-              setSelectedLayerId={setSelectedLayerId}
-              videoCanvasRef={videoCanvasRef}
-            />
-            <Footer 
-              setVolume={video.setVolume}
-              volume={video.volume}
-              cropTime={cropTime}
-              video={video}
-              seekWithAnimation={seekWithAnimation}
-              setCropTime={setCropTime}
-            />
+            <Content videoCanvasRef={videoCanvasRef} />
+            <Footer />
           </S.CanvasContainer>
-          <RightContainer 
-            layers={layers}
-            selectedLayerId={selectedLayerId}
-            setLayers={setLayers}
-            setSelectedLayerId={setSelectedLayerId}
-          />
+          <S.RightContainer>
+            <EditorSideBar />
+          </S.RightContainer>
         </S.InnerContainer>
       </S.Container>
 
       <canvas hidden ref={videoCanvasRef} width={1920} height={1080} />
-      <video loop hidden ref={videoRef} width={960} height={540} src={videoUrl}></video>
+      <video autoPlay preload='auto' loop hidden ref={videoRef} width={960} height={540} src={videoUrl}></video>
     </>
   );
 };

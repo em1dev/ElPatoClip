@@ -3,30 +3,29 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ElPatoApi } from '../../../api/elPatoClipApi';
 import { Loading } from '../../Atoms/Loading';
-import { Layer, TimeSlice } from '../../../types';
-import { defaultLayers } from '../../../Utils/LayerGenerator';
 import { VideoExporter } from './VideoExporter';
 import VideoEditor from '../../Organisms/Editor';
+import { useEditorState } from '../../../store/EditorState/useEditorState';
 
-const bytesToRedable = (amount: number) => {
+const bytesToReadable = (amount: number) => {
   if (amount > 1000000) {
     // mb
-    return (amount / 1000000).toFixed(2).toString() + ' mb';
+    return (amount / 1000000).toFixed(2).toString() + ' MiB';
   } else {
     // kb
-    return (amount / 10000).toString() + ' kb';
+    return (amount / 10000).toString() + ' KB';
   }
 };
 
 export const VideoEditorPage = () => {
-  const [isExporting, setIsExporting] = useState<boolean>(false);
-  const [layers, setLayers] = useState<Array<Layer>>(defaultLayers);
-  // todo - get default crop time from response
-  const [cropTime, setCropTime] = useState<TimeSlice>({ startTime: 0, endTime: 10 });
+  const [hasError, setHasError] = useState<boolean>(false);
+  const videoBlobUrl = useEditorState((state) => state.videoBlobUrl);
+  const setClipId = useEditorState((state) => state.setClipId);
+  const isExporting = useEditorState((state) => state.isExporting);
+  const setIsExporting = useEditorState((state) => state.setIsExporting);
 
   const { clipId } = useParams<{ clipId: string }>(); 
   const [loading, setIsLoading] = useState<boolean>(false);
-  const [urlBlob, setUrlBlob] = useState<string | null>(null);
   const [progress, setProgress] = useState<{
     amount: string,
     total: string
@@ -35,23 +34,49 @@ export const VideoEditorPage = () => {
   useEffect(() => {
     if (!clipId) return;
     const onClipDownload = async (clipId: string) => {
+      const storageKey = 'ElPatoClip.CachedVideo';
+
+      /*
+      const cache = localStorage.getItem(storageKey);
+      if (cache) {
+        const cacheBlob = JSON.parse(cache);
+        if (cacheBlob['id'] === clipId) {
+          console.log('loaded from cache');
+          setClipId(clipId, cacheBlob['blobUrl']);
+          return;
+        }
+      }
+      */
+
       setIsLoading(true);
       // get clip metadata
-      const blob = await ElPatoApi.getClip(clipId, (amount, total) => {
-
-        const totalStr = total === 0 ? '?' : bytesToRedable(total);
+      const resp = await ElPatoApi.getClip(clipId, (amount, total) => {
+        const totalStr = total === 0 ? '?' : bytesToReadable(total);
 
         setProgress({
-          amount: bytesToRedable(amount),
+          amount: bytesToReadable(amount),
           total: totalStr
         });
       });
-      setUrlBlob(URL.createObjectURL(blob));
+
+      if (resp.error) {
+        setHasError(true);
+        setIsLoading(false);
+        setProgress(null);
+        return;
+      }
+
+      const blobUrl = URL.createObjectURL(resp.data);
+      setClipId(clipId, blobUrl);
       setIsLoading(false);
       setProgress(null);
+      localStorage.setItem(storageKey, JSON.stringify({
+        id: clipId,
+        blobUrl
+      }));
     };
     onClipDownload(clipId);
-  },[clipId]);
+  },[setClipId, clipId]);
 
   if (loading) return (
     <S.LoadingVideoContainer>
@@ -63,25 +88,19 @@ export const VideoEditorPage = () => {
     </S.LoadingVideoContainer>
   );
 
-  if (isExporting && urlBlob) {
+  if (hasError) return (
+    <div>Error loading clip. Please try again later</div>
+  );
+
+  if (isExporting && videoBlobUrl) {
     return (
-      <VideoExporter
-        videoUrl={urlBlob}
-        layers={layers}
-        timeSlice={cropTime}
-      />
+      <VideoExporter />
     );
   }
 
-  if (urlBlob) {
+  if (videoBlobUrl) {
     return (
-      <VideoEditor 
-        videoUrl={urlBlob}
-        cropTime={cropTime}
-        layers={layers}
-        setCropTime={setCropTime}
-        setLayers={setLayers}
-        onExport={() => setIsExporting(true)}
+      <VideoEditor onExport={() => setIsExporting(true)}
       />
     );
   }

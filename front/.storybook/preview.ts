@@ -1,5 +1,8 @@
 import type { Preview } from "@storybook/react";
 import '../src/index.css';
+import '@fontsource/poppins/800.css';
+import '@fontsource/poppins/500.css';
+import '@fontsource/poppins';
 
 const preview: Preview = {
   parameters: {

@@ -1,18 +1,16 @@
 import * as S from './styles';
 import { Button } from '../../../Atoms/Button';
-import { VisibleCanvas } from '../../../../types';
+import { useEditorState } from '../../../../store/EditorState/useEditorState';
 
 export interface EditorHeader {
   onExportClick: () => void,
-  selectedVisbleCanvas: VisibleCanvas,
-  onSelectedVisibleCanvas: (canvas: VisibleCanvas) => void,
 }
 
 export const EditorHeader = ({
   onExportClick,
-  onSelectedVisibleCanvas,
-  selectedVisbleCanvas
 }: EditorHeader) => {
+  const selectedVisibleCanvas = useEditorState(state => state.selectedVisibleCanvas);
+  const onSelectedVisibleCanvas = useEditorState(state => state.setSelectedVisibleCanvas);
 
   const onClick = () => {
     history.go(-1);
@@ -21,39 +19,39 @@ export const EditorHeader = ({
   return (
     <S.Container>
       <a onClick={onClick}>
-        <img width={20} src="/icons/MingcuteLeftFill.svg"></img>
+        <img alt='' width={20} src="/icons/MingcuteLeftFill.svg"></img>
         back
       </a>
 
       <S.CanvasSelectionContainer>
         <S.CanvasSelectionButton 
           type="button"
-          title="Both" 
+          title="Both"
           onClick={() => onSelectedVisibleCanvas('both')}
-          selected={selectedVisbleCanvas === 'both'}
+          selected={selectedVisibleCanvas === 'both'}
         >
           <img aria-hidden src="/icons/DualCanvasIcon.svg"></img>
         </S.CanvasSelectionButton>
 
-        <S.CanvasSelectionButton 
+        <S.CanvasSelectionButton
           type="button"
-          title="Both" 
-          onClick={() => onSelectedVisibleCanvas('potrait')}
-          selected={selectedVisbleCanvas == 'potrait'}
+          title="Portrait"
+          onClick={() => onSelectedVisibleCanvas('portrait')}
+          selected={selectedVisibleCanvas == 'portrait'}
         >
-          <img aria-hidden src="/icons/PotraitIcon.svg"></img>
+          <img aria-hidden src="/icons/PortraitIcon.svg"></img>
         </S.CanvasSelectionButton>
 
-        <S.CanvasSelectionButton 
+        <S.CanvasSelectionButton
           type="button"
-          selected={selectedVisbleCanvas == 'landscape'}
-          title="Both" onClick={() => onSelectedVisibleCanvas('landscape')}
+          selected={selectedVisibleCanvas == 'landscape'}
+          title="Landscape" onClick={() => onSelectedVisibleCanvas('landscape')}
         >
           <img aria-hidden src="/icons/LandscapeIcon.svg"></img>
         </S.CanvasSelectionButton>
       </S.CanvasSelectionContainer>
 
-      <Button onClick={onExportClick}>
+      <Button $variant='outline' onClick={onExportClick}>
         Export
       </Button>
     </S.Container>

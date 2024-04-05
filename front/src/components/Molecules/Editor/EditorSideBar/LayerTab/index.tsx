@@ -1,30 +1,11 @@
 import * as S from './styles';
-import { Layer } from '../../../../../types';
-import { ComponentAttributes } from '../types';
 import { useState } from 'react';
 import { LayerItem } from './LayerItem';
+import { useEditorState } from '../../../../../store/EditorState/useEditorState';
 
-export interface LayerTab extends ComponentAttributes {}
-
-export const LayerTab = ({
-  layers,
-  onLayersChange,
-  selectedLayerId,
-  setSelectedLayerId
-}: LayerTab) => {
+export const LayerTab = () => {
   const [dragLayerId, setDragLayerId] = useState<number | null>(null);
-
-  const updateLayer = (layerId: number, partialLayer: Partial<Layer>) => {
-    const layer = layers.find(l => l.id === layerId);
-    if (!layer) return;
-    onLayersChange([ 
-      ...layers.filter(l => l.id !== layer.id),
-      {
-        ...layer,
-        ...partialLayer
-      }
-    ]);
-  };
+  const layers = useEditorState(state => state.layers);
 
   return (
     <S.LayerContainer>
@@ -35,11 +16,7 @@ export const LayerTab = ({
             key={layer.id}
             dragLayerId={dragLayerId}
             layer={layer}
-            selectedLayerId={selectedLayerId}
             setDragLayerId={setDragLayerId}
-            setSelectedLayerId={setSelectedLayerId}
-            updateLayers={onLayersChange}
-            updateLayer={updateLayer}
           />
         ))}
     </S.LayerContainer>

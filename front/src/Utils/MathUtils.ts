@@ -1,5 +1,7 @@
 import { Point, Rect } from '../types';
 
+const nanAsZero = (i: number) => isNaN(i) ? 0 : i;
+
 const isInsideRect = (point: Point, rect: Rect) => (
   point.x >= rect.x &&
   point.x <= (rect.x + rect.width) &&
@@ -60,14 +62,14 @@ export const calcualtedInputAspectRatioBasednOutput = (input: Rect, output: Rect
   }
 
   const centerPoint = { x: input.x + (input.width / 2), y: input.y + (input.height / 2) };
-  const centeredOrigin = MathUtils.subPosition(centerPoint, {
+  const centerOrigin = MathUtils.subPosition(centerPoint, {
     x: width / 2,
-    y: height /2
+    y: height / 2
   });
 
   return { 
-    x: centeredOrigin.x,
-    y: centeredOrigin.y,
+    x: centerOrigin.x,
+    y: centerOrigin.y,
     width, 
     height 
   };
@@ -97,5 +99,6 @@ export const MathUtils = {
   getNearestCorner,
   calcualtedInputAspectRatioBasednOutput,
   addPosition,
-  subPosition
+  subPosition,
+  nanAsZero
 };

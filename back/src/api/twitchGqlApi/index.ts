@@ -1,4 +1,4 @@
-import { GlqClipInfoResponse, GlqUserClips } from "./types";
+import { GlqClipInfoResponse, GlqUserClips } from './types';
 
 const BASE_URL = 'https://gql.twitch.tv/gql';
 const CLIENT_ID = 'kd1unb4b3q4t58fwlpcbzcbnm76a8fp';
@@ -31,7 +31,7 @@ export class TwitchGqlApi {
 
   public getAllClips = async (channelId: string) => {
     const limit = 10;
-    const after = "MTA=";
+    const after = 'MTA=';
     const period: 'ALL_TIME' | 'LAST_DAY' | 'LAST_WEEK' | 'LAST_MONTH' = 'ALL_TIME';
     const sort : 'VIEWS_DESC' | 'VIEWS_ASC' = 'VIEWS_DESC';
 
@@ -72,7 +72,7 @@ export class TwitchGqlApi {
       viewCount: clip.node.viewCount
     }));
     return data;
-  }
+  };
 
   private callApi = async <T>(query: string, isQuery: boolean = true) => {
     const parsedBody = isQuery ? JSON.stringify({ query }) : query;
@@ -89,19 +89,19 @@ export class TwitchGqlApi {
 
   public getDownloadClipUrl = async (slug: string) => {
     const data = [
-          {
-              operationName: "ClipsDownloadButton",
-              variables: {
-                  slug,
-              },
-              extensions: {
-                  persistedQuery: {
-                      version: 1,
-                      sha256Hash: HASH,
-                  }
-              },
+      {
+        operationName: 'ClipsDownloadButton',
+        variables: {
+          slug,
+        },
+        extensions: {
+          persistedQuery: {
+            version: 1,
+            sha256Hash: HASH,
           }
-      ];
+        },
+      }
+    ];
     const resp = await this.callApi<Array<GlqClipInfoResponse>>(JSON.stringify(data), false);
     const clip = resp[0].data.clip!;
   
@@ -111,5 +111,5 @@ export class TwitchGqlApi {
     }
     clipUrl = `${clipUrl}?sig=${clip.playbackAccessToken.signature}&token=${encodeURIComponent(clip.playbackAccessToken.value)}`;
     return clipUrl;
-  }
+  };
 }

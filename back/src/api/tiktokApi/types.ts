@@ -1,3 +1,28 @@
+export interface TikTokResponse<T> {
+  data: T,
+  error: {
+    code: string,
+    message: string,
+    log_id: string
+  }
+}
+
+export interface CreatorPublishPermissions {
+  creator_avatar_url: string,
+  creator_username: string,
+  creator_nickname: string,
+  privacy_level_options: Array<
+    'PUBLIC_TO_EVERYONE' | 'MUTUAL_FOLLOW_FRIENDS' | 
+    'SELF_ONLY' | 'FOLLOWER_OF_CREATOR' | 'MUTUAL_FOLLOW_FRIENDS' | 'SELF_ONLY'
+  >,
+  comment_disabled: boolean,
+  duet_disabled: boolean,
+  stitch_disabled: boolean,
+  max_video_post_duration_sec: number,
+}
+
+export interface CreatorPublishPermissionResponse extends TikTokResponse<CreatorPublishPermissions> {}
+
 export interface PostInfo {
   privacy_level: 'PUBLIC_TO_EVERYONE' | 'MUTUAL_FOLLOW_FRIENDS' | 'FOLLOWER_OF_CREATOR' | 'SELF_ONLY',
 
@@ -57,3 +82,18 @@ export interface VideoObject {
   share_count: number,
   view_count: number,
 }
+
+export interface StatusResponse {
+  data: {
+    status: 'FAILED' | 'PROCESSING_UPLOAD' | 'PROCESSING_DOWNLOAD' | 'SEND_TO_USER_INBOX' | 'PUBLISH_COMPLETE' | 'FAILED',
+    fail_reason: string,
+    publicaly_available_post_id: Array<number>,
+    uploaded_bytes: number
+  },
+  error: {
+    code: string,
+    message: string,
+    log_id: string
+  }
+}
+

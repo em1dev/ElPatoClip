@@ -28,6 +28,12 @@ export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
 `;
 
 export const Links = styled.div`
@@ -44,12 +50,16 @@ export const Links = styled.div`
       text-decoration: underline;
     }
   }
+  button {
+    margin: 1em 0.2em 0 0.2em;
+  }
   @media (max-width: 768px) {
     display: none;
   }
 `;
 
 export const HeaderLogo = styled(Link)`
+  padding: 1em 0.2em 0 0.2em;
   color: white;
   display: flex;
   align-items: center;
