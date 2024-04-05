@@ -38,17 +38,39 @@ export const Container = styled.form`
   p {
     margin: 0;
   }
+  font-weight: 300;
 `;
 
 export const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+
+  > label, h4 {
+    margin: 0;
+    font-weight: 500;
+    font-size: 1.1em;
+  }
+`;
+
+export const Label = styled.label<{ $disabled: boolean }>`
+  color: ${({ $disabled }) => $disabled ? 'grey' : 'inherit'};
+  cursor: ${({ $disabled }) => $disabled ? 'not-allowed' : ''};
+`;
+
+export const CheckboxGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
 `;
 
 export const Checkbox = styled.input`
   margin: 0.8em;
   transform: scale(1.5);
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 export const ButtonGroup = styled.div`

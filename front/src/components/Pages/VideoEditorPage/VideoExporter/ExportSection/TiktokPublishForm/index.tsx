@@ -1,5 +1,5 @@
 import * as S from './styles';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { CreatorPublishPermissions, ElPatoConnection } from '../../../../../../api/elPatoClipApi/types';
 import { Button } from '../../../../../Atoms/Button';
 import { Input } from '../../../../../Atoms/Input';
@@ -23,6 +23,8 @@ const privacyEnumToDisplayName: Record<string, string> = {
 };
 
 export interface TikTokPublishFormData {
+  promotionalContent: boolean,
+  yourPromotionalContent: boolean,
   allowComment: boolean,
   allowDuet: boolean,
   allowStitch: boolean,
@@ -58,13 +60,52 @@ export const TiktokPublishForm = ({
 
   const [status, setStatus] = useState<'form' | 'uploading'>('form');
   const [connection, setConnection] = useState<ApiResponse<ElPatoConnection> | null>(null);
+  const [isPromotionalContent, setIsPromotionalContent] = useState<boolean>(false);
   const [formData, setFormData] = useState<TikTokPublishFormData>({
+    promotionalContent: false,
+    yourPromotionalContent: false,
     allowComment: false,
     allowDuet: false,
     allowStitch: false,
     privacy: '',
     title: ''
   });
+
+  useEffect(() => {
+    if (formData.privacy === 'SELF_ONLY') {
+      if (formData.promotionalContent || formData.yourPromotionalContent || isPromotionalContent) {
+        setIsPromotionalContent(false);
+        setFormData(prev => ({
+          ...prev,
+          promotionalContent: false,
+          yourPromotionalContent: false
+        }));
+      }
+      return;
+    }
+
+    if (!isPromotionalContent) {
+      if (formData.yourPromotionalContent || formData.promotionalContent) {
+        setFormData(prev => ({
+          ...prev,
+          promotionalContent: false,
+          yourPromotionalContent: false
+        }));
+      }
+    }
+
+  }, [formData, isPromotionalContent]);
+
+  const promotionalOutcomeText = useMemo(() => {
+    if (formData.promotionalContent) {
+      return 'Your video will be labeled as \'Paid partnership\'';
+    }
+
+    if (formData.yourPromotionalContent) {
+      return 'Your video will be labeled as \'Promotional content\'';
+    }
+    return null;
+  }, [formData]);
 
   const [creatorPermissions, setCreatorPermissions] = useState<{
     error: string | null,
@@ -146,8 +187,8 @@ export const TiktokPublishForm = ({
 
     const videoContainerUrl = await ElPatoApi.initiateVideo({
       post_info: {
-        brand_content_toggle: false,
-        brand_organic_toggle: false,
+        brand_content_toggle: formData.promotionalContent,
+        brand_organic_toggle: formData.yourPromotionalContent,
         disable_comment: formData.allowComment,
         disable_duet: formData.allowDuet,
         disable_stitch: formData.allowStitch,
@@ -237,6 +278,19 @@ export const TiktokPublishForm = ({
   const maxAllowedVideoInSeconds = creatorPermissions.permissions?.max_video_post_duration_sec;
   const isOverVideoLimit = (maxAllowedVideoInSeconds === undefined ? false : videoDurationInSeconds > maxAllowedVideoInSeconds);
 
+  const isPromotionValid = (
+    !isPromotionalContent || (
+      formData.promotionalContent ||
+      formData.yourPromotionalContent
+    )
+  );
+
+  const isSubmitDisabled = (
+    isOverVideoLimit ||
+    creatorPermissions.isLoading ||
+    !isPromotionValid
+  );
+
   if (status === 'uploading') return (
     <S.Card>
       <S.CheckList>
@@ -308,7 +362,7 @@ export const TiktokPublishForm = ({
               </Select>
             </S.InputGroup>
 
-            <div>
+            <S.CheckboxGroup>
 
               { !!creatorPermissions.permissions?.comment_disabled || !creatorPermissions.isLoading && (
                 <>
@@ -343,7 +397,7 @@ export const TiktokPublishForm = ({
                         allowDuet: e.target.checked
                       }));
                     }}
-                    disabled={ creatorPermissions.isLoading }
+                    disabled={ creatorPermissions.isLoading || !!creatorPermissions.permissions?.duet_disabled }
                     type='checkbox' 
                   />
                   <label
@@ -351,7 +405,6 @@ export const TiktokPublishForm = ({
                   >Allow duet</label>
                 </>
               )}
-
 
               { !!creatorPermissions.permissions?.stitch_disabled || !creatorPermissions.isLoading && (
                 <>
@@ -374,7 +427,90 @@ export const TiktokPublishForm = ({
                   >Allow stitch</label>
                 </>
               )}
-            </div>
+            </S.CheckboxGroup>
+
+            <S.InputGroup>
+              <h4>Promotional Content</h4>
+
+              { formData.privacy === 'SELF_ONLY' && (
+                <S.WarningText>
+                    Promotional content is not allowed for private videos
+                </S.WarningText>
+              )}
+
+              <S.CheckboxGroup>
+                <S.Checkbox
+                  checked={isPromotionalContent}
+                  type='checkbox'
+                  onChange={(e) => {
+                    setIsPromotionalContent(e.target.checked);
+                  }}
+                  disabled={creatorPermissions.isLoading || formData.privacy === 'SELF_ONLY'}
+                  id='tiktok-promotional-checkbox'
+                />
+                <S.Label $disabled={creatorPermissions.isLoading || formData.privacy === 'SELF_ONLY'}
+                  htmlFor='tiktok-promotional-checkbox'
+                >
+                  This video promotes goods or services in exchange for something of value. Your video could promote yourself, a third party, or both.
+                </S.Label>
+              </S.CheckboxGroup>
+            </S.InputGroup>
+
+            { isPromotionalContent && (
+              <S.InputGroup>
+                <h4>What kind of promotional content?</h4>
+
+                { !formData.promotionalContent && !formData.yourPromotionalContent && (
+                  <S.ErrorText>You need to indicate if your content promotes yourself, a third party, or both.</S.ErrorText>
+                )}
+
+                { promotionalOutcomeText && (
+                  <S.WarningText> {promotionalOutcomeText} </S.WarningText>
+                )}
+
+                <S.CheckboxGroup>
+                  <S.Checkbox
+                    checked={formData.yourPromotionalContent}
+                    type='checkbox'
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        yourPromotionalContent: e.target.checked
+                      }));
+                    }}
+                    disabled={creatorPermissions.isLoading}
+                    id='tiktok-your-promotional-checkbox'
+                  />
+                  <label
+                    htmlFor='tiktok-your-promotional-checkbox'
+                  >
+                    You are promoting yourself or your own business.
+                  </label>
+                </S.CheckboxGroup>
+
+                <S.CheckboxGroup>
+
+                  <S.Checkbox
+                    checked={formData.promotionalContent}
+                    type='checkbox'
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        promotionalContent: e.target.checked
+                      }));
+                    }}
+                    disabled={creatorPermissions.isLoading}
+                    id='tiktok-brand-promotional-checkbox'
+                  />
+                  <label
+                    htmlFor='tiktok-brand-promotional-checkbox'
+                  >
+                  You are promoting another brand or third party. 
+                  </label>
+                </S.CheckboxGroup>
+              </S.InputGroup>
+            )}
+
 
             {IS_CLIENT_UNAUDITED && (
               <S.WarningText>
@@ -389,18 +525,33 @@ export const TiktokPublishForm = ({
               </S.ErrorText>
             )}
 
-            <S.AgreementText>
+            {
+              formData.promotionalContent ? (
+                <S.AgreementText>
             By posting, you agree to TikTok's {' '}
-              <a target='_blank' href='https://www.tiktok.com/legal/page/global/music-usage-confirmation/en'>
+                  <a target='_blank' href='https://www.tiktok.com/legal/page/global/bc-policy/en'>
+                  Branded Content Policy
+                  </a> and {' '}
+                  <a target='_blank' href='https://www.tiktok.com/legal/page/global/music-usage-confirmation/en'>
               Music Usage Confirmation
-              </a>
-            </S.AgreementText>
+                  </a>
+                </S.AgreementText>
+              ) : (
+                <S.AgreementText>
+            By posting, you agree to TikTok's {' '}
+                  <a target='_blank' href='https://www.tiktok.com/legal/page/global/music-usage-confirmation/en'>
+              Music Usage Confirmation
+                  </a>
+                </S.AgreementText>
+              )
+            }
+
 
             <S.ButtonGroup>
               <Button
                 type='submit'
                 onClick={onUploadClicked}
-                disabled={creatorPermissions.isLoading || isOverVideoLimit}
+                disabled={isSubmitDisabled}
                 $variant='primary'
               >Publish</Button>
             </S.ButtonGroup>
