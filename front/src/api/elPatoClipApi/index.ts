@@ -185,7 +185,7 @@ const initiateVideo = async (payload: PostVideoPayload, token: string): Promise<
     error: 'Unable to create video. Try again later.'
   });
 
-  if (resp.status === 401 || resp.status === 403) {
+  if (resp.status === 401) {
     return {
       data: null,
       error: 'User is not authenticated or the tiktok connection has been invalidated. Reload and try again.'
