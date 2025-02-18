@@ -22,14 +22,21 @@ const ClipFilterToDisplayName: Record<ClipFilter, { displayName: string, daysToS
 };
 
 const generateFilter = (selectedFilter: ClipFilter) => {
-
   const filter: { startDate?: string, endDate?: string } = {};
   if (selectedFilter === 'all time') return filter;
 
+  const today = new Date();
+  today.setHours(0,0,0,0); //reset to midnight
+
   const { daysToSubtract } = ClipFilterToDisplayName[selectedFilter];
-  const toSub =  new Date();
-  toSub.setDate(new Date().getDate() - daysToSubtract);
-  filter.startDate = toSub.toISOString();
+  const startDate = (new Date(today));
+  startDate.setDate(today.getDate() - daysToSubtract);
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  filter.endDate = tomorrow.toISOString();
+  filter.startDate = startDate.toISOString();
   return filter;
 };
 
@@ -65,6 +72,7 @@ const ClipPage = () => {
   const loadPage = useCallback(async (
     cursor?: string,
     startDate?: string,
+    endDate?: string,
     cancellationToken?: { shouldCancel: boolean }
   ) => {
 
@@ -74,7 +82,8 @@ const ClipPage = () => {
     const resp = await ElPatoApi.getClips(channelId, {
       amount: ITEMS_PER_PAGE,
       afterCursor: cursor,
-      startedAt: startDate
+      startedAt: startDate,
+      endedAt: endDate
     });
 
     if (cancellationToken?.shouldCancel) return;
@@ -86,8 +95,20 @@ const ClipPage = () => {
     }
 
     setClips((prev) => {
+      // sort the response, we don't sort the total list in case twitch api returns unsorted data (which it does :v)
+      // sort by view count as that seems to be what twitch paginates by
+      const respDataSorted = resp.data.data.toSorted((clipA, clipB) => (
+        clipB.view_count - clipA.view_count
+      ));
+
       if (prev?.error || prev === null) {
-        return resp;
+        return {
+          ...resp,
+          data: {
+            ...resp.data,
+            data: respDataSorted,
+          }
+        };
       }
 
       return ({
@@ -95,7 +116,9 @@ const ClipPage = () => {
         status: resp.status,
         data: {
           pagination: resp.data.pagination,
-          data: [...prev.data.data ?? [], ...resp.data.data]
+          data: [...prev.data.data ?? [], 
+            ...respDataSorted
+          ]
         },
       });
     });
@@ -106,8 +129,8 @@ const ClipPage = () => {
     const cancellationToken = { shouldCancel: false };
     (async () => {
       setClips(null);
-      const startDate = generateFilter(selectedFilter).startDate;
-      await loadPage(undefined, startDate, cancellationToken);
+      const filter = generateFilter(selectedFilter);
+      await loadPage(undefined, filter.startDate, filter.endDate, cancellationToken);
     })();
 
     return () => {
@@ -118,8 +141,8 @@ const ClipPage = () => {
   const loaderTriggerRef = useOnIntersection<HTMLButtonElement>(useCallback(() => {
     if (isLoading) return;
     if (clips === null || clips.data?.pagination.cursor) {
-      const startDate = generateFilter(selectedFilter).startDate;
-      loadPage(clips?.data?.pagination.cursor, startDate);
+      const filter = generateFilter(selectedFilter);
+      loadPage(clips?.data?.pagination.cursor, filter.startDate, filter.endDate);
     }
     // no more to load
   }, [clips, loadPage, selectedFilter, isLoading]));
@@ -161,7 +184,7 @@ const ClipPage = () => {
             <div>{channelDetails.data.display_name}</div>
           </S.ProfileDetails>
 
-          <div>Best of</div>
+          <div>Most viewed clips from</div>
           <S.FilterContainer>
             {Object.keys(ClipFilterToDisplayName).map(key => {
               const { displayName } = ClipFilterToDisplayName[key as ClipFilter];

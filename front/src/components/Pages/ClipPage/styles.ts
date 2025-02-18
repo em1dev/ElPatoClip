@@ -41,6 +41,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const LoadingContainer = styled.div`
+  grid-column: 1 / 3;
   display: flex;
   width: 100%;
   padding: 2em;
