@@ -173,6 +173,41 @@ export const SearchResultItem = styled(Link)`
   }
 `;
 
+export const ClipSearchResultItem = styled(Link)`
+  cursor: pointer;
+  &:hover {
+    background-color: #212121;
+  }
+  border-radius: 0.5em;
+  color: inherit;
+  text-decoration: none;
+  border: none;
+  background-color: transparent;
+  font-family: inherit;
+  font-size: inherit;
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 0.8em 1em;
+
+  img {
+    height: 5em;
+    border-radius: 0.3em;
+    padding: 4px;
+    border: solid 2px #D9D9D9;
+  }
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  div > :last-child {
+    font-size: 0.8em;
+  }
+`;
+
 export const RecentItemsContainer = styled.div`
   margin-top: 0.8em;
 `;

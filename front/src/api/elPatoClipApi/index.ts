@@ -58,6 +58,15 @@ const getClips = async (channelName: string, filters: ClipListRequestFilters):Pr
   })
 );
 
+const getClipMetadata = async (clipId: string):Promise<ApiResponse<ClipsResponse>> => (
+  await request<ClipsResponse>(`${baseApi}clip/metadata/${clipId}`, {
+    method: 'GET',
+    headers: {
+      'content-type': 'application/json',
+    }
+  })
+);
+
 const getClip = async (clipId: string, onProgress: (progress: number, total:number) => void): Promise<ApiResponse<Blob>> => {
   try {
     const resp = await fetch(`${baseApi}clip/${clipId}`);
@@ -232,5 +241,6 @@ export const ElPatoApi = {
   createConnection,
   deleteConnection,
   getTiktokCreatorPermissions,
-  validateToken
+  validateToken,
+  getClipMetadata
 };

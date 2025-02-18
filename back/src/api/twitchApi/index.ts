@@ -25,6 +25,27 @@ export class TwitchApi {
     return data.access_token;
   };
 
+  public getClipMetadata = async (clipId: string) => {
+    const token = await this.getAppToken();
+    const url = new URL(`https://api.twitch.tv/helix/clips?id=${clipId}`);
+    const resp = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Client-Id': `${env.clientId}`
+      }
+    });
+
+    if (!resp.ok) {
+      console.error('Unable to get twitch clips', resp.status);
+      const error = await resp.text();
+      console.error(error);
+      throw new BadRequestError(`twitch api error: ${resp.status}`);
+    }
+
+    return await resp.json() as TwitchPaginatedResult<TwitchClip>;
+  };
+
   public getClips = async (filters: TwitchClipFilters) => {
     const token = await this.getAppToken();
     const url = new URL('https://api.twitch.tv/helix/clips');
