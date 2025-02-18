@@ -64,9 +64,9 @@ export const TiktokPublishForm = ({
   const [formData, setFormData] = useState<TikTokPublishFormData>({
     promotionalContent: false,
     yourPromotionalContent: false,
-    allowComment: false,
-    allowDuet: false,
-    allowStitch: false,
+    allowComment: true,
+    allowDuet: true,
+    allowStitch: true,
     privacy: '',
     title: ''
   });
@@ -189,13 +189,13 @@ export const TiktokPublishForm = ({
       post_info: {
         brand_content_toggle: formData.promotionalContent,
         brand_organic_toggle: formData.yourPromotionalContent,
-        disable_comment: formData.allowComment,
-        disable_duet: formData.allowDuet,
-        disable_stitch: formData.allowStitch,
+        disable_comment: !formData.allowComment,
+        disable_duet: !formData.allowDuet,
+        disable_stitch: !formData.allowStitch,
         privacy_level: formData.privacy,
         title: formData.title,
         video_cover_timestamp_ms: 100
-      }, 
+      },
       source_info: {
         chunk_size: chunkSize,
         video_size: videoBlob.size,
