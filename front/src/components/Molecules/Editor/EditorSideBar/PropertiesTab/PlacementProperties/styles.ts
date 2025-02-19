@@ -7,6 +7,16 @@ export const Container = styled.div`
   margin-bottom: 0.5em;
 `;
 
+
+export const Row = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  > * {
+    flex: 1;
+  }
+`;
+
 export const PropertyRow = styled.div`
   display: flex;
   align-items: center;

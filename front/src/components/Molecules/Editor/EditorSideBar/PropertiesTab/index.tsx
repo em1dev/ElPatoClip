@@ -3,8 +3,8 @@ import { LayerProperties } from './LayerProperties';
 import { PlacementProperties } from './PlacementProperties';
 
 export const PropertiesTab = () => (
-  <S.Tab>
+  <S.Container>
     <PlacementProperties />
     <LayerProperties />
-  </S.Tab>
+  </S.Container>
 );

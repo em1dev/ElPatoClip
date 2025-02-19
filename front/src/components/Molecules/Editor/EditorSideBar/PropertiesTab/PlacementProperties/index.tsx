@@ -1,12 +1,13 @@
 import * as S from './styles';
 import { useCallback } from 'react';
-import { Input } from '../../../../../Atoms/Input';
 import { Rect } from '../../../../../../types';
 import { useEditorState } from '../../../../../../store/EditorState/useEditorState';
+import { PropertyInput } from '../PropertyInput';
 
 export const PlacementProperties = () => {
   const selectedLayer = useEditorState(state => state.selectedLayer);
   const updateLayerPartially = useEditorState(state => state.updateLayerPartially);
+  const isLocked = selectedLayer?.locked;
 
   const onChange = useCallback((selector: 'input' | 'output', rect: {
     x?: string,
@@ -44,94 +45,90 @@ export const PlacementProperties = () => {
       <section>
         <h2>Input Placement</h2>
         <S.Container>
-          <S.PropertyRow>
-            <span>X</span>
-            <Input
-              size='sm'
-              value={selectedLayer.input.rect.x}
-              type='number'
-              onChange={(e) => {
-                onChange('input', { x: e.target.value });
-              }}
-            />
-            <span>Y</span>
-            <Input
-              size='sm'
-              value={selectedLayer.input.rect.y}
-              type='number'
-              onChange={(e) => {
-                onChange('input', { y: e.target.value });
-              }}
-            />
-          </S.PropertyRow>
 
-          <S.PropertyRow>
-            <span>W</span>
-            <Input
-              size='sm'
+          <S.Row>
+            <PropertyInput
+              disabled={isLocked}
+              label='X'
+              type='number'
+              value={selectedLayer.input.rect.x}
+              step="1"
+              onChange={(e) => { onChange('input', { x: e.target.value }); }}
+            />
+            <PropertyInput
+              disabled={isLocked}
+              label="Y"
+              type='number'
+              value={selectedLayer.input.rect.y}
+              step="1"
+              onChange={(e) => { onChange('input', { y: e.target.value }); }}
+            />
+          </S.Row>
+
+          <S.Row>
+            <PropertyInput
+              disabled={isLocked}
+              label='W'
+              type='number'
               value={selectedLayer.input.rect.width}
-              type='number'
-              onChange={(e) => {
-                onChange('input', { width: e.target.value });
-              }}
+              step='1'
+              onChange={(e) => { onChange('input', { width: e.target.value }); }}
             />
-            <span>H</span>
-            <Input
-              size='sm'
+            <PropertyInput
+              disabled={isLocked}
+              label="H"
+              type='number'
               value={selectedLayer.input.rect.height}
-              type='number'
-              onChange={(e) => {
-                onChange('input', { height: e.target.value });
-              }}
+              step='1'
+              onChange={(e) => { onChange('input', { height: e.target.value }); }}
             />
-          </S.PropertyRow>
+          </S.Row>
+
         </S.Container>
       </section>
+
       <section>
         <h2>Output Placement</h2>
         <S.Container>
-          <S.PropertyRow>
-            <span>X</span>
-            <Input
-              size='sm'
+          <S.Row>
+            <PropertyInput
+              disabled={isLocked}
+              label='X'
+              type='number'
               value={selectedLayer.output.rect.x}
-              type='number'
-              onChange={(e) => {
-                onChange('output', { x: e.target.value });
-              }}
+              step="1"
+              onChange={(e) => { onChange('output', { x: e.target.value }); }}
             />
-            <span>Y</span>
-            <Input
-              size='sm'
+            <PropertyInput
+              disabled={isLocked}
+              label="Y"
+              type='number'
               value={selectedLayer.output.rect.y}
-              type='number'
-              onChange={(e) => {
-                onChange('output', { y: e.target.value });
-              }}
+              step="1"
+              onChange={(e) => { onChange('output', { y: e.target.value }); }}
             />
-          </S.PropertyRow>
+          </S.Row>
 
-          <S.PropertyRow>
-            <span>W</span>
-            <Input
-              size='sm'
+          <S.Row>
+            <PropertyInput
+              disabled={isLocked}
+              label='W'
+              type='number'
               value={selectedLayer.output.rect.width}
-              type='number'
-              onChange={(e) => {
-                onChange('output', { width: e.target.value });
-              }}
+              step='1'
+              onChange={(e) => { onChange('output', { width: e.target.value }); }}
             />
-            <span>H</span>
-            <Input
-              size='sm'
+            <PropertyInput
+              disabled={isLocked}
+              label="H"
+              type='number'
               value={selectedLayer.output.rect.height}
-              type='number'
-              onChange={(e) => {
-                onChange('output', { height: e.target.value });
-              }}
+              step='1'
+              onChange={(e) => { onChange('output', { height: e.target.value }); }}
             />
-          </S.PropertyRow>
-        </S.Container>   
+          </S.Row>
+
+        </S.Container>
       </section>
     </>
   );

@@ -23,8 +23,8 @@ const getNewDraggedPosition = (
 
   const newPosition: Rect = {
     ...currentPosition,
-    x: draggedWithOffset.x - padding,
-    y: draggedWithOffset.y - padding
+    x: Math.round(draggedWithOffset.x - padding),
+    y: Math.round(draggedWithOffset.y - padding)
   };
 
   newPosition.x = MathUtils.clamp(newPosition.x, 0, videoResolution.width - newPosition.width);
@@ -111,7 +111,7 @@ export const useCanvasDrag = (
 
     if (yBit === '0' && y >= 0) {
       // top
-      const distanceMoved = y - mouse.y;
+      const distanceMoved = Math.round(y - mouse.y);
       const newHeight = Math.max(height + distanceMoved, MIN_CROP_SIZE);
       const newDistanceMoved = height - newHeight;
 
@@ -121,14 +121,15 @@ export const useCanvasDrag = (
 
     if (yBit === '1') {
       // bottom
-      newPosition.height = Math.max(mouse.y - newPosition.y, MIN_CROP_SIZE);
+      const distanceMoved = Math.round(mouse.y - newPosition.y);
+      newPosition.height = Math.max(distanceMoved, MIN_CROP_SIZE);
       const bot = Math.min(newPosition.y + newPosition.height, videoResolution.height);
       newPosition.height = bot - newPosition.y;
     }
 
     if (xBit === '0') {
       // left
-      const distanceMoved = x - mouse.x;
+      const distanceMoved = Math.round(x - mouse.x);
       const newWidth = Math.max(width + distanceMoved, MIN_CROP_SIZE);
       const newDistanceMoved = width - newWidth;
 
@@ -138,7 +139,8 @@ export const useCanvasDrag = (
 
     if (xBit === '1') {
       // right
-      newPosition.width = Math.max(mouse.x - newPosition.x, MIN_CROP_SIZE);
+      const distanceMoved = Math.round(mouse.x - newPosition.x);
+      newPosition.width = Math.max(distanceMoved, MIN_CROP_SIZE);
       const top = Math.min(newPosition.x + newPosition.width, videoResolution.width);
       newPosition.width = top - newPosition.x;
     }
