@@ -13,14 +13,14 @@ export const PlaybackControls = () => {
 
   return (
     <S.Container>
-      <ButtonIcon onClick={seekToStart} alt="to start" iconName='MingcuteSkipPreviousFill.svg' />
-      <ButtonIcon onClick={seekBackwards} alt="rewind" iconName='MingcuteFastRewindFill.svg' />
+      <ButtonIcon onClick={seekToStart} title="to start" iconName='MingcuteSkipPreviousFill.svg' />
+      <ButtonIcon onClick={seekBackwards} title="rewind" iconName='MingcuteFastRewindFill.svg' />
       {isPlaying ?
-        <ButtonIcon onClick={() => setPlayback(false)} alt="pause video" iconName='MingcutePauseFill.svg' /> :
-        <ButtonIcon onClick={() => setPlayback(true)} alt="play video" iconName='MingcutePlayFill.svg' />
+        <ButtonIcon onClick={() => setPlayback(false)} title="pause" iconName='MingcutePauseFill.svg' /> :
+        <ButtonIcon onClick={() => setPlayback(true)} title="play" iconName='MingcutePlayFill.svg' />
       }
-      <ButtonIcon onClick={seekForward} alt="forward" iconName='MingcuteFastForwardFill.svg' />
-      <ButtonIcon onClick={seekToEnd} alt="to end" iconName='MingcuteSkipForwardFill.svg' />
+      <ButtonIcon onClick={seekForward} title="forward" iconName='MingcuteFastForwardFill.svg' />
+      <ButtonIcon onClick={seekToEnd} title="to end" iconName='MingcuteSkipForwardFill.svg' />
     </S.Container>
   );
 };

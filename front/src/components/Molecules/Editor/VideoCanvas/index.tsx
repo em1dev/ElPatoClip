@@ -35,6 +35,7 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
         ...item,
         input: undefined,
         output: item.input!,
+        locked: locked || item.locked
       }));
     }
 
@@ -43,7 +44,7 @@ export const VideoCanvas = forwardRef<HTMLCanvasElement | null, VideoCanvasProp>
       ...item,
       output: item.output,
       input: item.input,
-      locked: locked ?? item.locked
+      locked: locked || item.locked
     }));
   }, [layerData, type, locked]);
 

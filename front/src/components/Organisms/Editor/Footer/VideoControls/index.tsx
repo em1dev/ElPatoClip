@@ -27,7 +27,7 @@ export const VideoControls = () => {
 
         <ButtonIcon 
           onClick={() => setIsMuted(!isMuted)} 
-          alt="toggle mute"
+          title={isMuted ? 'unmute' : 'mute'}
           iconName={isMuted ? 'MingcuteVolumeMuteFill.svg' : 'MingcuteVolumeFill.svg'}
         />
       </S.VolumeContainer>

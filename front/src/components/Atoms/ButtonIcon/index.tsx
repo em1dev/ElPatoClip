@@ -3,14 +3,25 @@ import styled, { css } from 'styled-components';
 
 export interface ButtonIconProps extends HTMLAttributes<HTMLButtonElement> {
   iconName: string,
-  alt: string,
+  title: string,
   disabled?: boolean,
   selected?: boolean,
+  size?: 'sm' | 'md'
 }
 
-export const ButtonIcon = ({ iconName, alt, disabled, selected, ...props }: ButtonIconProps) => (
+const sizeMap = {
+  'sm': 20,
+  'md': 25
+};
+
+export const ButtonIcon = ({ iconName, disabled, selected, size='md', ...props }: ButtonIconProps) => (
   <ButtonContainer selected={selected} disabled={disabled} {...props}>
-    <img width={25} height={25} alt={alt} src={`/icons/${iconName}`}></img>
+    <img 
+      width={sizeMap[size]} 
+      height={sizeMap[size]} 
+      alt=""
+      src={`/icons/${iconName}`} 
+      draggable={props.draggable} />
   </ButtonContainer>
 );
 
@@ -38,9 +49,9 @@ const ButtonContainer = styled.button<{ selected?: boolean }>`
   }
 
   ${({selected}) => selected && css`
-    background-color: #CDCDCD;
+    background-color: #4e4e4e;
     &:not(:disabled):hover {
-      background-color: #e0e0e0;
+      background-color: #4f4f4f;
     }
   `}
 `;

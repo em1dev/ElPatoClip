@@ -111,6 +111,14 @@ export const LayerItem = ({
     setIsEditingName(true);
   };
 
+  const onDeleteButtonClicked = (
+    e:React.MouseEvent<HTMLButtonElement, MouseEvent>, layer: Layer
+  ) => {
+    e.stopPropagation();
+    setLayers(layers.filter(l => l.id !== layer.id));
+    setSelectedLayer(null);
+  };
+
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (!isEditingName) return;
     if (['Escape', 'Enter'].includes(e.key)) {
@@ -136,31 +144,43 @@ export const LayerItem = ({
     >
       <S.LayerButton 
         hidden
-        onDoubleClick={onDoubleClick}
         onClick={onLayerClick} 
       />
       <div>
+        <img 
+          draggable={false} 
+          alt="" 
+          width={25} 
+          src="/icons/MingcuteDotsLine.svg"
+        />
         <S.InputColor 
           onClick={() => setSelectedLayer(layer.id)}
           onChange={(e) => updateLayerPartially(layer.id, { borderColor: e.target.value })} 
           type='color' 
           value={layer.borderColor} 
         />
-        {isEditingName ? 
-          <S.InputText
-            onKeyDown={onKeyDown}
-            ref={inputRef}
-            value={layer.name}
-            onChange={(e) => { updateLayerPartially(layer.id, { name: e.target.value });}}
-          />
-          : (
-            <span> {layer.name} </span>
-          )
-        }
       </div>
 
+      {isEditingName ? 
+        <S.InputText
+          onKeyDown={onKeyDown}
+          ref={inputRef}
+          value={layer.name}
+          onChange={(e) => { updateLayerPartially(layer.id, { name: e.target.value });}}
+        />
+        : (
+          <S.LayerName
+            onClick={onLayerClick} 
+            onDoubleClick={onDoubleClick}
+          > {layer.name} </S.LayerName>
+        )
+      }
+
       <div>
-        <ButtonIcon alt="locked" 
+        <ButtonIcon 
+          draggable={false}
+          title={layer.locked ? 'lock' : 'unlock'}
+          size='sm'
           selected={layer.locked}
           onClick={(e) => onLockedButtonClicked(e, layer)}
           iconName={
@@ -168,6 +188,14 @@ export const LayerItem = ({
               'MingcuteLockLine.svg' :
               'MingcuteUnlockLine.svg'
           } 
+        />
+        <ButtonIcon 
+          disabled={layer.locked}
+          draggable={false}
+          title="delete"
+          size='sm'
+          onClick={(e) => onDeleteButtonClicked(e, layer)}
+          iconName={'MingcuteCloseFill.svg'}
         />
       </div>
     </S.LayerButtonContainer>

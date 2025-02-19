@@ -24,7 +24,7 @@ export const LayerButtonContainer = styled.div<{ $selected?: boolean }>`
   position: relative;
   border: none;
   background-color: transparent;
-  padding: 1em;
+  padding: 0.5em 1em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -34,7 +34,7 @@ export const LayerButtonContainer = styled.div<{ $selected?: boolean }>`
     align-items: center;
   }
   > *:nth-child(2) {
-    gap: 1em;
+    gap: 0.5em;
   }
   > :last-child {
     z-index: 2;
@@ -72,10 +72,25 @@ export const InputColor = styled.input`
 `;
 
 export const InputText = styled.input`
+  max-width: 8em;
   font-size: inherit;
   font-family: inherit;
   border: none;
   border-radius: 0.3em;
   margin-left: -0.5em;
   padding: 0.3em 0.5em;
+`;
+
+export const LayerName = styled.span`
+  flex: 1;
+  overflow: hidden;
+  max-width: 8em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  // bigger double click area
+  margin-top: -0.5em;
+  margin-bottom: -0.5em;
+  padding-bottom: 0.5em;
+  padding-top: 0.5em;
 `;

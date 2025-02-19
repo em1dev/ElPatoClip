@@ -14,14 +14,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
   args: { 
-    alt: 'button icon',
+    title: 'button icon',
     iconName: 'DualCanvasIcon.svg'
   },
 };
 
 export const Selected: Story = {
   args: { 
-    alt: 'button icon',
+    title: 'button icon',
     iconName: 'DualCanvasIcon.svg',
     selected: true
   },
@@ -29,7 +29,7 @@ export const Selected: Story = {
 
 export const Disabled: Story = {
   args: { 
-    alt: 'button icon',
+    title: 'button icon',
     iconName: 'DualCanvasIcon.svg',
     disabled: true
   },

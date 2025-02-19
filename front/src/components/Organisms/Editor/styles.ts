@@ -15,6 +15,7 @@ export const Container = styled.div`
 `;
 
 export const InnerContainer = styled.div`
+  overflow: auto;
   display: flex;
   max-width: 100%;
   flex: 1 100%;
