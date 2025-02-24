@@ -79,6 +79,12 @@ export const ButtonGroup = styled.div`
   gap: 0.5em;
 `;
 
+export const ErrorButtons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+`;
+
 export const ErrorText = styled.span`
   color: #FF9179;
 `;

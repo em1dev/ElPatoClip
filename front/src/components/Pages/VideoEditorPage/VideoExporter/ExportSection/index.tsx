@@ -10,9 +10,10 @@ import { useNavigate } from 'react-router-dom';
 
 export interface ExportSectionProps {
   videoUrl: string,
+  retryExport: () => void
 }
 
-export const ExportSection = ({ videoUrl  }: ExportSectionProps) => {
+export const ExportSection = ({ videoUrl, retryExport  }: ExportSectionProps) => {
   const navigate = useNavigate();
   const auth =  useAuth();
   const setIsExporting = useEditorState((state) => state.setIsExporting);
@@ -34,7 +35,7 @@ export const ExportSection = ({ videoUrl  }: ExportSectionProps) => {
   return (
     <S.Container>
       { auth.isAuthorized && (
-        <TiktokPublishForm videoUrl={videoUrl} />
+        <TiktokPublishForm retryRecording={retryExport} videoUrl={videoUrl} />
       )}
 
       <DownloadForm videoUrl={videoUrl} />

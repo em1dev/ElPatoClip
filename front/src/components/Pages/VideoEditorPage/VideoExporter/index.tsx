@@ -18,7 +18,7 @@ export const VideoExporter = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { seekTo, setPlayback, setVideoRef } = useEditorState();
 
-  const { outputUrl, record } = useCanvasRecording(outputCanvasRef, videoRef);
+  const { outputUrl, record, setOutputUrl } = useCanvasRecording(outputCanvasRef, videoRef);
 
   useEffect(() => {
     resetInteractions();
@@ -29,11 +29,18 @@ export const VideoExporter = () => {
   }, [videoRef, setVideoRef]);
 
   useEventListener<HTMLVideoElement, Event>(videoRef, 'loadeddata', () => {
-    seekTo(timeSlice.startTime);
-    setPlayback(true);
-    const videoDuration = timeSlice.endTime - timeSlice.startTime;
-    record(videoDuration * 1000);
+    restartRecording();
   });
+
+  const restartRecording = useCallback(() => {
+    setOutputUrl(null);
+    setTimeout(() => {
+      seekTo(timeSlice.startTime);
+      setPlayback(true);
+      const videoDuration = timeSlice.endTime - timeSlice.startTime;
+      record(videoDuration * 1000);
+    }, 1000);
+  }, [record, seekTo, setPlayback, timeSlice, setOutputUrl]);
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -72,7 +79,7 @@ export const VideoExporter = () => {
       <S.RightContainer>
 
         { outputUrl ?  (
-          <ExportSection videoUrl={outputUrl} />
+          <ExportSection retryExport={restartRecording} videoUrl={outputUrl} />
         ) : (
           <S.ExportingLoaderContainer>
             <p>Recording video...</p>

@@ -136,7 +136,14 @@ const getTiktokCreatorPermissions = async (token: string) => (
 );
 
 // not using request helper
-const getVideoStatus = async (videoId: string, token: string) => {
+export type VideoStatusResultStatus = 'Failed' | 'Success' | 'Processing';
+export interface VideoStatusResult {
+  status: VideoStatusResultStatus,
+  errorReason?: string,
+  postId?: Array<number>
+}
+
+const getVideoStatus = async (videoId: string, token: string):Promise<VideoStatusResult> => {
   try {
     const resp = await fetch(`${baseApi}tiktok/video/status`, {
       method: 'POST',
@@ -149,21 +156,37 @@ const getVideoStatus = async (videoId: string, token: string) => {
       })
     });
     const { data, error } = await resp.json() as TiktokUploadStatusResponse;
+    console.log(data);
 
-    if (error.code === 'ok') {
-      console.log(data);
+    if (error.code !== 'ok')
+      return { 
+        status: 'Failed',
+        errorReason: tiktokVideoUploadStatusErrorMap[error.code]
+      };
+    
+    switch (data.status) {
+    case 'FAILED':
       return {
-        success: data.publicaly_available_post_id
+        status: 'Failed',
+        errorReason: data.fail_reason
+      };
+    case 'PROCESSING_DOWNLOAD':
+    case 'PROCESSING_UPLOAD':
+      return {
+        status: 'Processing'
+      };
+    case 'PUBLISH_COMPLETE':
+    case 'SEND_TO_USER_INBOX':
+      return {
+        status: 'Success',
+        postId: data.publicaly_available_post_id
       };
     }
 
-    return {
-      error: tiktokVideoUploadStatusErrorMap[error.code]
-    };
-
   } catch {
     return {
-      error: 'Unable to verify upload success. Please check your tiktok account.'
+      status: 'Failed',
+      errorReason: 'Unable to verify upload success. Please check your tiktok account.'
     };
   }
 };

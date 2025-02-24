@@ -87,6 +87,7 @@ export const useCanvasRecording = (
 
   return {
     record,
-    outputUrl
+    outputUrl,
+    setOutputUrl
   };
 };

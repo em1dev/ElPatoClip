@@ -34,10 +34,12 @@ export interface TikTokPublishFormData {
 
 export interface TiktokPublishFormProps {
   videoUrl: string,
+  retryRecording: () => void,
 }
 
 export const TiktokPublishForm = ({
-  videoUrl
+  videoUrl,
+  retryRecording
 }: TiktokPublishFormProps) => {
   const auth = useAuth();
   const videoDurationInSeconds = useEditorState(state => state.videoMetadata.totalTime);
@@ -242,26 +244,35 @@ export const TiktokPublishForm = ({
     });
 
     const getUploadStatus = async () => {
+      const reasonMap: Record<string, string> = {
+        'frame_rate_check_failed': 'Frame rate failed - please retry export'
+      };
+
       const resp = await ElPatoApi.getVideoStatus(publishId, auth.token);
-      if (resp.error) {
+      switch (resp.status) {
+      case 'Failed':
         setUploadProgress(prev => ({
           ...prev,
-          error: resp.error,
+          error: reasonMap[resp.errorReason ?? ''] ?? resp.errorReason,
           steps: { ...prev.steps, verify: 'error' }
         }));
-        return false;
+        return { retry: false };
+
+      case 'Success':
+        setUploadProgress({
+          amount: 100,
+          steps: { create: 'completed', upload: 'completed', verify: 'completed' }
+        });
+        return { retry: false };
+      case 'Processing':
+        return { retry: true };
       }
-      setUploadProgress({
-        amount: 100,
-        steps: { create: 'completed', upload: 'completed', verify: 'completed' }
-      });
-      return true;
     };
 
     const startTimeout = () => {
       setTimeout(async () => {
-        const success = await getUploadStatus();
-        if (success) return;
+        const { retry } = await getUploadStatus();
+        if (!retry) return;
         startTimeout();
       }, 1000);
     };
@@ -302,7 +313,10 @@ export const TiktokPublishForm = ({
       { uploadProgress.error && (
         <>
           <S.ErrorText>{uploadProgress.error}</S.ErrorText>
-          <Button onClick={onReset} $variant='secondary'>Back</Button>
+          <S.ErrorButtons>
+            <Button onClick={retryRecording} $variant='secondary'>Retry export</Button>
+            <Button onClick={onReset} $variant='secondary'>Back to form</Button>
+          </S.ErrorButtons>
         </>
       )}
 
