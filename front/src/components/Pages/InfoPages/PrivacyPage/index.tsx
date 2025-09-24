@@ -4,7 +4,7 @@ import * as S from '../styles';
 export const PrivacyPage = () => (
   <S.Container>
     <h1>Privacy Policy</h1>
-    <i>Last updated 20/02/2024</i>
+    <i>Last updated 24/09/2025</i>
 
     <p>
       This privacy notice for <b>El Pato Clip </b>
@@ -16,11 +16,11 @@ export const PrivacyPage = () => (
 
     <p>
       If you do not agree with our policies and practices, please do not use our services. If you still have 
-      any questions or concerns, please contact me at niv3k.business@gmail.com.
+      any questions or concerns, please contact me at support@elpato.dev.
     </p>
 
     <p>
-      All source code is publically available at <Link to="https://github.com/Niv3K-El-Pato/ElPatoClip">Github</Link>
+      All source code is publically available at <Link to="https://github.com/em1dev/ElPatoClip">Github</Link>
     </p>
 
     <h2>
@@ -67,7 +67,7 @@ export const PrivacyPage = () => (
 
     <h2>Access to your data</h2>
     <p>
-      Access to all the information stored about you can be granted by contacting us at niv3k.business@gmail.com.
+      Access to all the information stored about you can be granted by contacting us at support@elpato.dev.
       For general information you can access your profile page to view or delete your account.
     </p>
 

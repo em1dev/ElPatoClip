@@ -4,7 +4,7 @@ import { tiktokErrorMap, tiktokVideoUploadStatusErrorMap } from './errorMappers'
 import { readBlob } from './responseReaders';
 import { ChannelDetails, ChannelSearchResponse, ClipListRequestFilters, ClipsResponse, CreatorPublishPermissionResponse, ElPatoConnection, PostVideoPayload, TikTokResponse, TiktokUploadStatusResponse } from './types';
 
-const baseApi = import.meta.env.MODE === 'production' ?  'https://api.niv3kelpato.com/clipApi/' : 'http://localhost:3000/';
+const baseApi = import.meta.env.MODE === 'production' ?  'https://api.elpato.dev/clipApi/' : 'http://localhost:3000/';
 
 const request = async <T>(path: string, options: RequestInit = {}): Promise<ApiResponse<T>> => {
   try {

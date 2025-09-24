@@ -138,12 +138,12 @@ const SearchPage = () => {
         <h2>Who is behind El Pato Clip</h2>
         <S.AboutSectionContent>
           <div>
-            <img alt="Patito logo" width={100} src="/imgs/ProfilePic.png" />
-            <p>Patito Dev</p>
-            <S.Anchor href="https://twitch.tv/patitodev">twitch.tv/patitodev</S.Anchor>
+            <img alt="Profile Picture" width={100} src="/imgs/ProfilePic.png" />
+            <p>Emy Dev</p>
+            <S.Anchor href="https://github.com/em1dev">github.com/em1dev</S.Anchor>
           </div>
           <div>
-            <p>El Pato Clip is an open source project actively maintained by PatitoDev, development of el pato clip can be seen on their twitch channel</p>
+            <p>El Pato Clip is an open source project actively maintained by EmyDev</p>
             <p>Everyone is welcomed to contribute and suggest ideas</p>
           </div>
         </S.AboutSectionContent>

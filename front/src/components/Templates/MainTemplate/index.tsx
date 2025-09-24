@@ -51,11 +51,11 @@ const MainTemplate = (props: MainTemplateProps) => {
                 <Link to="/tos">ToS</Link>
                 <Link
                   target="_blank"
-                  to="https://github.com/Niv3K-El-Pato/ElPatoClip"
+                  to="https://github.com/em1dev/ElPatoClip"
                 >
                 Source Code
                 </Link>
-                <Link target="_blank" to="https://ko-fi.com/niv3k_el_pato">
+                <Link target="_blank" to="https://ko-fi.com/emydev">
                 Support Me :3
                 </Link>
               </S.Links>
@@ -103,7 +103,7 @@ const MainTemplate = (props: MainTemplateProps) => {
             <Link
               tabIndex={!isNavOpen ? -1 : undefined}
               target="_blank"
-              to="https://github.com/Niv3K-El-Pato/ElPatoClip"
+              to="https://github.com/em1dev/ElPatoClip"
               onClick={handleLinkClick}
             >
               Source Code
@@ -111,7 +111,7 @@ const MainTemplate = (props: MainTemplateProps) => {
             <Link
               tabIndex={!isNavOpen ? -1 : undefined}
               target="_blank"
-              to="https://ko-fi.com/niv3k_el_pato"
+              to="https://ko-fi.com/emydev"
               onClick={handleLinkClick}
             >
               Support Me :3
