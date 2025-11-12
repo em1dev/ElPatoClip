@@ -1,8 +1,8 @@
 import { GlqClipInfoResponse, GlqUserClips } from './types';
 
 const BASE_URL = 'https://gql.twitch.tv/gql';
-const CLIENT_ID = 'kd1unb4b3q4t58fwlpcbzcbnm76a8fp';
-const HASH = '6e465bb8446e2391644cf079851c0cb1b96928435a240f07ed4b240f0acc6f1b';
+const CLIENT_ID = 'kimne78kx3ncx6brgo4mv6wki5h1ko';
+const HASH = '36b89d2507fce29e5ca551df756d27c1cfe079e2609642b4390aa4c35796eb11';
 
 const CLIP_FIELDS = `
     id
@@ -88,22 +88,21 @@ export class TwitchGqlApi {
   };
 
   public getDownloadClipUrl = async (slug: string) => {
-    const data = [
-      {
-        operationName: 'ClipsDownloadButton',
-        variables: {
-          slug,
-        },
-        extensions: {
-          persistedQuery: {
-            version: 1,
-            sha256Hash: HASH,
-          }
-        },
+    const clipAccessTokenQuery = {
+      operationName: 'VideoAccessToken_Clip',
+      variables: {
+        slug
+      },
+      extensions: {
+        persistedQuery: {
+          version: 1,
+          sha256Hash: HASH,
+        }
       }
-    ];
-    const resp = await this.callApi<Array<GlqClipInfoResponse>>(JSON.stringify(data), false);
-    const clip = resp[0].data.clip!;
+    };
+
+    const resp = await this.callApi<GlqClipInfoResponse>(JSON.stringify(clipAccessTokenQuery), false);
+    const clip = resp.data.clip!;
   
     let clipUrl = clip.videoQualities.at(0)?.sourceURL;
     if (!clipUrl) {
