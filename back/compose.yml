@@ -1,0 +1,17 @@
+services:
+  api:
+    build: .
+    ports:
+      - ${PORT}:80
+    environment:
+      - PORT=80
+      - APP_ID=${APP_ID}
+      - AUTH_URL=${AUTH_URL}
+    networks:
+      - shared
+      - default
+
+networks:
+  shared:
+    external: true
+    name: auth-internal-network

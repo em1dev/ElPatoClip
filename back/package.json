@@ -1,6 +1,9 @@
 {
   "name": "clip.back",
   "version": "1.0.0",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "ts-node ./src/index.ts",
     "lint": "eslint . && tsc --noEmit",
