@@ -1,8 +1,12 @@
 {
-  "name": "elpatoclip",
+  "name": "clip.front",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=11"
+  },
   "scripts": {
     "dev:prod": "vite --mode production",
     "dev": "vite",
