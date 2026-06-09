@@ -1,5 +1,4 @@
 import { app, handleError } from '../..';
-import { TwitchApi } from '../../api/twitchApi';
 import { TwitchGqlApi } from '../../api/twitchGqlApi';
 import { BadRequestError } from '../../errors';
 import { downloadClipHandler } from './handlers/downloadClipHandler';
@@ -8,7 +7,6 @@ import { getClipsFromChannelHandler } from './handlers/getClipsFromChannelHandle
 import { ClipListRequestFiltersSchema } from './schema';
 
 const twitchGqlApi = new TwitchGqlApi();
-const twitchApi = new TwitchApi();
 
 app.get('/clip/:id', async (req, res) => {
   try {
@@ -22,7 +20,7 @@ app.get('/clip/:id', async (req, res) => {
 
 app.get('/clip/metadata/:id', async (req, res) => {
   try {
-    const data = await getClipMetadataHandler(req.params.id, twitchApi);
+    const data = await getClipMetadataHandler(req.params.id);
     res.send(data);
   } catch (err) {
     console.log(err);
@@ -34,7 +32,7 @@ app.post('/channel/:channelId/clips', async (req, res) => {
   try {
     const channelId = req.params.channelId;
     const filters = ClipListRequestFiltersSchema.parse(req.body);
-    const data = await getClipsFromChannelHandler(channelId, filters, twitchApi);
+    const data = await getClipsFromChannelHandler(channelId, filters);
     res.send(data);
   } catch (err) {
     console.log(err);

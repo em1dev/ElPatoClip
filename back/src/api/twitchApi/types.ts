@@ -1,3 +1,9 @@
+export interface TwitchTokenVerificationResponse {
+  client_id: string,
+  scopes: Array<string>,
+  expires_in: number
+}
+
 export interface AuthenticationResponse {
   access_token: string,
   expires_in: number,

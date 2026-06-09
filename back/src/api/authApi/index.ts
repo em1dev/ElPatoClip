@@ -1,7 +1,4 @@
-import { env } from '../../env';
-
-const BASE_URL = `http://localhost:${env.authPort}`;
-const APP_ID = env.appName;
+import { config } from '../../config';
 
 export enum LoginServices {
   tiktok = 'tiktok',
@@ -12,8 +9,31 @@ export enum ConnectionServices {
   tiktok = 'tiktok',
 }
 
+export const getAppCredentials = async () => {
+  const url = `${config.AUTH_URL}/app/${config.APP_ID}`;
+  const resp = await fetch(url);
+  if (!resp.ok) {
+    throw new Error(
+      `Unable to get app authentication information from auth server. Status: ${resp.status}.
+Make sure an app with '${config.APP_ID}' exists within the auth server.`
+    );
+  }
+
+  const credentials = await resp.json() as Array<{
+    type: string,
+    clientSecret: string,
+    clientId: string
+  }>;
+  const twitchCredentials = credentials.find(item => item.type == LoginServices.twitch);
+  if (!twitchCredentials) {
+    throw new Error(`Missing twitch credentials on auth server for app '${config.APP_ID}'`);
+  }
+
+  return twitchCredentials;
+};
+
 export const authenticate = async (code: string, service: LoginServices, redirectUrl: string) => {
-  const resp = await fetch(BASE_URL + `/${APP_ID}/authenticate/${service}`, {
+  const resp = await fetch(config.AUTH_URL + `/${config.APP_ID}/authenticate/${service}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -30,7 +50,7 @@ export const authenticate = async (code: string, service: LoginServices, redirec
 };
 
 export const verifyTokenApi = async (token: string) => {
-  const resp = await fetch(BASE_URL + '/token/verify', {
+  const resp = await fetch(config.AUTH_URL + '/token/verify', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -50,21 +70,21 @@ export interface ElPatoConnection {
 }
 
 export const getConnections = async (userId: number) => {
-  const resp = await fetch(BASE_URL + `/${APP_ID}/user/${userId}/connections`);
+  const resp = await fetch(config.AUTH_URL + `/${config.APP_ID}/user/${userId}/connections`);
   if (!resp.ok) return;
 
   return await resp.json() as Array<ElPatoConnection>;
 };
 
 export const deleteConnection = async (userId: number, connectionType: ConnectionServices) => {
-  const resp = await fetch(`${BASE_URL}/${APP_ID}/user/${userId}/connection/${connectionType}`, {
+  const resp = await fetch(`${config.AUTH_URL}/${config.APP_ID}/user/${userId}/connection/${connectionType}`, {
     method: 'DELETE'
   });
   return resp.ok;
 };
 
 export const createConnection = async (userId: number, connectionType: ConnectionServices, code: string, redirectUrl: string) => {
-  const resp = await fetch(`${BASE_URL}/${APP_ID}/user/${userId}/connection/${connectionType}`, {
+  const resp = await fetch(`${config.AUTH_URL}/${config.APP_ID}/user/${userId}/connection/${connectionType}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

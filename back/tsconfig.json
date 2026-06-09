@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
     "target": "ES2022",
     "useDefineForClassFields": true,
     "module": "CommonJS",
     "skipLibCheck": true,
-
     "esModuleInterop": true,
     "strict": true,
     "noUnusedLocals": true,
@@ -15,5 +16,7 @@
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true,
   },
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
 }

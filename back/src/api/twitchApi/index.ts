@@ -1,120 +1,161 @@
-import { URL } from 'url';
-import { env } from '../../env';
-import { AuthenticationResponse, ChannelDetails, TwitchClip, TwitchClipFilters, TwitchPaginatedResult, UserDetails } from './types';
-import { BadRequestError } from '../../errors';
+import { ApiResponse } from '../types';
+import {
+  TwitchTokenVerificationResponse, AuthenticationResponse,
+  TwitchClip, TwitchClipFilters, TwitchPaginatedResult, UserDetails,
+  ChannelDetails
+} from './types';
+import { TwitchCredentials } from '../../TwitchTokenStore';
 
-export class TwitchApi {
-  private getAppToken = async () => {
-    const url = 'https://id.twitch.tv/oauth2/token';
-    const body = {
-      'client_id': env.clientId,
-      'client_secret': env.clientSecret,
-      'grant_type': 'client_credentials'
-    };
+const TWITCH_AUTH_URL = 'https://id.twitch.tv/oauth2/token';
 
-    const resp = await fetch(url, {
-      body: JSON.stringify(body),
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      }
-    });
-
-    if (!resp.ok) { throw new Error('Invalid token'); }
-    const data = await resp.json() as AuthenticationResponse;
-    return data.access_token;
-  };
-
-  public getClipMetadata = async (clipId: string) => {
-    const token = await this.getAppToken();
-    const url = new URL(`https://api.twitch.tv/helix/clips?id=${clipId}`);
-    const resp = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Client-Id': `${env.clientId}`
-      }
-    });
-
-    if (!resp.ok) {
-      console.error('Unable to get twitch clips', resp.status);
-      const error = await resp.text();
-      console.error(error);
-      throw new BadRequestError(`twitch api error: ${resp.status}`);
+const verifyToken = async (token: string) => (
+  await callApi<TwitchTokenVerificationResponse>({
+    url: 'https://id.twitch.tv/oauth2/validate',
+    method: 'GET',
+    twitchCredentials: {
+      appToken: token,
+      clientId: '',
+      clientSecret: ''
     }
+  })
+);
 
-    return await resp.json() as TwitchPaginatedResult<TwitchClip>;
-  };
-
-  public getClips = async (filters: TwitchClipFilters) => {
-    const token = await this.getAppToken();
-    const url = new URL('https://api.twitch.tv/helix/clips');
-    const params = new URLSearchParams();
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value === undefined) return;
-      params.set(key, String(value));
-    });
-    url.search = params.toString();
-
-    const resp = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Client-Id': `${env.clientId}`
-      }
-    });
-
-    if (!resp.ok) {
-      console.error('Unable to get twitch clips', resp.status);
-      const error = await resp.text();
-      console.error(error);
-      throw new BadRequestError(`twitch api error: ${resp.status}`);
+const getAppToken = async (clientId: string, clientSecret: string) => (
+  await callApi<AuthenticationResponse>({
+    url: TWITCH_AUTH_URL,
+    method: 'POST',
+    body: {
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: 'client_credentials',
+      claims: '',
     }
+  })
+);
 
-    return await resp.json() as TwitchPaginatedResult<TwitchClip>;
-  };
+const getClipMetadata = async (clipId: string, credentials: TwitchCredentials) => (
+  callApi<TwitchPaginatedResult<TwitchClip>>({
+    url: 'https://api.twitch.tv/helix/clips',
+    params: {
+      id: clipId
+    },
+    twitchCredentials: credentials,
+  })
+);
 
-  public searchChannel = async (searchString: string, first: number = 5) => {
-    const url = `https://api.twitch.tv/helix/search/channels?query=${searchString}&first=${first}`;
-    const token = await this.getAppToken();
+const getClips = async (filters: TwitchClipFilters, credentials: TwitchCredentials) => {
+  const sanitizedParams:Record<string, string | boolean> = {};
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value === undefined) return;
+    sanitizedParams[key] = value;
+  });
 
-    const resp = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Client-Id': `${env.clientId}`
-      }
-    });
+  return callApi<TwitchPaginatedResult<TwitchClip>>({
+    url: 'https://api.twitch.tv/helix/clips',
+    params: sanitizedParams,
+    twitchCredentials: credentials
+  });
+};
 
-    if (!resp.ok) throw new Error(`twitch api error: ${resp.status}`);
+const searchChannel = async (credentials: TwitchCredentials, searchString: string, first: number = 5) => (
+  callApi<TwitchPaginatedResult<ChannelDetails>>({
+    url: 'https://api.twitch.tv/helix/search/channels',
+    params: {
+      query: searchString,
+      first
+    },
+    twitchCredentials: credentials
+  })
+);
 
-    const data = await resp.json() as TwitchPaginatedResult<ChannelDetails>;
-    return data;
-  };
-
-  public getUsers = async (userIds: Array<string>) => {
-    if (userIds.length === 0) return [];
-
-    let url = 'https://api.twitch.tv/helix/users?';
-    const params = userIds.map(s => `id=${s}`).join('&');
-    url += params;
-
-    const token = await this.getAppToken();
-
-    const resp = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Client-Id': `${env.clientId}`
-      }
-    });
-
-    if (!resp.ok) {
-      console.log(await resp.json());
-      throw new Error(`Twitch api error ${resp.status}`);
+const getUsers = async (userIds: Array<string>, credentials: TwitchCredentials) => {
+  if (userIds.length === 0) return {
+    data: {
+      data: []
     }
+  } as ApiResponse<{ data: Array<UserDetails> }>;
 
-    const { data } = await resp.json() as { data: Array<UserDetails> };
-    return data;
-  };
+  let url = 'https://api.twitch.tv/helix/users?';
+  const params = userIds.map(s => `id=${s}`).join('&');
+  url += params;
+
+  return callApi<{ data: Array<UserDetails>}>({
+    url,
+    twitchCredentials: credentials
+  });
+};
+
+interface ApiParams<T> {
+  url: string;
+  params?: Record<string, string | number | boolean>;
+  method?: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
+  body?: T;
+  twitchCredentials?: TwitchCredentials;
+  headers?: Record<string, string>,
 }
+
+const callApi = async <R, T = unknown>({
+  url,
+  body,
+  method = 'GET',
+  params = {},
+  twitchCredentials
+}: ApiParams<T>): Promise<ApiResponse<R>> => {
+  const paramsParsed = Object.entries(params).map(([key, value]) => `${key}=${value}`).join('&');
+
+  let urlParsed = url;
+  if (paramsParsed) {
+    urlParsed += '?' + paramsParsed;
+  }
+  try {
+    const resp = await fetch(urlParsed, {
+      method,
+      body: body ? JSON.stringify(body) : null,
+      headers: twitchCredentials ? createAuthHeaders(twitchCredentials) : {
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await resp.json() as R;
+
+    if (!resp.ok) {
+      console.error(data, resp.status);
+      return {
+        error: {
+          status: resp.status,
+          description: data as unknown
+        }
+      };
+    }
+
+    return { data };
+  } catch (err) {
+    console.log(err);
+    return {
+      error: {
+        status: 500,
+        description: 'Internal error'
+      }
+    };
+  }
+};
+
+const createAuthHeaders = (
+  twitchCredentials: TwitchCredentials,
+  type: 'Bearer' | 'OAuth' = 'Bearer',
+  additionalHeaders: Record<string, string> = {}) => (
+  new Headers({
+    'Client-Id': twitchCredentials.clientId,
+    'Authorization': `${type} ${twitchCredentials.appToken}`,
+    'Content-Type': 'application/json',
+    ...additionalHeaders
+  })
+);
+
+export const twitchApi = {
+  getAppToken,
+  verifyToken,
+  getUsers,
+  searchChannel,
+  getClips,
+  getClipMetadata
+};
