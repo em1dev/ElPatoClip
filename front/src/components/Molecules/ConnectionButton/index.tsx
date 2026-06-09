@@ -1,16 +1,16 @@
 import * as S from './styles';
-import { ElPatoConnection } from '../../../api/elPatoClipApi/types';
 import { serviceToDetailsMap } from '../../Pages/AccountPage/serviceToDetailsMap';
 import { Button } from '../../Atoms/Button';
 import { useCallback, useEffect, useState } from 'react';
-import { ElPatoApi } from '../../../api/elPatoClipApi';
 import { useAuth } from '../../../authContext/useAuth';
 import { createTokenUrl } from '../../../Utils/TokenAuthorizationBuilder';
 import { ApiResponse } from '../../../api/types';
+import { Connection } from '../../../api/clipApi/types';
+import { clipApi } from '../../../api/clipApi';
 
 export interface ConnectionButtonProps {
   type: 'twitch' | 'tiktok'
-  onChange?: (value: ApiResponse<ElPatoConnection> | null) => void,
+  onChange?: (value: ApiResponse<Connection> | null) => void,
 }
 
 export const ConnectionButton = ({ type, onChange }: ConnectionButtonProps) => {
@@ -18,13 +18,13 @@ export const ConnectionButton = ({ type, onChange }: ConnectionButtonProps) => {
   const auth = useAuth();
   const [{ isLoading, connection }, setState] = useState<{
     isLoading: boolean,
-    connection?: ApiResponse<ElPatoConnection> | null
+    connection?: ApiResponse<Connection> | null
   }>({ isLoading: true });
 
   const load = useCallback(async (cancelToken?: { cancel: boolean }) => {
     if (auth.isLoading || !auth.isAuthorized) return;
     setState(prev => ({ ...prev, isLoading: true }));
-    const result = await ElPatoApi.getConnectionDetails(auth.token, type);
+    const result = await clipApi.getConnectionDetails(auth.token, type);
     if (cancelToken?.cancel) return;
     setState({ isLoading: false, connection: result });
     onChange && onChange(result);
@@ -37,7 +37,7 @@ export const ConnectionButton = ({ type, onChange }: ConnectionButtonProps) => {
 
   const onDisconnect = useCallback(async () => {
     if (!auth.token) return;
-    const resp = await ElPatoApi.deleteConnection(auth.token, type);
+    const resp = await clipApi.deleteConnection(auth.token, type);
     if (resp.error) return;
     // TODO - show error
     load();

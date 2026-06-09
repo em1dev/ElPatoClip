@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import { MathUtils } from '../../../Utils/MathUtils';
-import { Clip } from '../../../api/elPatoClipApi/types';
+import { Clip } from '../../../api/clipApi/types';
 import { Badge } from '../../Atoms/Badge';
 import ClipFooterMetadata from '../ClipFooterMetadata';
 import * as S from './styles';
@@ -18,7 +18,7 @@ const ClipEl = forwardRef<HTMLButtonElement, ClipProps>(({ clip, onClick }: Clip
       <Badge>{clip.view_count} views</Badge>
     </S.EmbedContainer>
 
-    <ClipFooterMetadata 
+    <ClipFooterMetadata
       title={clip.title}
       rightTitle={new Date(clip.created_at).toLocaleDateString()}
       subTitle={`Clipped by: ${clip.creator_name}`}

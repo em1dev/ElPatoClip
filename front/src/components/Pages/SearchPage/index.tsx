@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as S from './styles';
-import { ChannelSearchResponse, ClipsResponse } from '../../../api/elPatoClipApi/types';
+import { ChannelSearchResponse, ClipsResponse } from '../../../api/clipApi/types';
 import { useDebouce } from '../../../hooks/useDebounce';
 import { Loading } from '../../Atoms/Loading';
-import { ElPatoApi } from '../../../api/elPatoClipApi';
 import { recentChannelsStore } from '../../../store/recentChannelsStore';
 import { ApiResponse } from '../../../api/types';
+import { clipApi } from '../../../api/clipApi';
 
 const recentItems = recentChannelsStore.load();
 
@@ -30,11 +30,11 @@ const SearchPage = () => {
       // this is because twitch account names can't have dashes but clip ids always have dashes
       if (searchString.includes('-')) {
         const clipId = searchString.split('/').at(-1) ?? '';
-        const resp = await ElPatoApi.getClipMetadata(clipId);
+        const resp = await clipApi.getClipMetadata(clipId);
         setClipSearchResults(resp);
         setSearchResults(null);
       } else {
-        const resp = await ElPatoApi.searchUser(searchString);
+        const resp = await clipApi.searchUser(searchString);
         setClipSearchResults(null);
         setSearchResults(resp);
       }
@@ -50,10 +50,10 @@ const SearchPage = () => {
     if (searchResults === null && clipSearchResults === null)
       return null;
 
-    if (searchResults?.error) 
+    if (searchResults?.error)
       return <div>Error loading channels. Please try again later</div>;
 
-    if (clipSearchResults?.error) 
+    if (clipSearchResults?.error)
       return <div>Error finding clip. Please try again later</div>;
 
     if (
@@ -100,15 +100,15 @@ const SearchPage = () => {
           <h1>El Pato Clip</h1>
           <p>Edit your twitch clips into vertical format for TikTok and YouTube shorts</p>
           <input
-            value={value} 
-            onChange={(e) => setValue(e.target.value)} 
-            placeholder='twitch channel name or clip id' 
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder='twitch channel name or clip id'
           />
-          { SearchResults && (
+          {SearchResults && (
             <S.SearchResultContainer>
               {SearchResults}
             </S.SearchResultContainer>
-          ) }
+          )}
 
           {!!recentItems.length && !SearchResults && (
             <S.RecentItemsContainer>
@@ -125,7 +125,7 @@ const SearchPage = () => {
 
           <p><i>100% Free, Open source and no watermark</i></p>
         </div>
-        <img alt="editor preview" src="/imgs/EditorPreview.png"/>
+        <img alt="editor preview" src="/imgs/EditorPreview.png" />
       </S.SearchSection>
 
       <S.CenterSection>

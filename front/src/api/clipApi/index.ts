@@ -1,10 +1,9 @@
+import { config } from '../../config';
 import { AuthorizationError } from '../AuthorizationError';
 import { ApiResponse } from '../types';
 import { tiktokErrorMap, tiktokVideoUploadStatusErrorMap } from './errorMappers';
 import { readBlob } from './responseReaders';
-import { ChannelDetails, ChannelSearchResponse, ClipListRequestFilters, ClipsResponse, CreatorPublishPermissionResponse, ElPatoConnection, PostVideoPayload, TikTokResponse, TiktokUploadStatusResponse } from './types';
-
-const baseApi = import.meta.env.MODE === 'production' ?  'https://api.elpato.dev/clipApi/' : 'http://localhost:3000/';
+import { ChannelDetails, ChannelSearchResponse, ClipListRequestFilters, ClipsResponse, CreatorPublishPermissionResponse, Connection, PostVideoPayload, TikTokResponse, TiktokUploadStatusResponse } from './types';
 
 const request = async <T>(path: string, options: RequestInit = {}): Promise<ApiResponse<T>> => {
   try {
@@ -41,15 +40,15 @@ const request = async <T>(path: string, options: RequestInit = {}): Promise<ApiR
 };
 
 const searchUser = async (searchString: string) => (
-  await request<Array<ChannelSearchResponse>>(`${baseApi}channels?search=${searchString}`)
+  await request<Array<ChannelSearchResponse>>(`${config.API_URL}channels?search=${searchString}`)
 );
 
 const getChannelDetails = async (channelId: string): Promise<ApiResponse<ChannelDetails>> => (
-  await request<ChannelDetails>(`${baseApi}channel/${channelId}`)
+  await request<ChannelDetails>(`${config.API_URL}channel/${channelId}`)
 );
 
 const getClips = async (channelName: string, filters: ClipListRequestFilters):Promise<ApiResponse<ClipsResponse>> => (
-  await request<ClipsResponse>(`${baseApi}channel/${channelName}/clips`, {
+  await request<ClipsResponse>(`${config.API_URL}channel/${channelName}/clips`, {
     method: 'POST',
     body: JSON.stringify(filters),
     headers: {
@@ -59,7 +58,7 @@ const getClips = async (channelName: string, filters: ClipListRequestFilters):Pr
 );
 
 const getClipMetadata = async (clipId: string):Promise<ApiResponse<ClipsResponse>> => (
-  await request<ClipsResponse>(`${baseApi}clip/metadata/${clipId}`, {
+  await request<ClipsResponse>(`${config.API_URL}clip/metadata/${clipId}`, {
     method: 'GET',
     headers: {
       'content-type': 'application/json',
@@ -69,7 +68,7 @@ const getClipMetadata = async (clipId: string):Promise<ApiResponse<ClipsResponse
 
 const getClip = async (clipId: string, onProgress: (progress: number, total:number) => void): Promise<ApiResponse<Blob>> => {
   try {
-    const resp = await fetch(`${baseApi}clip/${clipId}`);
+    const resp = await fetch(`${config.API_URL}clip/${clipId}`);
     if (!resp.ok)
       return { error: true, status: resp.status, data: null };
 
@@ -81,7 +80,7 @@ const getClip = async (clipId: string, onProgress: (progress: number, total:numb
 };
 
 const authenticate = async (code: string, provider: string, redirectUrl: string) => (
-  await request<{ token: string }>(`${baseApi}login`, {
+  await request<{ token: string }>(`${config.API_URL}login`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -95,7 +94,7 @@ const authenticate = async (code: string, provider: string, redirectUrl: string)
 );
 
 const getConnectionDetails = async (token: string, connectionType: string) => (
-  await request<ElPatoConnection>(`${baseApi}user/connection/${connectionType}`, {
+  await request<Connection>(`${config.API_URL}user/connection/${connectionType}`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -104,7 +103,7 @@ const getConnectionDetails = async (token: string, connectionType: string) => (
 );
 
 const createConnection = async (token: string, connectionType: string, redirectUrl: string, code: string) => (
-  await request(`${baseApi}user/connection/${connectionType}`, {
+  await request(`${config.API_URL}user/connection/${connectionType}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -118,7 +117,7 @@ const createConnection = async (token: string, connectionType: string, redirectU
 );
 
 const deleteConnection = async (token: string, connectionType: string) => (
-  await request(`${baseApi}user/connection/${connectionType}`, {
+  await request(`${config.API_URL}user/connection/${connectionType}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -127,7 +126,7 @@ const deleteConnection = async (token: string, connectionType: string) => (
 );
 
 const getTiktokCreatorPermissions = async (token: string) => (
-  await request<CreatorPublishPermissionResponse>(`${baseApi}tiktok/permissions`, {
+  await request<CreatorPublishPermissionResponse>(`${config.API_URL}tiktok/permissions`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`
@@ -145,7 +144,7 @@ export interface VideoStatusResult {
 
 const getVideoStatus = async (videoId: string, token: string):Promise<VideoStatusResult> => {
   try {
-    const resp = await fetch(`${baseApi}tiktok/video/status`, {
+    const resp = await fetch(`${config.API_URL}tiktok/video/status`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -159,11 +158,11 @@ const getVideoStatus = async (videoId: string, token: string):Promise<VideoStatu
     console.log(data);
 
     if (error.code !== 'ok')
-      return { 
+      return {
         status: 'Failed',
         errorReason: tiktokVideoUploadStatusErrorMap[error.code]
       };
-    
+
     switch (data.status) {
     case 'FAILED':
       return {
@@ -203,7 +202,7 @@ export type InitiateTikTokVideoResult = {
 }
 
 const initiateVideo = async (payload: PostVideoPayload, token: string): Promise<InitiateTikTokVideoResult> => {
-  const resp = await fetch(`${baseApi}tiktok/initiate-upload`, {
+  const resp = await fetch(`${config.API_URL}tiktok/initiate-upload`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -243,7 +242,7 @@ const initiateVideo = async (payload: PostVideoPayload, token: string): Promise<
 };
 
 const validateToken = async (token: string) => {
-  const resp =  await fetch(`${baseApi}token/verify`, {
+  const resp =  await fetch(`${config.API_URL}token/verify`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -252,7 +251,7 @@ const validateToken = async (token: string) => {
   return resp.ok;
 };
 
-export const ElPatoApi = {
+export const clipApi = {
   getClips,
   getClip,
   searchUser,

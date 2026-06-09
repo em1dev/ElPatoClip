@@ -1,7 +1,6 @@
 import * as S from './styles';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ChannelDetails, ClipsResponse } from '../../../api/elPatoClipApi/types';
-import { ElPatoApi } from '../../../api/elPatoClipApi';
+import { ChannelDetails, ClipsResponse } from '../../../api/clipApi/types';
 import ClipEl from '../../Molecules/ClipEl';
 import ClipModal from './ClipModal';
 import { useParams } from 'react-router-dom';
@@ -10,11 +9,12 @@ import { useOnIntersection } from '../../../hooks/useOnIntersection';
 import { Button } from '../../Atoms/Button';
 import { recentChannelsStore } from '../../../store/recentChannelsStore';
 import { ApiResponse } from '../../../api/types';
+import { clipApi } from '../../../api/clipApi';
 
 const ITEMS_PER_PAGE = 30;
 type ClipFilter = 'all time' | '24 hours' | 'last 7 days' | 'last 30 days';
 
-const ClipFilterToDisplayName: Record<ClipFilter, { displayName: string, daysToSubtract: number}> = {
+const ClipFilterToDisplayName: Record<ClipFilter, { displayName: string, daysToSubtract: number }> = {
   'all time': { displayName: 'All time', daysToSubtract: 0 },
   '24 hours': { displayName: 'Last 24 hours', daysToSubtract: 1 },
   'last 7 days': { displayName: 'Last 7 days', daysToSubtract: 7 },
@@ -26,7 +26,7 @@ const generateFilter = (selectedFilter: ClipFilter) => {
   if (selectedFilter === 'all time') return filter;
 
   const today = new Date();
-  today.setHours(0,0,0,0); //reset to midnight
+  today.setHours(0, 0, 0, 0); //reset to midnight
 
   const { daysToSubtract } = ClipFilterToDisplayName[selectedFilter];
   const startDate = (new Date(today));
@@ -41,7 +41,7 @@ const generateFilter = (selectedFilter: ClipFilter) => {
 };
 
 const ClipPage = () => {
-  const { channelId } = useParams<{ channelId:string }>();
+  const { channelId } = useParams<{ channelId: string }>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<ClipFilter>('all time');
@@ -56,7 +56,7 @@ const ClipPage = () => {
   useEffect(() => {
     (async () => {
       if (!channelId) return;
-      const userDetailsResponse = await ElPatoApi.getChannelDetails(channelId);
+      const userDetailsResponse = await clipApi.getChannelDetails(channelId);
       setChannelDetails(userDetailsResponse);
 
       if (userDetailsResponse.error) return;
@@ -79,7 +79,7 @@ const ClipPage = () => {
     if (!channelId) return;
     setIsLoading(true);
 
-    const resp = await ElPatoApi.getClips(channelId, {
+    const resp = await clipApi.getClips(channelId, {
       amount: ITEMS_PER_PAGE,
       afterCursor: cursor,
       startedAt: startDate,
@@ -116,8 +116,8 @@ const ClipPage = () => {
         status: resp.status,
         data: {
           pagination: resp.data.pagination,
-          data: [...prev.data.data ?? [], 
-            ...respDataSorted
+          data: [...prev.data.data ?? [],
+          ...respDataSorted
           ]
         },
       });
@@ -177,7 +177,7 @@ const ClipPage = () => {
         </S.Header>
       )}
 
-      { channelDetails?.data && (
+      {channelDetails?.data && (
         <S.Header>
           <S.ProfileDetails>
             <img alt={`${channelDetails.data.display_name}`} src={channelDetails.data.profile_image_url} />
@@ -191,7 +191,7 @@ const ClipPage = () => {
               return (
                 <Button
                   key={key}
-                  onClick={() => setSelectedFilter(key as ClipFilter)} 
+                  onClick={() => setSelectedFilter(key as ClipFilter)}
                   $variant={selectedFilter === key ? 'primary' : 'outline'}
                 >{displayName}</Button>
               );
@@ -208,9 +208,9 @@ const ClipPage = () => {
 
       <S.Container>
         {clips?.data?.data.map((clip, index) => (
-          <ClipEl 
-            ref={(index === clips.data.data.length - 1) ? loaderTriggerRef : undefined} 
-            key={clip.id} clip={clip} onClick={() => setSelectedClipId(clip.id)} 
+          <ClipEl
+            ref={(index === clips.data.data.length - 1) ? loaderTriggerRef : undefined}
+            key={clip.id} clip={clip} onClick={() => setSelectedClipId(clip.id)}
           />
         ))}
 

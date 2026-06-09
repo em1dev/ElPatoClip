@@ -1,7 +1,7 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { decodeJwt } from 'jose';
-import { ElPatoApi } from '../api/elPatoClipApi';
+import { clipApi } from '../api/clipApi';
 
 
 export type UserContextState = {
@@ -64,7 +64,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const isValid = await ElPatoApi.validateToken(token);
+      const isValid = await clipApi.validateToken(token);
       if (!isValid) {
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         setIsLoading(false);

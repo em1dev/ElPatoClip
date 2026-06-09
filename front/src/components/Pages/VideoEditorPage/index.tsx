@@ -1,11 +1,11 @@
 import * as S from './styles';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ElPatoApi } from '../../../api/elPatoClipApi';
 import { Loading } from '../../Atoms/Loading';
 import { VideoExporter } from './VideoExporter';
 import VideoEditor from '../../Organisms/Editor';
 import { useEditorState } from '../../../store/EditorState/useEditorState';
+import { clipApi } from '../../../api/clipApi';
 
 const bytesToReadable = (amount: number) => {
   if (amount > 1000000) {
@@ -24,7 +24,7 @@ export const VideoEditorPage = () => {
   const isExporting = useEditorState((state) => state.isExporting);
   const setIsExporting = useEditorState((state) => state.setIsExporting);
 
-  const { clipId } = useParams<{ clipId: string }>(); 
+  const { clipId } = useParams<{ clipId: string }>();
   const [loading, setIsLoading] = useState<boolean>(false);
   const [progress, setProgress] = useState<{
     amount: string,
@@ -50,7 +50,7 @@ export const VideoEditorPage = () => {
 
       setIsLoading(true);
       // get clip metadata
-      const resp = await ElPatoApi.getClip(clipId, (amount, total) => {
+      const resp = await clipApi.getClip(clipId, (amount, total) => {
         const totalStr = total === 0 ? '?' : bytesToReadable(total);
 
         setProgress({
@@ -76,13 +76,13 @@ export const VideoEditorPage = () => {
       }));
     };
     onClipDownload(clipId);
-  },[setClipId, clipId]);
+  }, [setClipId, clipId]);
 
   if (loading) return (
     <S.LoadingVideoContainer>
       <Loading />
       <div>Downloading clip</div>
-      { progress && (
+      {progress && (
         <S.Progress>{progress.amount} / {progress.total}</S.Progress>
       )}
     </S.LoadingVideoContainer>

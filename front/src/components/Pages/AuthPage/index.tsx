@@ -1,7 +1,7 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Loading } from '../../Atoms/Loading';
 import { useEffect, useState } from 'react';
-import { ElPatoApi } from '../../../api/elPatoClipApi';
+import { clipApi } from '../../../api/clipApi';
 import { LOCAL_STORAGE_KEY } from '../../../authContext';
 import { useAuth } from '../../../authContext/useAuth';
 import styled from 'styled-components';
@@ -57,7 +57,7 @@ export const AuthPage = () => {
         setHasError(true);
         return;
       }
-      const resp = await ElPatoApi.createConnection(token, authService, redirectUrl, code);
+      const resp = await clipApi.createConnection(token, authService, redirectUrl, code);
       if (resp.error) {
         setHasError(true);
         return;
@@ -69,7 +69,7 @@ export const AuthPage = () => {
 
     const authenticate = async () => {
       try {
-        const resp = await ElPatoApi.authenticate(code, authService, redirectUrl);
+        const resp = await clipApi.authenticate(code, authService, redirectUrl);
 
         if (resp.error) {
           setHasError(true);

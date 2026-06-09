@@ -55,7 +55,7 @@ export interface ChannelDetails {
   created_at: string
 }
 
-export interface ElPatoConnection {
+export interface Connection {
   type: 'twitch' | 'tiktok',
   displayName: string,
   profileImageUrl: string
@@ -77,7 +77,7 @@ export interface CreatorPublishPermissions {
   creator_username: string,
   creator_nickname: string,
   privacy_level_options: Array<
-    'PUBLIC_TO_EVERYONE' | 'MUTUAL_FOLLOW_FRIENDS' | 
+    'PUBLIC_TO_EVERYONE' | 'MUTUAL_FOLLOW_FRIENDS' |
     'SELF_ONLY' | 'FOLLOWER_OF_CREATOR' | 'MUTUAL_FOLLOW_FRIENDS' | 'SELF_ONLY'
   >,
   comment_disabled: boolean,

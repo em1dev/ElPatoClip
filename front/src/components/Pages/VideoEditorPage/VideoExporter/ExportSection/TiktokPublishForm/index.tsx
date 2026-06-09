@@ -1,12 +1,12 @@
 import * as S from './styles';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { CreatorPublishPermissions, ElPatoConnection } from '../../../../../../api/elPatoClipApi/types';
+import { CreatorPublishPermissions, Connection } from '../../../../../../api/clipApi/types';
 import { Button } from '../../../../../Atoms/Button';
 import { Input } from '../../../../../Atoms/Input';
 import { Select } from '../../../../../Atoms/Select';
 import { ConnectionButton } from '../../../../../Molecules/ConnectionButton';
 import { useAuth } from '../../../../../../authContext/useAuth';
-import { ElPatoApi } from '../../../../../../api/elPatoClipApi';
+import { clipApi } from '../../../../../../api/clipApi';
 import { ApiResponse } from '../../../../../../api/types';
 import { useEditorState } from '../../../../../../store/EditorState/useEditorState';
 import { IS_CLIENT_UNAUDITED } from '../../../../../../config';
@@ -61,7 +61,7 @@ export const TiktokPublishForm = ({
   });
 
   const [status, setStatus] = useState<'form' | 'uploading'>('form');
-  const [connection, setConnection] = useState<ApiResponse<ElPatoConnection> | null>(null);
+  const [connection, setConnection] = useState<ApiResponse<Connection> | null>(null);
   const [isPromotionalContent, setIsPromotionalContent] = useState<boolean>(false);
   const [formData, setFormData] = useState<TikTokPublishFormData>({
     promotionalContent: false,
@@ -132,7 +132,7 @@ export const TiktokPublishForm = ({
         permissions: null
       });
 
-      const resp = await ElPatoApi.getTiktokCreatorPermissions(auth.token);
+      const resp = await clipApi.getTiktokCreatorPermissions(auth.token);
 
       if (resp.error) {
         setCreatorPermissions({
@@ -189,7 +189,7 @@ export const TiktokPublishForm = ({
       steps: { create: 'progress', upload: 'notStarted', verify: 'notStarted' }
     });
 
-    const videoContainerUrl = await ElPatoApi.initiateVideo({
+    const videoContainerUrl = await clipApi.initiateVideo({
       post_info: {
         brand_content_toggle: formData.promotionalContent,
         brand_organic_toggle: formData.yourPromotionalContent,
@@ -250,7 +250,7 @@ export const TiktokPublishForm = ({
         'frame_rate_check_failed': 'Frame rate failed - please retry export'
       };
 
-      const resp = await ElPatoApi.getVideoStatus(publishId, auth.token);
+      const resp = await clipApi.getVideoStatus(publishId, auth.token);
       switch (resp.status) {
         case 'Failed':
           setUploadProgress(prev => ({

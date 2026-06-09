@@ -1,5 +1,5 @@
 import * as S from './styles';
-import { Clip } from '../../../../api/elPatoClipApi/types';
+import { Clip } from '../../../../api/clipApi/types';
 import ClipFooterMetadata from '../../../Molecules/ClipFooterMetadata';
 
 export interface ClipModalProps {
@@ -8,10 +8,10 @@ export interface ClipModalProps {
 
 const ClipModal = ({ clip }: ClipModalProps) => (
   <S.Container>
-    <iframe allowFullScreen height={1080} width={1080} 
+    <iframe allowFullScreen height={1080} width={1080}
       src={`https://clips.twitch.tv/embed?clip=${clip.id}&parent=${location.hostname}&autoplay=true&muted=false`}
     ></iframe>
-    <ClipFooterMetadata 
+    <ClipFooterMetadata
       title={clip.title}
       rightTitle={new Date(clip.created_at).toLocaleDateString()}
       subTitle={`Created by: ${clip.creator_name}`}
@@ -25,4 +25,3 @@ const ClipModal = ({ clip }: ClipModalProps) => (
 );
 
 export default ClipModal;
-

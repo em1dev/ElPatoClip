@@ -1,4 +1,4 @@
-import { ChannelSearchResponse } from '../api/elPatoClipApi/types';
+import { ChannelSearchResponse } from '../api/clipApi/types';
 import { STORAGE_KEYS } from '../config';
 
 const MAX_ITEMS = 5;
