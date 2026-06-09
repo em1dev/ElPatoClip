@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Input } from '.';
 
 
 const meta = {
   title: 'Atom/Input',
   component: Input,
-  parameters: { },
+  parameters: {},
   tags: ['autodocs'],
 } satisfies Meta<typeof Input>;
 
@@ -13,18 +13,18 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
-  args: { 
+  args: {
   },
 };
 
 export const Small: Story = {
-  args: { 
+  args: {
     size: 'sm'
   },
 };
 
 export const Placeholder: Story = {
-  args: { 
+  args: {
     placeholder: 'Twitch channel name'
   },
 };

@@ -6,7 +6,7 @@ import useResizeObserver from '@react-hook/resize-observer';
 import { useEditorState } from '../../../../store/EditorState/useEditorState';
 
 export interface ContentProps {
-  videoCanvasRef: RefObject<HTMLCanvasElement>,
+  videoCanvasRef: RefObject<HTMLCanvasElement | null>,
 }
 
 export const Content = ({
@@ -21,7 +21,7 @@ export const Content = ({
   const landscapeContainerRef = useRef<HTMLDivElement>(null);
 
   const onInputChange = (id: number, src: Source) => {
-    setLayers( layers.map(i => i.id !== id ? i : {
+    setLayers(layers.map(i => i.id !== id ? i : {
       ...i,
       input: src
     } satisfies Layer)
@@ -29,7 +29,7 @@ export const Content = ({
   };
 
   const onOutputChange = (id: number, output: Source) => {
-    setLayers( layers.map(i => i.id !== id ? i : {
+    setLayers(layers.map(i => i.id !== id ? i : {
       ...i,
       output: output
     } satisfies Layer)
@@ -38,7 +38,7 @@ export const Content = ({
 
 
 
-  const handleResize = useCallback(() =>  {
+  const handleResize = useCallback(() => {
     if (!containerRef.current) return;
     const { width, height } = containerRef.current.getBoundingClientRect();
 
@@ -57,7 +57,7 @@ export const Content = ({
     }
 
     // if both are visible
-    if (!portraitContainerRef.current || !landscapeContainerRef.current ) return;
+    if (!portraitContainerRef.current || !landscapeContainerRef.current) return;
     // assume portrait is always at 100%
     const c1Width = portraitContainerRef.current.getBoundingClientRect().width;
     const restingWidth = (width - c1Width);
@@ -85,7 +85,7 @@ export const Content = ({
   return (
     <S.Container ref={containerRef}>
 
-      { visibleCanvases !== 'portrait' && (
+      {visibleCanvases !== 'portrait' && (
         <S.Landscape ref={landscapeContainerRef}>
           <VideoCanvas
             renderVideo
@@ -98,7 +98,7 @@ export const Content = ({
         </S.Landscape>
       )}
 
-      { visibleCanvases !== 'landscape' && (
+      {visibleCanvases !== 'landscape' && (
         <S.Portrait ref={portraitContainerRef}>
           <VideoCanvas
             direction='portrait'

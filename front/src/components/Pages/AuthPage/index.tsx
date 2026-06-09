@@ -17,16 +17,16 @@ const Container = styled.section`
 export const AuthPage = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const [ success, setSuccess ] = useState<boolean>(false);
-  const [ hasError, setHasError ] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [hasError, setHasError] = useState<boolean>(false);
   const { authService, action } = useParams<{ authService: string, action: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   if (authService !== 'tiktok' &&
-      authService !== 'twitch') throw new Error('invalid authentication service');
+    authService !== 'twitch') throw new Error('invalid authentication service');
 
   if (action !== 'auth' &&
-      action !== 'connect') throw new Error('invalid action');
+    action !== 'connect') throw new Error('invalid action');
 
   const closeWindow = () => {
     window.setTimeout(() => {
@@ -40,6 +40,8 @@ export const AuthPage = () => {
 
     if (auth.isLoading) return;
     if (action === 'auth' && auth.isAuthorized) {
+      // TODO
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSuccess(true);
       closeWindow();
       return;
@@ -79,6 +81,7 @@ export const AuthPage = () => {
         closeWindow();
       } catch (e) {
         setHasError(true);
+        console.log(e);
       }
     };
 

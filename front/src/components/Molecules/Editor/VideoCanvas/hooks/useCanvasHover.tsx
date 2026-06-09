@@ -7,7 +7,7 @@ import { useEditorState } from '../../../../../store/EditorState/useEditorState'
 
 export const useCanvasHover = (
   layers: Array<Layer>,
-  canvasRef: RefObject<HTMLCanvasElement>,
+  canvasRef: RefObject<HTMLCanvasElement | null>,
   padding: number,
   disableHover: boolean
 ) => {
@@ -23,7 +23,7 @@ export const useCanvasHover = (
     if (!canvas) return;
     const point: Point = { x: e.offsetX, y: e.offsetY };
     const canvasPoint = CanvasUtils.relativePointToCanvasPoint(point, canvas);
-    const canvasPointWithOffset = { x: canvasPoint.x - padding, y: canvasPoint.y - padding};
+    const canvasPointWithOffset = { x: canvasPoint.x - padding, y: canvasPoint.y - padding };
     for (const layer of layers) {
       if (layer.locked) continue;
       const isInside = MathUtils.isInsideRect(canvasPointWithOffset, layer.output.rect);

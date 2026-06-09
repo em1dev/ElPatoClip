@@ -31,6 +31,7 @@ export const ConnectionButton = ({ type, onChange }: ConnectionButtonProps) => {
   }, [auth, type, onChange]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, [load]);
 
@@ -50,7 +51,7 @@ export const ConnectionButton = ({ type, onChange }: ConnectionButtonProps) => {
 
   useEffect(() => {
     const cancelToken = { cancel: false };
-    let timeoutRef:NodeJS.Timeout | null = null;
+    let timeoutRef: NodeJS.Timeout | null = null;
 
     // once we have a connection stop refreshing
     if (connection?.data) return;
@@ -102,7 +103,7 @@ export const ConnectionButton = ({ type, onChange }: ConnectionButtonProps) => {
         {connection.data.displayName}
         <div>
           <img alt="" src={connectionDetails.imgUrl} height={20} width={20} ></img>
-        Linked with {connectionDetails.display}
+          Linked with {connectionDetails.display}
         </div>
       </div>
       <Button $variant='secondary' disabled={isLoading} onClick={onDisconnect}>

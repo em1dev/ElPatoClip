@@ -11,12 +11,12 @@ export interface CanvasMetadata {
 }
 
 export const useCanvasMetadata = (
-  canvasRef: RefObject<HTMLCanvasElement>,
+  canvasRef: RefObject<HTMLCanvasElement | null>,
   withPadding: boolean = false,
   videoDirection: VideoDirection
 ) => {
 
-  const [canvasMetadata, setCanvasMetadata] = useState<CanvasMetadata>({ 
+  const [canvasMetadata, setCanvasMetadata] = useState<CanvasMetadata>({
     padding: 0,
     scalingFactor: 1,
     videoResolution: VIDEO_RESOLUTIONS[videoDirection],
@@ -24,6 +24,8 @@ export const useCanvasMetadata = (
   });
 
   useEffect(() => {
+    // TODO
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCanvasMetadata(prev => ({
       ...prev,
       canvasSize: VIDEO_RESOLUTIONS[videoDirection]

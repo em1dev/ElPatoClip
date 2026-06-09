@@ -26,6 +26,8 @@ export const LayerItem = ({
 
   useEffect(() => {
     if (selectedLayer?.id !== layer.id) {
+      // TODO
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsEditingName(false);
     }
   }, [selectedLayer, isEditingName, layer]);
@@ -41,11 +43,11 @@ export const LayerItem = ({
     setSelectedLayer(layer.id);
   }, [layer, setSelectedLayer]);
 
-  const onDragEnd:React.DragEventHandler<HTMLDivElement> = useCallback(() => {
+  const onDragEnd: React.DragEventHandler<HTMLDivElement> = useCallback(() => {
     setDragLayerId(null);
   }, [setDragLayerId]);
 
-  const onDragOver:React.DragEventHandler<HTMLDivElement> = (e) => {
+  const onDragOver: React.DragEventHandler<HTMLDivElement> = (e) => {
     const target = e.currentTarget;
     if (!(target instanceof HTMLElement)) return;
     if (target.dataset.id === undefined) return;
@@ -55,14 +57,14 @@ export const LayerItem = ({
     target.dataset.over = e.clientY < centerY ? 'top' : 'bot';
   };
 
-  const onDragEnter:React.DragEventHandler<HTMLDivElement> = (e) => {
+  const onDragEnter: React.DragEventHandler<HTMLDivElement> = (e) => {
     const target = e.currentTarget;
     if (!(target instanceof HTMLElement)) return;
     if (target.dataset.id === undefined) return;
     e.preventDefault();
   };
 
-  const onDragLeave:React.DragEventHandler<HTMLDivElement> = (e) => {
+  const onDragLeave: React.DragEventHandler<HTMLDivElement> = (e) => {
     const target = e.currentTarget;
     if (!(target instanceof HTMLElement)) return;
     if (target.dataset.id === undefined) return;
@@ -82,7 +84,7 @@ export const LayerItem = ({
 
     const layersSortedAsc = layers
       .filter(l => l.id !== dragLayerId)
-      .sort((a,b) => a.zIndex - b.zIndex);
+      .sort((a, b) => a.zIndex - b.zIndex);
 
     const draggedLayer = layers.find(l => l.id === dragLayerId);
     const hoveredLayer = layers.find(l => l.id.toString() === id);
@@ -94,13 +96,13 @@ export const LayerItem = ({
       dragIndex += 1;
     }
     const rest = layersSortedAsc.splice(dragIndex);
-    const newLayers = [...layersSortedAsc,  draggedLayer, ...rest]
-      .map((l, index) => ({...l, zIndex: index}));
+    const newLayers = [...layersSortedAsc, draggedLayer, ...rest]
+      .map((l, index) => ({ ...l, zIndex: index }));
     setLayers(newLayers);
   }, [layers, dragLayerId, setLayers]);
 
   const onLockedButtonClicked = (
-    e:React.MouseEvent<HTMLButtonElement, MouseEvent>, layer: Layer
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>, layer: Layer
   ) => {
     e.stopPropagation();
     updateLayerPartially(layer.id, { locked: !layer.locked });
@@ -112,7 +114,7 @@ export const LayerItem = ({
   };
 
   const onDeleteButtonClicked = (
-    e:React.MouseEvent<HTMLButtonElement, MouseEvent>, layer: Layer
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>, layer: Layer
   ) => {
     e.stopPropagation();
     setLayers(layers.filter(l => l.id !== layer.id));
@@ -127,7 +129,7 @@ export const LayerItem = ({
   };
 
   return (
-    <S.LayerButtonContainer 
+    <S.LayerButtonContainer
       $selected={selectedLayer?.id === layer.id}
       key={layer.id}
       data-id={layer.id}
@@ -142,42 +144,42 @@ export const LayerItem = ({
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      <S.LayerButton 
+      <S.LayerButton
         hidden
-        onClick={onLayerClick} 
+        onClick={onLayerClick}
       />
       <div>
-        <img 
-          draggable={false} 
-          alt="" 
-          width={25} 
+        <img
+          draggable={false}
+          alt=""
+          width={25}
           src="/icons/MingcuteDotsLine.svg"
         />
-        <S.InputColor 
+        <S.InputColor
           onClick={() => setSelectedLayer(layer.id)}
-          onChange={(e) => updateLayerPartially(layer.id, { borderColor: e.target.value })} 
-          type='color' 
-          value={layer.borderColor} 
+          onChange={(e) => updateLayerPartially(layer.id, { borderColor: e.target.value })}
+          type='color'
+          value={layer.borderColor}
         />
       </div>
 
-      {isEditingName ? 
+      {isEditingName ?
         <S.InputText
           onKeyDown={onKeyDown}
           ref={inputRef}
           value={layer.name}
-          onChange={(e) => { updateLayerPartially(layer.id, { name: e.target.value });}}
+          onChange={(e) => { updateLayerPartially(layer.id, { name: e.target.value }); }}
         />
         : (
           <S.LayerName
-            onClick={onLayerClick} 
+            onClick={onLayerClick}
             onDoubleClick={onDoubleClick}
           > {layer.name} </S.LayerName>
         )
       }
 
       <div>
-        <ButtonIcon 
+        <ButtonIcon
           draggable={false}
           title={layer.locked ? 'lock' : 'unlock'}
           size='sm'
@@ -187,9 +189,9 @@ export const LayerItem = ({
             layer.locked ?
               'MingcuteLockLine.svg' :
               'MingcuteUnlockLine.svg'
-          } 
+          }
         />
-        <ButtonIcon 
+        <ButtonIcon
           disabled={layer.locked}
           draggable={false}
           title="delete"

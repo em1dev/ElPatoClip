@@ -74,7 +74,7 @@ export const useEditStateSlice:StateCreator<
   },
   setClipId: (id, blobUrl) => set((() => ({ id, videoBlobUrl: blobUrl }))),
   setLayers: (layers) => (
-    set(({ hoveredLayer, selectedLayer}) => ({ 
+    set(({ hoveredLayer, selectedLayer}) => ({
       layers,
       selectedLayer: layers.find(l => l.id === selectedLayer?.id) ?? null,
       hoveredLayer: layers.find(l => l.id === hoveredLayer?.id) ?? null
@@ -89,7 +89,8 @@ export const useEditStateSlice:StateCreator<
     }
 
     if (hoveredLayer?.id === id) [
-      set({ hoveredLayer: layers.find(l => l.id === hoveredLayer?.id) ?? null
+      set({
+        hoveredLayer: layers.find(l => l.id === hoveredLayer?.id) ?? null
       })
     ];
 
@@ -109,8 +110,8 @@ export const useEditStateSlice:StateCreator<
       }));
     }
 
-    set((prev) => ({ 
-      videoMetadata: { ...prev.videoMetadata, totalTime: time } 
+    set((prev) => ({
+      videoMetadata: { ...prev.videoMetadata, totalTime: time }
     }));
   },
   resetInteractions: () => {

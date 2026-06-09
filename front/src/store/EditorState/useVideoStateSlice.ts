@@ -7,8 +7,8 @@ const SHORT_SKIP_IN_SECONDS = 3;
 export interface VideoStateSlice {
   seekWithAnimation: boolean,
   setSeekWithAnimation: (value: boolean) => void,
-  videoRef: React.RefObject<HTMLVideoElement> | null,
-  setVideoRef: (value: React.RefObject<HTMLVideoElement>) => void,
+  videoRef: React.RefObject<HTMLVideoElement | null> | null,
+  setVideoRef: (value: React.RefObject<HTMLVideoElement | null>) => void,
   setVolume: (value: number) => void,
   setIsPlaying: (value: boolean) => void,
   isPlaying: boolean,
@@ -73,7 +73,11 @@ export const useVideoStateSlice:StateCreator<
   setPlayback: (value) => {
     const video = get().videoRef?.current;
     if (!video) return;
-    value ? video.play() : video.pause();
+    if (value) {
+      video.play();
+    } else {
+      video.pause();
+    }
   },
   animationTimeoutId: null,
   setAnimationTimeoutId: (value) => set(() => ({ animationTimeoutId: value })),

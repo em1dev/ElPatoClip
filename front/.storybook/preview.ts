@@ -1,4 +1,4 @@
-import type { Preview } from "@storybook/react";
+import type { Preview } from '@storybook/react';
 import '../src/index.css';
 import '@fontsource/poppins/800.css';
 import '@fontsource/poppins/500.css';
@@ -9,17 +9,17 @@ const preview: Preview = {
     backgrounds: {
       default: 'base',
       values: [
-      {
-        name: 'base',
-        value: '#1A1A1A'
-      },
-      {
-        name: 'sidebar',
-        value: '#2B2B2B'
-      },
-    ]
+        {
+          name: 'base',
+          value: '#1A1A1A'
+        },
+        {
+          name: 'sidebar',
+          value: '#2B2B2B'
+        },
+      ]
     },
-    actions: { argTypesRegex: "^on[A-Z].*" },
+    actions: { argTypesRegex: '^on[A-Z].*' },
     controls: {
       matchers: {
         color: /(background|color)$/i,

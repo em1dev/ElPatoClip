@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Badge } from '.';
 
 
 const meta = {
   title: 'Atom/Badge',
   component: Badge,
-  parameters: { },
+  parameters: {},
   tags: ['autodocs'],
 } satisfies Meta<typeof Badge>;
 

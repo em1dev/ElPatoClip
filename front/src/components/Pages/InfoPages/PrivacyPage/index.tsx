@@ -15,7 +15,7 @@ export const PrivacyPage = () => (
     </p>
 
     <p>
-      If you do not agree with our policies and practices, please do not use our services. If you still have 
+      If you do not agree with our policies and practices, please do not use our services. If you still have
       any questions or concerns, please contact me at support@elpato.dev.
     </p>
 
@@ -31,18 +31,18 @@ export const PrivacyPage = () => (
       When you visit, use, or navigate to our website,
       we may process personal information based on how you interact with the service.
       If you decide not to log in, no personal information will be stored about your interaction.
-
-      <ul>
-        <li><b>We do not process sensitive personal information</b></li>
-        <li><b>We do not send any personal information to third parties</b></li>
-      </ul>
-
-      When you sign up to our website, depending on your authentication method we might store
-      <ul>
-        <li><b>Third party public personal identifying user id, such as a Tiktok user id</b></li>
-        <li><b>Authentication tokens when linking an account to allow the upload of clips</b></li>
-      </ul>
     </p>
+
+    <ul>
+      <li><b>We do not process sensitive personal information</b></li>
+      <li><b>We do not send any personal information to third parties</b></li>
+    </ul>
+
+    When you sign up to our website, depending on your authentication method we might store
+    <ul>
+      <li><b>Third party public personal identifying user id, such as a Tiktok user id</b></li>
+      <li><b>Authentication tokens when linking an account to allow the upload of clips</b></li>
+    </ul>
 
     <h2>
       We ensure to keep your information secure and private

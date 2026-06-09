@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { defaultLayers } from '../../../../Utils/LayerGenerator';
 import { useEffect, useRef, useState } from 'react';
 import { VideoCanvas } from '.';
@@ -9,7 +9,7 @@ import { styled } from 'styled-components';
 const meta = {
   title: 'Editor/VideoCanvas',
   component: VideoCanvas,
-  parameters: { },
+  parameters: {},
   tags: ['autodocs'],
 } satisfies Meta<typeof VideoCanvas>;
 
@@ -37,7 +37,7 @@ export const Primary: Story = {
       const ctx = videoRef.current.getContext('2d');
       if (!ctx) return;
       ctx.fillStyle = 'rgb(200,200,200)';
-      ctx.fillRect(0,0, 1920, 1080);
+      ctx.fillRect(0, 0, 1920, 1080);
     }, [videoRef]);
 
     const onOutputChange = (id: number, output: Source) => {
@@ -52,13 +52,13 @@ export const Primary: Story = {
     return (
       <Container>
         <canvas hidden width={1920} height={1080} ref={videoRef} />
-        <Story args={{ 
+        <Story args={{
           withPadding: true,
           hoverLayerId: hoverLayerId,
           setHoverLayerId: setHoverLayerId,
           renderVideo: true,
-          layers, 
-          setSelectedLayerId, 
+          layers,
+          setSelectedLayerId,
           selectedLayerId,
           videoRef,
           onOutputChange,

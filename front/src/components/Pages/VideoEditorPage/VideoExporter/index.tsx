@@ -28,10 +28,6 @@ export const VideoExporter = () => {
     setVideoRef(videoRef);
   }, [videoRef, setVideoRef]);
 
-  useEventListener<HTMLVideoElement, Event>(videoRef, 'loadeddata', () => {
-    restartRecording();
-  });
-
   const restartRecording = useCallback(() => {
     setOutputUrl(null);
     setTimeout(() => {
@@ -41,6 +37,10 @@ export const VideoExporter = () => {
       record(videoDuration * 1000);
     }, 1000);
   }, [record, seekTo, setPlayback, timeSlice, setOutputUrl]);
+
+  useEventListener<HTMLVideoElement, Event>(videoRef, 'loadeddata', () => {
+    restartRecording();
+  });
 
   useRenderLoop(useCallback(() => {
     if (!videoRef.current) return;
@@ -78,7 +78,7 @@ export const VideoExporter = () => {
 
       <S.RightContainer>
 
-        { outputUrl ?  (
+        {outputUrl ? (
           <ExportSection retryExport={restartRecording} videoUrl={outputUrl} />
         ) : (
           <S.ExportingLoaderContainer>

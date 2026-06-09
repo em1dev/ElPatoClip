@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ButtonIcon } from '.';
 
 
 const meta = {
   title: 'Atom/ButtonIcon',
   component: ButtonIcon,
-  parameters: { },
+  parameters: {},
   tags: ['autodocs'],
 } satisfies Meta<typeof ButtonIcon>;
 
@@ -13,14 +13,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
-  args: { 
+  args: {
     title: 'button icon',
     iconName: 'DualCanvasIcon.svg'
   },
 };
 
 export const Selected: Story = {
-  args: { 
+  args: {
     title: 'button icon',
     iconName: 'DualCanvasIcon.svg',
     selected: true
@@ -28,7 +28,7 @@ export const Selected: Story = {
 };
 
 export const Disabled: Story = {
-  args: { 
+  args: {
     title: 'button icon',
     iconName: 'DualCanvasIcon.svg',
     disabled: true

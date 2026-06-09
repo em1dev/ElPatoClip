@@ -76,6 +76,8 @@ export const TiktokPublishForm = ({
   useEffect(() => {
     if (formData.privacy === 'SELF_ONLY') {
       if (formData.promotionalContent || formData.yourPromotionalContent || isPromotionalContent) {
+        // TODO
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsPromotionalContent(false);
         setFormData(prev => ({
           ...prev,
@@ -122,7 +124,7 @@ export const TiktokPublishForm = ({
   useEffect(() => {
     if (!auth.isAuthorized || !connection?.data) return;
 
-    const load = async() => {
+    const load = async () => {
 
       setCreatorPermissions({
         isLoading: true,
@@ -226,7 +228,7 @@ export const TiktokPublishForm = ({
     for (let i = 0; i < chunkAmount; i++) {
       const start = i * chunkSize;
       const data = videoBlob.slice(start, Math.min(start + chunkSize, videoBlob.size));
-      console.log(`Uploading one chunk of size ${data.size}`); 
+      console.log(`Uploading one chunk of size ${data.size}`);
       const isSuccess = await TiktokApi.uploadVideoChunk(uploadUrl, data.size, start, videoBlob.size, data);
       if (!isSuccess) {
         setUploadProgress(prev => ({
@@ -250,22 +252,22 @@ export const TiktokPublishForm = ({
 
       const resp = await ElPatoApi.getVideoStatus(publishId, auth.token);
       switch (resp.status) {
-      case 'Failed':
-        setUploadProgress(prev => ({
-          ...prev,
-          error: reasonMap[resp.errorReason ?? ''] ?? resp.errorReason,
-          steps: { ...prev.steps, verify: 'error' }
-        }));
-        return { retry: false };
+        case 'Failed':
+          setUploadProgress(prev => ({
+            ...prev,
+            error: reasonMap[resp.errorReason ?? ''] ?? resp.errorReason,
+            steps: { ...prev.steps, verify: 'error' }
+          }));
+          return { retry: false };
 
-      case 'Success':
-        setUploadProgress({
-          amount: 100,
-          steps: { create: 'completed', upload: 'completed', verify: 'completed' }
-        });
-        return { retry: false };
-      case 'Processing':
-        return { retry: true };
+        case 'Success':
+          setUploadProgress({
+            amount: 100,
+            steps: { create: 'completed', upload: 'completed', verify: 'completed' }
+          });
+          return { retry: false };
+        case 'Processing':
+          return { retry: true };
       }
     };
 
@@ -310,7 +312,7 @@ export const TiktokPublishForm = ({
         <Check status={uploadProgress.steps.verify}>Verify Status</Check>
       </S.CheckList>
 
-      { uploadProgress.error && (
+      {uploadProgress.error && (
         <>
           <S.ErrorText>{uploadProgress.error}</S.ErrorText>
           <S.ErrorButtons>
@@ -320,9 +322,9 @@ export const TiktokPublishForm = ({
         </>
       )}
 
-      { !uploadProgress.error && (
+      {!uploadProgress.error && (
         <>
-          { uploadProgress.steps.verify === 'completed' ? (
+          {uploadProgress.steps.verify === 'completed' ? (
             <p>You can now close the tab</p>
           ) :
             <S.WarningText>Please don't close the tab</S.WarningText>
@@ -340,7 +342,7 @@ export const TiktokPublishForm = ({
         <h3>Share to TikTok</h3>
         <ConnectionButton onChange={setConnection} type='tiktok' />
 
-        { connection?.data && (
+        {connection?.data && (
           <>
             <S.InputGroup>
               <label htmlFor='title-input'>Title</label>
@@ -348,7 +350,7 @@ export const TiktokPublishForm = ({
               <Input
                 id="title-input"
                 max={2200}
-                value={formData.title} 
+                value={formData.title}
                 onChange={(e) => setFormData(prev => ({
                   ...prev,
                   title: e.target.value
@@ -363,7 +365,7 @@ export const TiktokPublishForm = ({
                 id='tiktok-form-privacy-select'
                 required
                 value={formData.privacy}
-                onChange={(e) => setFormData(prev => ({...prev, privacy: e.target.value }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, privacy: e.target.value }))}
               >
                 <option value=""></option>
                 {
@@ -378,9 +380,9 @@ export const TiktokPublishForm = ({
 
             <S.CheckboxGroup>
 
-              { !!creatorPermissions.permissions?.comment_disabled || !creatorPermissions.isLoading && (
+              {!!creatorPermissions.permissions?.comment_disabled || !creatorPermissions.isLoading && (
                 <>
-                  <S.Checkbox 
+                  <S.Checkbox
                     checked={formData.allowComment}
                     id="allow-comment-checkbox"
                     onChange={(e) => {
@@ -394,15 +396,15 @@ export const TiktokPublishForm = ({
                     }
                     type='checkbox'
                   />
-                  <label 
+                  <label
                     htmlFor="allow-comment-checkbox"
                   >Allow comment</label>
                 </>
               )}
 
-              { !!creatorPermissions.permissions?.duet_disabled || !creatorPermissions.isLoading && (
+              {!!creatorPermissions.permissions?.duet_disabled || !creatorPermissions.isLoading && (
                 <>
-                  <S.Checkbox 
+                  <S.Checkbox
                     checked={formData.allowDuet}
                     id='allow-duet-checkbox'
                     onChange={(e) => {
@@ -411,8 +413,8 @@ export const TiktokPublishForm = ({
                         allowDuet: e.target.checked
                       }));
                     }}
-                    disabled={ creatorPermissions.isLoading || !!creatorPermissions.permissions?.duet_disabled }
-                    type='checkbox' 
+                    disabled={creatorPermissions.isLoading || !!creatorPermissions.permissions?.duet_disabled}
+                    type='checkbox'
                   />
                   <label
                     htmlFor='allow-duet-checkbox'
@@ -420,7 +422,7 @@ export const TiktokPublishForm = ({
                 </>
               )}
 
-              { !!creatorPermissions.permissions?.stitch_disabled || !creatorPermissions.isLoading && (
+              {!!creatorPermissions.permissions?.stitch_disabled || !creatorPermissions.isLoading && (
                 <>
                   <S.Checkbox
                     checked={formData.allowStitch}
@@ -446,9 +448,9 @@ export const TiktokPublishForm = ({
             <S.InputGroup>
               <h4>Promotional Content</h4>
 
-              { formData.privacy === 'SELF_ONLY' && (
+              {formData.privacy === 'SELF_ONLY' && (
                 <S.WarningText>
-                    Promotional content is not allowed for private videos
+                  Promotional content is not allowed for private videos
                 </S.WarningText>
               )}
 
@@ -470,15 +472,15 @@ export const TiktokPublishForm = ({
               </S.CheckboxGroup>
             </S.InputGroup>
 
-            { isPromotionalContent && (
+            {isPromotionalContent && (
               <S.InputGroup>
                 <h4>What kind of promotional content?</h4>
 
-                { !formData.promotionalContent && !formData.yourPromotionalContent && (
+                {!formData.promotionalContent && !formData.yourPromotionalContent && (
                   <S.ErrorText>You need to indicate if your content promotes yourself, a third party, or both.</S.ErrorText>
                 )}
 
-                { promotionalOutcomeText && (
+                {promotionalOutcomeText && (
                   <S.WarningText> {promotionalOutcomeText} </S.WarningText>
                 )}
 
@@ -519,7 +521,7 @@ export const TiktokPublishForm = ({
                   <label
                     htmlFor='tiktok-brand-promotional-checkbox'
                   >
-                  You are promoting another brand or third party. 
+                    You are promoting another brand or third party.
                   </label>
                 </S.CheckboxGroup>
               </S.InputGroup>
@@ -528,33 +530,33 @@ export const TiktokPublishForm = ({
 
             {IS_CLIENT_UNAUDITED && (
               <S.WarningText>
-              At the moment we can only upload videos to private accounts and as a private video.
-              You can then change the privacy setting after uploading is complete
+                At the moment we can only upload videos to private accounts and as a private video.
+                You can then change the privacy setting after uploading is complete
               </S.WarningText>
             )}
 
-            { isOverVideoLimit && (
+            {isOverVideoLimit && (
               <S.ErrorText>
-              This clips is too long, you can upload up to {maxAllowedVideoInSeconds} seconds
+                This clips is too long, you can upload up to {maxAllowedVideoInSeconds} seconds
               </S.ErrorText>
             )}
 
             {
               formData.promotionalContent ? (
                 <S.AgreementText>
-            By posting, you agree to TikTok's {' '}
+                  By posting, you agree to TikTok's {' '}
                   <a target='_blank' href='https://www.tiktok.com/legal/page/global/bc-policy/en'>
-                  Branded Content Policy
+                    Branded Content Policy
                   </a> and {' '}
                   <a target='_blank' href='https://www.tiktok.com/legal/page/global/music-usage-confirmation/en'>
-              Music Usage Confirmation
+                    Music Usage Confirmation
                   </a>
                 </S.AgreementText>
               ) : (
                 <S.AgreementText>
-            By posting, you agree to TikTok's {' '}
+                  By posting, you agree to TikTok's {' '}
                   <a target='_blank' href='https://www.tiktok.com/legal/page/global/music-usage-confirmation/en'>
-              Music Usage Confirmation
+                    Music Usage Confirmation
                   </a>
                 </S.AgreementText>
               )

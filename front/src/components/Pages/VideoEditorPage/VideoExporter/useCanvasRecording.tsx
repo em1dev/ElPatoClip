@@ -2,8 +2,8 @@ import fixWebmDuration from 'fix-webm-duration';
 import { RefObject, useCallback, useState } from 'react';
 
 export const useCanvasRecording = (
-  canvasRef: RefObject<HTMLCanvasElement>,
-  videoRef: RefObject<HTMLVideoElement>) => {
+  canvasRef: RefObject<HTMLCanvasElement | null>,
+  videoRef: RefObject<HTMLVideoElement | null>) => {
   const [outputUrl, setOutputUrl] = useState<string | null>(null);
 
   const record = useCallback((duration: number) => {
@@ -14,7 +14,7 @@ export const useCanvasRecording = (
 
     console.log('initializing recording');
 
-    const options: MediaRecorderOptions = { 
+    const options: MediaRecorderOptions = {
       // TODO - check if is supported
       mimeType: 'video/webm;codecs=vp8,opus',
       videoBitsPerSecond: 6000 * 1000, // max twitch bitrate,
@@ -28,7 +28,7 @@ export const useCanvasRecording = (
       audioTracks?: Array<MediaStreamTrack>
     });
 
-    let audioTrack: MediaStreamTrack | null = null;
+    let audioTrack: MediaStreamTrack | null;
 
     if (videoAsCompatibleMedia.captureStream) {
       // chromium
@@ -38,14 +38,14 @@ export const useCanvasRecording = (
       // moz
       const videoStream = videoAsCompatibleMedia.mozCaptureStream(60);
       audioTrack = videoStream.getAudioTracks().at(0)!;
-    } else if (videoAsCompatibleMedia.audioTracks){
+    } else if (videoAsCompatibleMedia.audioTracks) {
       // webkit
       audioTrack = videoAsCompatibleMedia.audioTracks.at(0)!;
     } else {
       throw new Error('Capture media stream is not implemented in this browser');
     }
 
-    const combinedMedia = new MediaStream([ 
+    const combinedMedia = new MediaStream([
       audioTrack,
       canvasStream.getVideoTracks()[0]!
     ]);

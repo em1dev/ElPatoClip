@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ProgressBar } from '.';
 
 
 const meta = {
   title: 'Atom/ProgressBar',
   component: ProgressBar,
-  parameters: { },
+  parameters: {},
   tags: ['autodocs'],
 } satisfies Meta<typeof ProgressBar>;
 

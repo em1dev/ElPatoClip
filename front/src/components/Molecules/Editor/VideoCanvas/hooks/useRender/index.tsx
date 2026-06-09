@@ -9,8 +9,8 @@ import { useEditorState } from '../../../../../../store/EditorState/useEditorSta
 
 export const useRender = (
   layers: Array<Layer>,
-  outputCanvasRef: RefObject<HTMLCanvasElement>,
-  inputCanvasRef: RefObject<CanvasImageSource>,
+  outputCanvasRef: RefObject<HTMLCanvasElement | null>,
+  inputCanvasRef: RefObject<CanvasImageSource | null>,
   canvasMetadata: CanvasMetadata,
   renderInput: boolean,
   hasInteracted: boolean,
@@ -25,7 +25,7 @@ export const useRender = (
 
   const clipVideoArea = useCallback((ctx: CanvasRenderingContext2D) => {
     // clip canvas to have border radius
-    const canvasRect = { x: padding, y: padding, width: videoResolution.width,  height: videoResolution.height };
+    const canvasRect = { x: padding, y: padding, width: videoResolution.width, height: videoResolution.height };
     CanvasUtils.clipRect(ctx, canvasRect, 10);
   }, [videoResolution, padding]);
 
@@ -41,14 +41,14 @@ export const useRender = (
     clipVideoArea(ctx);
 
     if (renderInput) {
-      ctx.drawImage(inputCanvas, padding, padding, videoResolution.width,  videoResolution.height);
+      ctx.drawImage(inputCanvas, padding, padding, videoResolution.width, videoResolution.height);
       // dark overlay
       ctx.fillStyle = 'rgba(0,0,0,0.7)';
     } else {
       // bg
       ctx.fillStyle = 'rgba(0,0,0,1)';
     }
-    ctx.fillRect(padding, padding, videoResolution.width,  videoResolution.height);
+    ctx.fillRect(padding, padding, videoResolution.width, videoResolution.height);
 
     ctx.restore();
     ctx.save();
@@ -70,7 +70,7 @@ export const useRender = (
     }
 
     ctx.restore();
-  }, [scalingFactor, layers, renderInput, videoResolution, hoveredLayer, selectedLayer, hasInteracted, inputCanvasRef, clipVideoArea, outputCanvasRef, padding ]);
+  }, [scalingFactor, layers, renderInput, videoResolution, hoveredLayer, selectedLayer, hasInteracted, inputCanvasRef, clipVideoArea, outputCanvasRef, padding]);
 
   useRenderLoop(onRender);
 };

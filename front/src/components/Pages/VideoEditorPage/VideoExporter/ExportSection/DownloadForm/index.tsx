@@ -1,5 +1,5 @@
 import * as S from './styles';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '../../../../../Atoms/Button';
 import { Input } from '../../../../../Atoms/Input';
 
@@ -9,8 +9,7 @@ export interface DownloadFormProps {
 
 export const DownloadForm = ({
   videoUrl
-}:DownloadFormProps) => {
-  useRef();
+}: DownloadFormProps) => {
   const [fileName, setFileName] = useState<string>('video');
 
   return (

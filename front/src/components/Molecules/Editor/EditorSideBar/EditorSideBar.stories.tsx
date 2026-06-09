@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EditorSideBar } from '.';
 import { addNewLayer, defaultLayers } from '../../../../Utils/LayerGenerator';
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 const meta = {
   title: 'Editor/SideBar',
   component: EditorSideBar,
-  parameters: { },
+  parameters: {},
   tags: ['autodocs'],
 } satisfies Meta<typeof EditorSideBar>;
 

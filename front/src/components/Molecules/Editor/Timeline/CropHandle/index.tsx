@@ -3,7 +3,7 @@ import * as S from './styles';
 import { useDrag } from '../../../../../hooks/useDrag';
 
 interface CropHandleProps {
-  containerRef: RefObject<HTMLDivElement>,
+  containerRef: RefObject<HTMLDivElement | null>,
   onMove: (position: number) => void,
 }
 
