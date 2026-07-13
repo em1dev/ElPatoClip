@@ -9,6 +9,10 @@ app.use(express.json());
 
 app.use(cors());
 
+app.get('/health', (_, res) => {
+  res.status(200).send();
+});
+
 app.use('/', (req, _, next) => {
   console.log(`[${req.method}] - ${req.path}`);
   if (req.query && Object.keys(req.query).length > 0) {
